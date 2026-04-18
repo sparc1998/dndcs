@@ -7,23 +7,23 @@
   <title>D&amp;D Character Sheet</title>
   <style>
     :root {
-      --main-bg: #1a1a2e;
-      --sidebar-bg: #16213e;
-      --textbox-bg: #0f3460;
-      --card-bg: #16213e;
-      --tag-bg: #0f3460;
+      --main-bg: #f2f2f2;
+      --sidebar-bg: #e4e6e8;
+      --textbox-bg: #ffffff;
+      --card-bg: #eaeaea;
+      --tag-bg: #c8e6c9;
       --header-font: Helvetica Neue, Arial, sans-serif;
       --header-font-size: 14px;
-      --header-fontcolor: #e8c96d;
+      --header-fontcolor: #2e7d32;
       --button-font: Helvetica Neue, Arial, sans-serif;
       --button-font-size: 14px;
-      --button-fontcolor: #1a1a2e;
-      --button-bg: #e8c96d;
+      --button-fontcolor: #ffffff;
+      --button-bg: #4caf50;
       --save-button-bg: #c0392b;
       --save-button-fontcolor: #ffffff;
       --sheet-font: Helvetica Neue, Arial, sans-serif;
-      --sheet-font-size: 15px;
-      --sheet-fontcolor: #e0d7c6;
+      --sheet-font-size: 14px;
+      --sheet-fontcolor: #111111;
       --muted: color-mix(in srgb, var(--sheet-fontcolor) 50%, var(--main-bg));
     }
 
@@ -271,6 +271,99 @@
     #status.err {
       color: #e74c3c;
     }
+
+    /* ── Editable display (click-to-edit) ── */
+    .field-display {
+      cursor: text;
+      font-family: var(--sheet-font);
+      font-size: var(--sheet-font-size);
+      color: var(--sheet-fontcolor);
+      padding: 0.2rem 0.4rem;
+      min-width: 160px;
+      background: color-mix(in srgb, var(--textbox-bg) 50%, #ccc);
+      border: 1px solid color-mix(in srgb, var(--textbox-bg) 50%, white);
+      border-radius: 6px;
+    }
+
+    .field-display:empty::after {
+      content: "—";
+      color: var(--muted);
+    }
+
+    .field-display a,
+    .note-entry a {
+      color: var(--header-fontcolor);
+      text-decoration: underline;
+    }
+
+    .hidden { display: none !important; }
+
+    /* ── Link dialog ── */
+    #link-dialog {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+
+    #link-dialog-box {
+      background: var(--sidebar-bg);
+      border: 1px solid color-mix(in srgb, var(--sidebar-bg) 60%, white);
+      border-radius: 8px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      min-width: 340px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+    }
+
+    #link-dialog-box label {
+      color: var(--sheet-fontcolor);
+    }
+
+    #link-dialog-btns {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: flex-end;
+    }
+
+    #link-dialog-btns button {
+      background: var(--button-bg);
+      border: none;
+      border-radius: 6px;
+      color: var(--button-fontcolor);
+      cursor: pointer;
+      font-family: var(--button-font);
+      font-size: var(--button-font-size);
+      font-weight: normal;
+      padding: 0.4rem 0.9rem;
+    }
+
+    #link-dialog-btns button:hover {
+      background: color-mix(in srgb, var(--button-bg) 80%, white);
+    }
+
+    #link-cancel-btn {
+      background: color-mix(in srgb, var(--sidebar-bg) 60%, #888);
+      color: var(--sheet-fontcolor);
+    }
+
+    #link-cancel-btn:hover {
+      background: color-mix(in srgb, var(--sidebar-bg) 40%, #888);
+    }
+
+    #link-remove-btn {
+      background: var(--save-button-bg);
+      color: var(--save-button-fontcolor);
+    }
+
+    #link-remove-btn:hover {
+      background: color-mix(in srgb, var(--save-button-bg) 80%, white);
+    }
   </style>
 </head>
 
@@ -286,11 +379,13 @@
       <div style="display: flex; flex-direction: row; gap: 1.5rem; align-items: flex-end;">
         <div class="field" style="flex-direction: row; align-items: center;">
           <label for="player-name">Player Name</label>
-          <input type="text" id="player-name" placeholder="Your name" style="padding: 0.2rem 0.4rem;" />
+          <span id="player-name-display" class="field-display"></span>
+          <input type="text" id="player-name" class="hidden" placeholder="Your name" style="padding: 0.2rem 0.4rem;" />
         </div>
         <div class="field" style="flex-direction: row; align-items: center;">
           <label for="character-name">Character Name</label>
-          <input type="text" id="character-name" placeholder="Character name" style="padding: 0.2rem 0.4rem;" />
+          <span id="character-name-display" class="field-display"></span>
+          <input type="text" id="character-name" class="hidden" placeholder="Character name" style="padding: 0.2rem 0.4rem;" />
         </div>
       </div>
     </div>
@@ -320,18 +415,156 @@
     <div id="status"></div>
   </aside>
 
+  <div id="link-dialog" class="hidden" role="dialog" aria-modal="true">
+    <div id="link-dialog-box">
+      <label for="link-url">URL</label>
+      <input type="text" id="link-url" placeholder="https://…" />
+      <div id="link-dialog-btns">
+        <button id="link-ok-btn">OK</button>
+        <button id="link-remove-btn" class="hidden">Remove link</button>
+        <button id="link-cancel-btn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     let character = null;
 
     const _measureCanvas = document.createElement("canvas");
 
+    function escHtml(s) {
+      return s.replace(/[<>&"]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;" }[c]));
+    }
+
+    function renderLinks(raw) {
+      const linkRe = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g;
+      let result = "";
+      let last = 0;
+      let m;
+      while ((m = linkRe.exec(raw)) !== null) {
+        result += escHtml(raw.slice(last, m.index));
+        result += `<a href="${escHtml(m[2])}" target="_blank" rel="noopener noreferrer">${escHtml(m[1])}</a>`;
+        last = m.index + m[0].length;
+      }
+      result += escHtml(raw.slice(last));
+      return result;
+    }
+
+    function updateDisplay(displayEl, rawText) {
+      displayEl.innerHTML = renderLinks(rawText);
+    }
+
+    let _linkDialogOpen = false;
+    let _linkTarget = null;
+
+    function setupEditable(displayId, inputId) {
+      const display = document.getElementById(displayId);
+      const input = document.getElementById(inputId);
+
+      display.addEventListener("click", () => {
+        display.classList.add("hidden");
+        input.classList.remove("hidden");
+        requestAnimationFrame(() => { input.focus(); input.select(); });
+      });
+
+      function commit() {
+        if (_linkDialogOpen) return;
+        const rawText = input.value;
+        input.classList.add("hidden");
+        display.classList.remove("hidden");
+        updateDisplay(display, rawText);
+      }
+
+      input.addEventListener("blur", commit);
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") { input.blur(); return; }
+        if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+          e.preventDefault();
+          openLinkDialog(input);
+        }
+      });
+    }
+
+    function openLinkDialog(el) {
+      const selStart = el.selectionStart;
+      const selEnd = el.selectionEnd;
+      if (selStart === selEnd) return;
+
+      const raw = el.value;
+      const linkRe = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g;
+      let existingMatch = null;
+      let m;
+      while ((m = linkRe.exec(raw)) !== null) {
+        if (selStart >= m.index && selEnd <= m.index + m[0].length) {
+          existingMatch = m;
+          break;
+        }
+      }
+
+      _linkTarget = { el, selStart, selEnd, existingMatch };
+      _linkDialogOpen = true;
+
+      const urlInput = document.getElementById("link-url");
+      urlInput.value = existingMatch ? existingMatch[2] : "";
+      document.getElementById("link-remove-btn").classList.toggle("hidden", !existingMatch);
+      document.getElementById("link-dialog").classList.remove("hidden");
+      requestAnimationFrame(() => { urlInput.focus(); urlInput.select(); });
+    }
+
+    function closeLinkDialog(returnFocus = true) {
+      _linkDialogOpen = false;
+      document.getElementById("link-dialog").classList.add("hidden");
+      if (returnFocus && _linkTarget) _linkTarget.el.focus();
+      _linkTarget = null;
+    }
+
+    function applyLink(url) {
+      if (!_linkTarget) return;
+      const { el, selStart, selEnd, existingMatch } = _linkTarget;
+      const raw = el.value;
+      let newValue;
+
+      if (existingMatch) {
+        const start = existingMatch.index;
+        const end = existingMatch.index + existingMatch[0].length;
+        newValue = url
+          ? raw.slice(0, start) + `[${existingMatch[1]}](${url})` + raw.slice(end)
+          : raw.slice(0, start) + existingMatch[1] + raw.slice(end);
+      } else {
+        const selectedText = raw.slice(selStart, selEnd);
+        newValue = url
+          ? raw.slice(0, selStart) + `[${selectedText}](${url})` + raw.slice(selEnd)
+          : raw;
+      }
+
+      el.value = newValue;
+      autosave();
+      closeLinkDialog(true);
+    }
+
+    document.getElementById("link-ok-btn").addEventListener("click", () => {
+      applyLink(document.getElementById("link-url").value.trim());
+    });
+    document.getElementById("link-remove-btn").addEventListener("click", () => applyLink(""));
+    document.getElementById("link-cancel-btn").addEventListener("click", () => closeLinkDialog(true));
+    document.getElementById("link-url").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") applyLink(document.getElementById("link-url").value.trim());
+      if (e.key === "Escape") closeLinkDialog(true);
+    });
+    document.getElementById("link-dialog").addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeLinkDialog(true);
+    });
+
     function fitInput(el, sizingText) {
+      const wasHidden = el.classList.contains("hidden");
+      if (wasHidden) el.classList.remove("hidden");
       const ctx = _measureCanvas.getContext("2d");
       ctx.font = getComputedStyle(el).font;
       const textW = ctx.measureText(sizingText).width;
       const cs = getComputedStyle(el);
       const padW = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight) + 4;
       el.style.width = Math.max(textW + padW, 160) + "px";
+      if (wasHidden) el.classList.add("hidden");
     }
 
     async function applyConfig() {
@@ -381,8 +614,12 @@
     }
 
     function render() {
-      document.getElementById("player-name").value = character.bio?.player_name ?? "";
-      document.getElementById("character-name").value = character.bio?.character_name ?? "";
+      const playerRaw = character.bio?.player_name ?? "";
+      const charRaw = character.bio?.character_name ?? "";
+      document.getElementById("player-name").value = playerRaw;
+      document.getElementById("character-name").value = charRaw;
+      updateDisplay(document.getElementById("player-name-display"), playerRaw);
+      updateDisplay(document.getElementById("character-name-display"), charRaw);
       renderNotes();
     }
 
@@ -406,7 +643,7 @@
         (note.notes ?? []).forEach((n) => {
           const p = document.createElement("p");
           p.className = "note-entry";
-          p.textContent = n;
+          p.innerHTML = renderLinks(n);
           card.appendChild(p);
         });
 
@@ -441,8 +678,18 @@
       if (cls === "ok") setTimeout(() => (el.textContent = ""), 2500);
     }
 
+    setupEditable("player-name-display", "player-name");
+    setupEditable("character-name-display", "character-name");
+
     document.getElementById("player-name").addEventListener("input", autosave);
     document.getElementById("character-name").addEventListener("input", autosave);
+
+    document.getElementById("new-tags").addEventListener("keydown", (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") { e.preventDefault(); openLinkDialog(e.target); }
+    });
+    document.getElementById("new-note").addEventListener("keydown", (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") { e.preventDefault(); openLinkDialog(e.target); }
+    });
 
     document.getElementById("add-note-btn").addEventListener("click", async () => {
       const rawTags = document.getElementById("new-tags").value;

@@ -4,19 +4,19 @@
 # Accepts any CSS color value: hex (#1a1a2e), rgb(0,0,0), or named colors.
 
 # Background of the main tabbed area.
-main_bg: "#1a1a2e"
+main_bg: "#f2f2f2"
 
 # Background of the right sidebar.
-sidebar_bg: "#16213e"
+sidebar_bg: "#e4e6e8"
 
 # Background of text input boxes.
-textbox_bg: "#0f3460"
+textbox_bg: "#ffffff"
 
 # Background of campaign note cards.
-card_bg: "#16213e"
+card_bg: "#eaeaea"
 
 # Background of tag chips on campaign notes.
-tag_bg: "#0f3460"
+tag_bg: "#c8e6c9"
 
 # ── Header ─────────────────────────────────────────────────────────────────────
 # Applies to: tab labels, tab selection underline, sidebar section title.
@@ -26,7 +26,7 @@ tag_bg: "#0f3460"
 
 header_font: "Helvetica Neue, Arial, sans-serif"
 header_font_size: 14
-header_fontcolor: "#e8c96d"
+header_fontcolor: "#2e7d32"
 
 # ── Buttons ────────────────────────────────────────────────────────────────────
 # button_font and button_font_size apply to all buttons including Save.
@@ -35,8 +35,8 @@ header_fontcolor: "#e8c96d"
 
 button_font: "Helvetica Neue, Arial, sans-serif"
 button_font_size: 14
-button_fontcolor: "#1a1a2e"
-button_bg: "#e8c96d"
+button_fontcolor: "#ffffff"
+button_bg: "#4caf50"
 save_button_bg: "#c0392b"
 save_button_fontcolor: "#ffffff"
 
@@ -45,7 +45,7 @@ save_button_fontcolor: "#ffffff"
 
 sheet_font: "Helvetica Neue, Arial, sans-serif"
 sheet_font_size: 14
-sheet_fontcolor: "#e0d7c6"
+sheet_fontcolor: "#111111"
 
 # ── Backup ─────────────────────────────────────────────────────────────────────
 # File extension used for automatic backup saves.
