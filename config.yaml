@@ -1,0 +1,23 @@
+# D&D Character Sheet Configuration
+
+# Font family for the character sheet UI.
+# Any web-safe font or Google Fonts name (if loaded).
+# Examples: "Segoe UI", "Georgia", "MedievalSharp", "Cinzel"
+font: "Segoe UI"
+
+# Base font size in pixels.
+# Recommended range: 12–20
+font_size: 15
+
+# Background color for the character sheet.
+# Accepts any CSS color value: hex (#1a1a2e), rgb(0,0,0), or named colors (black).
+bgcolor: "#1a1a2e"
+
+# Font color for the character sheet.
+# Accepts any CSS color value.
+fontcolor: "#e0d7c6"
+
+# File extension used for automatic backup saves.
+# The backup file will be written alongside the character sheet on every change.
+# Examples: ".bak", ".backup", ".autosave"
+backup_extension: ".bak"

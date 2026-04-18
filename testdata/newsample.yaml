@@ -1,0 +1,24 @@
+bio:
+  player_name: Ryan
+  character_name: Thalindra Moonwhisper II
+campaign_notes:
+- notes:
+  - Met the party at the Broken Flagon inn in Millhaven.
+  - A mysterious hooded figure warned us not to seek the Ember Crown.
+  tags:
+  - session-1
+  - tavern
+- notes:
+  - Explored the ruins beneath the old mill.
+  - Defeated a group of kobolds guarding a locked iron door.
+  - Found a map fragment pointing to the Thornwood Forest.
+  tags:
+  - session-2
+  - dungeon
+  - combat
+- notes:
+  - 'Greta the blacksmith: can forge silvered weapons, owes us a favor after we cleared
+    the rats.'
+  tags:
+  - npc
+  - ally

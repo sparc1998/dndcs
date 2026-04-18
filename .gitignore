@@ -1,0 +1,21 @@
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# uv
+.python-version
+
+# Tool caches
+.ruff_cache/
+.mypy_cache/
+
+# App artifacts
+*.bak
+*.tmp
+
+# macOS
+.DS_Store
