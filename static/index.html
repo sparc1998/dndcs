@@ -6,10 +6,24 @@
     <title>D&amp;D Character Sheet</title>
     <style>
       :root {
-        --bgcolor: #1a1a2e;
-        --fontcolor: #e0d7c6;
-        --font: "Segoe UI", system-ui, sans-serif;
-        --font-size: 15px;
+        --main-bg: #1a1a2e;
+        --sidebar-bg: #16213e;
+        --textbox-bg: #0f3460;
+        --card-bg: #16213e;
+        --tag-bg: #0f3460;
+        --header-font: Helvetica Neue, Arial, sans-serif;
+        --header-font-size: 14px;
+        --header-fontcolor: #e8c96d;
+        --button-font: Helvetica Neue, Arial, sans-serif;
+        --button-font-size: 14px;
+        --button-fontcolor: #1a1a2e;
+        --button-bg: #e8c96d;
+        --save-button-bg: #c0392b;
+        --save-button-fontcolor: #ffffff;
+        --sheet-font: Helvetica Neue, Arial, sans-serif;
+        --sheet-font-size: 15px;
+        --sheet-fontcolor: #e0d7c6;
+        --muted: color-mix(in srgb, var(--sheet-fontcolor) 50%, var(--main-bg));
       }
 
       *,
@@ -21,10 +35,10 @@
       }
 
       body {
-        font-family: var(--font);
-        font-size: var(--font-size);
-        background: var(--bgcolor);
-        color: var(--fontcolor);
+        font-family: var(--sheet-font);
+        font-size: var(--sheet-font-size);
+        background: var(--main-bg);
+        color: var(--sheet-fontcolor);
         height: 100vh;
         display: flex;
         overflow: hidden;
@@ -42,8 +56,8 @@
 
       #sidebar {
         width: 200px;
-        background: #16213e;
-        border-left: 1px solid #2a2a4a;
+        background: var(--sidebar-bg);
+        border-left: 1px solid color-mix(in srgb, var(--sidebar-bg) 60%, white);
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -55,7 +69,7 @@
       #tabs {
         display: flex;
         gap: 0.5rem;
-        border-bottom: 2px solid #2a2a4a;
+        border-bottom: 2px solid var(--muted);
         padding-bottom: 0;
       }
 
@@ -63,21 +77,22 @@
         background: none;
         border: none;
         border-bottom: 3px solid transparent;
-        color: #a09080;
+        color: var(--muted);
         cursor: pointer;
-        font-size: 1rem;
+        font-family: var(--header-font);
+        font-size: var(--header-font-size);
         padding: 0.5rem 1.25rem;
         margin-bottom: -2px;
         transition: color 0.15s, border-color 0.15s;
       }
 
       .tab-btn.active {
-        color: #e8c96d;
-        border-bottom-color: #e8c96d;
+        color: var(--header-fontcolor);
+        border-bottom-color: var(--header-fontcolor);
       }
 
       .tab-btn:hover:not(.active) {
-        color: #c8b890;
+        color: color-mix(in srgb, var(--header-fontcolor) 60%, var(--muted));
       }
 
       /* ── Tab panels ── */
@@ -102,20 +117,19 @@
       }
 
       label {
-        font-size: 0.8rem;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: #a09080;
+        font-family: var(--sheet-font);
+        font-size: var(--sheet-font-size);
+        color: var(--muted);
       }
 
       input[type="text"],
       textarea {
-        background: #0f3460;
-        border: 1px solid #2a2a6a;
+        background: var(--textbox-bg);
+        border: 1px solid color-mix(in srgb, var(--textbox-bg) 50%, white);
         border-radius: 6px;
-        color: #e0d7c6;
-        font-family: inherit;
-        font-size: 1rem;
+        color: var(--sheet-fontcolor);
+        font-family: var(--sheet-font);
+        font-size: var(--sheet-font-size);
         padding: 0.6rem 0.8rem;
         width: 100%;
         transition: border-color 0.15s;
@@ -124,7 +138,7 @@
 
       input[type="text"]:focus,
       textarea:focus {
-        border-color: #e8c96d;
+        border-color: var(--header-fontcolor);
         outline: none;
       }
 
@@ -136,8 +150,8 @@
       }
 
       .note-card {
-        background: #16213e;
-        border: 1px solid #2a2a4a;
+        background: var(--card-bg);
+        border: 1px solid color-mix(in srgb, var(--card-bg) 60%, white);
         border-radius: 8px;
         padding: 1rem;
         display: flex;
@@ -153,25 +167,27 @@
       }
 
       .tag-chip {
-        background: #0f3460;
-        border: 1px solid #2a2a6a;
+        background: var(--tag-bg);
+        border: 1px solid color-mix(in srgb, var(--tag-bg) 50%, white);
         border-radius: 20px;
-        color: #e8c96d;
-        font-size: 0.78rem;
+        color: var(--header-fontcolor);
+        font-family: var(--header-font);
+        font-size: 0.78em;
         padding: 0.2rem 0.65rem;
       }
 
       .note-entry {
-        color: #c8c0b0;
-        font-size: 0.95rem;
+        color: var(--sheet-fontcolor);
+        font-family: var(--sheet-font);
+        font-size: var(--sheet-font-size);
         line-height: 1.5;
         padding-left: 1rem;
-        border-left: 2px solid #2a2a6a;
+        border-left: 2px solid var(--muted);
       }
 
       /* ── Add-note form ── */
       #add-note-section {
-        border-top: 1px solid #2a2a4a;
+        border-top: 1px solid var(--muted);
         padding-top: 1rem;
         display: flex;
         flex-direction: column;
@@ -179,19 +195,21 @@
       }
 
       #add-note-section h3 {
-        font-size: 0.85rem;
+        font-family: var(--header-font);
+        font-size: 0.85em;
         text-transform: uppercase;
         letter-spacing: 0.06em;
-        color: #a09080;
+        color: var(--muted);
       }
 
       .btn {
-        background: #e8c96d;
+        background: var(--button-bg);
         border: none;
         border-radius: 6px;
-        color: #1a1a2e;
+        color: var(--button-fontcolor);
         cursor: pointer;
-        font-size: 0.9rem;
+        font-family: var(--button-font);
+        font-size: var(--button-font-size);
         font-weight: 600;
         padding: 0.6rem 1.2rem;
         transition: background 0.15s, transform 0.05s;
@@ -199,38 +217,29 @@
       }
 
       .btn:hover {
-        background: #f0d87a;
+        background: color-mix(in srgb, var(--button-bg) 80%, white);
       }
 
       .btn:active {
         transform: scale(0.97);
       }
 
-      .btn-secondary {
-        background: #2a2a4a;
-        color: #e0d7c6;
-      }
-
-      .btn-secondary:hover {
-        background: #3a3a5a;
-      }
-
       /* ── Sidebar ── */
       #sidebar h2 {
-        font-size: 0.75rem;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: #a09080;
+        font-family: var(--header-font);
+        font-size: var(--header-font-size);
+        color: var(--muted);
         text-align: center;
       }
 
       #save-btn {
-        background: #c0392b;
+        background: var(--save-button-bg);
         border: none;
         border-radius: 8px;
-        color: #fff;
+        color: var(--save-button-fontcolor);
         cursor: pointer;
-        font-size: 1rem;
+        font-family: var(--button-font);
+        font-size: var(--button-font-size);
         font-weight: 700;
         padding: 0.8rem 1.2rem;
         transition: background 0.15s, transform 0.05s;
@@ -239,7 +248,7 @@
       }
 
       #save-btn:hover {
-        background: #e74c3c;
+        background: color-mix(in srgb, var(--save-button-bg) 80%, white);
       }
 
       #save-btn:active {
@@ -247,8 +256,9 @@
       }
 
       #status {
-        font-size: 0.78rem;
-        color: #a09080;
+        font-family: var(--sheet-font);
+        font-size: 0.78em;
+        color: var(--muted);
         text-align: center;
         min-height: 1.2em;
       }
@@ -271,13 +281,15 @@
 
       <!-- Bio panel -->
       <div id="panel-bio" class="panel active">
-        <div class="field">
-          <label for="player-name">Player Name</label>
-          <input type="text" id="player-name" placeholder="Your name" />
-        </div>
-        <div class="field">
-          <label for="character-name">Character Name</label>
-          <input type="text" id="character-name" placeholder="Character name" />
+        <div style="display: flex; flex-direction: row; gap: 1.5rem; align-items: flex-end;">
+          <div class="field" style="flex-direction: row; align-items: center;">
+            <label for="player-name">Player Name</label>
+            <input type="text" id="player-name" placeholder="Your name" />
+          </div>
+          <div class="field" style="flex-direction: row; align-items: center;">
+            <label for="character-name">Character Name</label>
+            <input type="text" id="character-name" placeholder="Character name" />
+          </div>
         </div>
       </div>
 
@@ -295,7 +307,7 @@
             <label for="new-note">Note</label>
             <textarea id="new-note" rows="3" placeholder="Write a note…"></textarea>
           </div>
-          <button class="btn btn-secondary" id="add-note-btn">Add Note</button>
+          <button class="btn" id="add-note-btn">Add Note</button>
         </div>
       </div>
     </section>
@@ -309,14 +321,55 @@
     <script>
       let character = null;
 
+      const _measureCanvas = document.createElement("canvas");
+
+      function fitInput(el, sizingText) {
+        const ctx = _measureCanvas.getContext("2d");
+        ctx.font = getComputedStyle(el).font;
+        const textW = ctx.measureText(sizingText).width;
+        const cs = getComputedStyle(el);
+        const padW = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight) + 4;
+        el.style.width = Math.max(textW + padW, 160) + "px";
+      }
+
       async function applyConfig() {
         const res = await fetch("/api/config");
         const cfg = await res.json();
         const root = document.documentElement;
-        if (cfg.bgcolor) root.style.setProperty("--bgcolor", cfg.bgcolor);
-        if (cfg.fontcolor) root.style.setProperty("--fontcolor", cfg.fontcolor);
-        if (cfg.font) root.style.setProperty("--font", cfg.font);
-        if (cfg.font_size) root.style.setProperty("--font-size", cfg.font_size + "px");
+
+        const direct = [
+          ["main_bg", "--main-bg"],
+          ["sidebar_bg", "--sidebar-bg"],
+          ["textbox_bg", "--textbox-bg"],
+          ["card_bg", "--card-bg"],
+          ["tag_bg", "--tag-bg"],
+          ["header_font", "--header-font"],
+          ["header_fontcolor", "--header-fontcolor"],
+          ["button_font", "--button-font"],
+          ["button_fontcolor", "--button-fontcolor"],
+          ["button_bg", "--button-bg"],
+          ["save_button_bg", "--save-button-bg"],
+          ["save_button_fontcolor", "--save-button-fontcolor"],
+          ["sheet_font", "--sheet-font"],
+          ["sheet_fontcolor", "--sheet-fontcolor"],
+        ];
+        const px = [
+          ["header_font_size", "--header-font-size"],
+          ["button_font_size", "--button-font-size"],
+          ["sheet_font_size", "--sheet-font-size"],
+        ];
+
+        for (const [key, cssVar] of direct) {
+          if (cfg[key] != null) root.style.setProperty(cssVar, cfg[key]);
+        }
+        for (const [key, cssVar] of px) {
+          if (cfg[key] != null) root.style.setProperty(cssVar, cfg[key] + "px");
+        }
+
+        if (cfg.player_name_sizing_text)
+          fitInput(document.getElementById("player-name"), cfg.player_name_sizing_text);
+        if (cfg.character_name_sizing_text)
+          fitInput(document.getElementById("character-name"), cfg.character_name_sizing_text);
       }
 
       async function load() {
@@ -334,7 +387,7 @@
       function renderNotes() {
         const list = document.getElementById("notes-list");
         list.innerHTML = "";
-        (character.campaign_notes ?? []).forEach((note, idx) => {
+        (character.campaign_notes ?? []).forEach((note) => {
           const card = document.createElement("div");
           card.className = "note-card";
 

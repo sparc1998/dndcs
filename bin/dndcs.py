@@ -23,11 +23,26 @@ _config: dict[str, Any]
 TEMPLATE = (_PROJECT_ROOT / "static" / "index.html").read_text()
 
 _DEFAULTS: dict[str, Any] = {
-    "font": "Segoe UI",
-    "font_size": 15,
-    "bgcolor": "#1a1a2e",
-    "fontcolor": "#e0d7c6",
+    "main_bg": "#1a1a2e",
+    "sidebar_bg": "#16213e",
+    "textbox_bg": "#0f3460",
+    "card_bg": "#16213e",
+    "tag_bg": "#0f3460",
+    "header_font": "Helvetica Neue, Arial, sans-serif",
+    "header_font_size": 14,
+    "header_fontcolor": "#e8c96d",
+    "button_font": "Helvetica Neue, Arial, sans-serif",
+    "button_font_size": 14,
+    "button_fontcolor": "#1a1a2e",
+    "button_bg": "#e8c96d",
+    "save_button_bg": "#c0392b",
+    "save_button_fontcolor": "#ffffff",
+    "sheet_font": "Helvetica Neue, Arial, sans-serif",
+    "sheet_font_size": 15,
+    "sheet_fontcolor": "#e0d7c6",
     "backup_extension": ".bak",
+    "player_name_sizing_text": "Firstname Lastname",
+    "character_name_sizing_text": "Thalindra Moonwhisper",
 }
 
 

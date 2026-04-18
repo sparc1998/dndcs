@@ -1,23 +1,61 @@
 # D&D Character Sheet Configuration
 
-# Font family for the character sheet UI.
-# Any web-safe font or Google Fonts name (if loaded).
-# Examples: "Segoe UI", "Georgia", "MedievalSharp", "Cinzel"
-font: "Segoe UI"
+# ── Backgrounds ────────────────────────────────────────────────────────────────
+# Accepts any CSS color value: hex (#1a1a2e), rgb(0,0,0), or named colors.
 
-# Base font size in pixels.
-# Recommended range: 12–20
-font_size: 15
+# Background of the main tabbed area.
+main_bg: "#1a1a2e"
 
-# Background color for the character sheet.
-# Accepts any CSS color value: hex (#1a1a2e), rgb(0,0,0), or named colors (black).
-bgcolor: "#1a1a2e"
+# Background of the right sidebar.
+sidebar_bg: "#16213e"
 
-# Font color for the character sheet.
-# Accepts any CSS color value.
-fontcolor: "#e0d7c6"
+# Background of text input boxes.
+textbox_bg: "#0f3460"
 
+# Background of campaign note cards.
+card_bg: "#16213e"
+
+# Background of tag chips on campaign notes.
+tag_bg: "#0f3460"
+
+# ── Header ─────────────────────────────────────────────────────────────────────
+# Applies to: tab labels, tab selection underline, sidebar section title.
+# Font: any web-safe font or Google Fonts name. Examples: "Helvetica Neue, Arial, sans-serif", "Cinzel", "Georgia"
+# Font size: integer pixels. Recommended range: 12–20.
+# Font color: also used for the active tab underline and tag text.
+
+header_font: "Helvetica Neue, Arial, sans-serif"
+header_font_size: 14
+header_fontcolor: "#e8c96d"
+
+# ── Buttons ────────────────────────────────────────────────────────────────────
+# button_font and button_font_size apply to all buttons including Save.
+# button_fontcolor and button_bg apply to action buttons (e.g. Add Note).
+# save_button_bg and save_button_fontcolor apply only to the Save button.
+
+button_font: "Helvetica Neue, Arial, sans-serif"
+button_font_size: 14
+button_fontcolor: "#1a1a2e"
+button_bg: "#e8c96d"
+save_button_bg: "#c0392b"
+save_button_fontcolor: "#ffffff"
+
+# ── Sheet ──────────────────────────────────────────────────────────────────────
+# Applies to: all other text (field values, note content, labels, etc.).
+
+sheet_font: "Helvetica Neue, Arial, sans-serif"
+sheet_font_size: 14
+sheet_fontcolor: "#e0d7c6"
+
+# ── Backup ─────────────────────────────────────────────────────────────────────
 # File extension used for automatic backup saves.
-# The backup file will be written alongside the character sheet on every change.
+# The backup file is written alongside the character sheet on every change.
 # Examples: ".bak", ".backup", ".autosave"
 backup_extension: ".bak"
+
+# ── Input sizing ───────────────────────────────────────────────────────────────
+# Reference strings used to size the player name and character name input boxes.
+# The input will be wide enough to display this string in the configured font.
+# Set to the longest name you expect to enter.
+player_name_sizing_text: "Firstname Lastname"
+character_name_sizing_text: "Thalindra Moonwhisper"
