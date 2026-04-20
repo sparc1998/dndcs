@@ -22,6 +22,27 @@ function escHtml(s) {
   return s.replace(/[<>&"]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;" }[c]));
 }
 
+// Strips {comment} blocks from a formula string before evaluation.
+function stripFormulaComments(raw) {
+  return raw.replace(/\{[^}]*\}/g, "");
+}
+
+// Evaluates a numeric formula (supports + - * / and parentheses).
+// Returns the numeric result as a string, or the raw escaped text on error.
+function renderFormula(raw) {
+  const expr = stripFormulaComments(raw).trim();
+  if (!expr) return "";
+  if (!/^[\d\s+\-*/().]+$/.test(expr)) return escHtml(raw);
+  try {
+    // eslint-disable-next-line no-new-func
+    const result = new Function("return (" + expr + ")")();
+    if (typeof result !== "number" || !isFinite(result)) return escHtml(raw);
+    return String(result % 1 === 0 ? result : parseFloat(result.toFixed(10)));
+  } catch {
+    return escHtml(raw);
+  }
+}
+
 // Converts markdown-style [label](url) syntax in raw text into HTML <a> tags.
 // Any text outside link syntax is escaped and passed through as plain text.
 function renderLinks(raw) {
@@ -38,9 +59,17 @@ function renderLinks(raw) {
   return result;
 }
 
-// Renders raw text (with optional link markdown) into a display element's innerHTML.
+// Renders raw text into a display element.
+// For data-formula fields the formula is evaluated and only the result is shown.
+// For all other fields markdown links are rendered.
 function updateDisplay(displayEl, rawText) {
-  displayEl.innerHTML = renderLinks(rawText);
+  const inputId = displayEl.id.replace(/-display$/, "");
+  const inputEl = document.getElementById(inputId);
+  if (inputEl && inputEl.hasAttribute("data-formula")) {
+    displayEl.textContent = renderFormula(rawText);
+  } else {
+    displayEl.innerHTML = renderLinks(rawText);
+  }
 }
 
 // ── Edit dialog ────────────────────────────────────────────────────────────
