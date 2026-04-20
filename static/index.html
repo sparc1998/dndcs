@@ -365,6 +365,54 @@
     #link-remove-btn:hover {
       background: var(--save-button-bg);
     }
+
+    /* ── Edit popover ── */
+    #edit-popover {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+    }
+
+    #edit-popover-box {
+      background: var(--sidebar-bg);
+      border: 1px solid var(--sidebar-bg);
+      border-radius: 8px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      width: 90%;
+      height: 90%;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+    }
+
+    #edit-popover-textarea {
+      flex: 1;
+      resize: none;
+      width: 100%;
+    }
+
+    #edit-popover-btns {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: flex-end;
+    }
+
+    #edit-popover-btns button {
+      background: var(--button-bg);
+      border: none;
+      border-radius: 6px;
+      color: var(--button-fontcolor);
+      cursor: pointer;
+      font-family: var(--button-font);
+      font-size: var(--button-font-size);
+      font-weight: normal;
+      padding: 0.4rem 0.9rem;
+    }
   </style>
 </head>
 
@@ -381,29 +429,29 @@
         <div class="field" style="flex-direction: row; align-items: center;">
           <label for="player-name">Player Name</label>
           <span id="player-name-display" class="field-display"></span>
-          <input type="text" id="player-name" class="hidden" placeholder="Your name" style="padding: 0.2rem 0.4rem;" data-linkable />
+          <input type="text" id="player-name" class="hidden" placeholder="Your name" style="padding: 0.2rem 0.4rem;" data-linkable data-expandable />
         </div>
         <div class="field" style="flex-direction: row; align-items: center;">
           <label for="character-name">Character Name</label>
           <span id="character-name-display" class="field-display"></span>
-          <input type="text" id="character-name" class="hidden" placeholder="Character name" style="padding: 0.2rem 0.4rem;" data-linkable />
+          <input type="text" id="character-name" class="hidden" placeholder="Character name" style="padding: 0.2rem 0.4rem;" data-linkable data-expandable />
         </div>
       </div>
       <div style="display: flex; flex-direction: row; gap: 1.5rem; align-items: flex-end;">
         <div class="field" style="flex-direction: row; align-items: center;">
           <label for="class">Class(es)</label>
           <span id="class-display" class="field-display"></span>
-          <input type="text" id="class" class="hidden" placeholder="Class" style="padding: 0.2rem 0.4rem;" data-linkable />
+          <input type="text" id="class" class="hidden" placeholder="Class" style="padding: 0.2rem 0.4rem;" data-linkable data-expandable />
         </div>
         <div class="field" style="flex-direction: row; align-items: center;">
           <label for="level">Level(s)</label>
           <span id="level-display" class="field-display"></span>
-          <input type="text" id="level" class="hidden" placeholder="Level" style="padding: 0.2rem 0.4rem;" data-linkable />
+          <input type="text" id="level" class="hidden" placeholder="Level" style="padding: 0.2rem 0.4rem;" data-linkable data-expandable />
         </div>
         <div class="field" style="flex-direction: row; align-items: center;">
           <label for="experience">Experience</label>
           <span id="experience-display" class="field-display"></span>
-          <input type="text" id="experience" class="hidden" placeholder="Experience" style="padding: 0.2rem 0.4rem;" data-linkable />
+          <input type="text" id="experience" class="hidden" placeholder="Experience" style="padding: 0.2rem 0.4rem;" data-linkable data-expandable />
         </div>
       </div>
     </div>
@@ -432,6 +480,15 @@
     <button id="save-btn">Save</button>
     <div id="status"></div>
   </aside>
+
+  <div id="edit-popover" class="hidden" role="dialog" aria-modal="true">
+    <div id="edit-popover-box">
+      <textarea id="edit-popover-textarea" data-linkable></textarea>
+      <div id="edit-popover-btns">
+        <button id="edit-popover-done-btn">Done</button>
+      </div>
+    </div>
+  </div>
 
   <div id="link-dialog" class="hidden" role="dialog" aria-modal="true">
     <div id="link-dialog-box">
@@ -475,29 +532,34 @@
     let _linkDialogOpen = false;
     let _linkTarget = null;
 
-    function setupEditable(displayId, inputId) {
-      const display = document.getElementById(displayId);
-      const input = document.getElementById(inputId);
+    let _editPopoverField = null;
+    let _editPopoverDisplay = null;
 
-      display.addEventListener("click", () => {
-        display.classList.add("hidden");
-        input.classList.remove("hidden");
-        requestAnimationFrame(() => { input.focus(); input.select(); });
-      });
-
-      function commit() {
-        if (_linkDialogOpen) return;
-        const rawText = input.value;
-        input.classList.add("hidden");
-        display.classList.remove("hidden");
-        updateDisplay(display, rawText);
-      }
-
-      input.addEventListener("blur", commit);
-      input.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") { input.blur(); return; }
-      });
+    function openEditPopover(inputEl, displayEl) {
+      _editPopoverField = inputEl;
+      _editPopoverDisplay = displayEl;
+      const ta = document.getElementById("edit-popover-textarea");
+      ta.value = inputEl.value;
+      document.getElementById("edit-popover").classList.remove("hidden");
+      requestAnimationFrame(() => { ta.focus(); });
     }
+
+    function closeEditPopover() {
+      if (_editPopoverField) {
+        const ta = document.getElementById("edit-popover-textarea");
+        _editPopoverField.value = ta.value;
+        updateDisplay(_editPopoverDisplay, ta.value);
+        autosave();
+      }
+      document.getElementById("edit-popover").classList.add("hidden");
+      _editPopoverField = null;
+      _editPopoverDisplay = null;
+    }
+
+    document.querySelectorAll("[data-expandable]").forEach((input) => {
+      const display = document.getElementById(input.id + "-display");
+      if (display) display.addEventListener("click", () => openEditPopover(input, display));
+    });
 
     function openLinkDialog(el) {
       const selStart = el.selectionStart;
@@ -552,6 +614,9 @@
       }
 
       el.value = newValue;
+      if (el === document.getElementById("edit-popover-textarea") && _editPopoverField) {
+        _editPopoverField.value = newValue;
+      }
       autosave();
       closeLinkDialog(true);
     }
@@ -567,6 +632,20 @@
     });
     document.getElementById("link-dialog").addEventListener("keydown", (e) => {
       if (e.key === "Escape") closeLinkDialog(true);
+    });
+
+    document.getElementById("edit-popover-done-btn").addEventListener("click", closeEditPopover);
+    document.getElementById("edit-popover").addEventListener("click", (e) => {
+      if (e.target === document.getElementById("edit-popover")) closeEditPopover();
+    });
+    document.getElementById("edit-popover").addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !_linkDialogOpen) closeEditPopover();
+    });
+    document.getElementById("edit-popover-textarea").addEventListener("input", () => {
+      if (_editPopoverField) {
+        _editPopoverField.value = document.getElementById("edit-popover-textarea").value;
+        autosave();
+      }
     });
 
     function fitInput(el, sizingText) {
@@ -713,12 +792,6 @@
       el.className = cls;
       if (cls === "ok") setTimeout(() => (el.textContent = ""), 2500);
     }
-
-    setupEditable("player-name-display", "player-name");
-    setupEditable("character-name-display", "character-name");
-    setupEditable("class-display", "class");
-    setupEditable("level-display", "level");
-    setupEditable("experience-display", "experience");
 
     document.getElementById("player-name").addEventListener("input", autosave);
     document.getElementById("character-name").addEventListener("input", autosave);

@@ -58,6 +58,10 @@ uv run check-jsonschema --schemafile schema/character.yaml <data_file.yaml>
 - All new text boxes should have `data-linkable` by default, unless explicitly instructed otherwise.
 - `data-linkable` is a plain HTML attribute — to remove cmd-k link support from a box, simply delete the attribute from the element in `index.html`. No JS changes are needed.
 
+### Expandable edit dialog
+- All new bio header text boxes (those with a paired `<span class="field-display">`) should have `data-expandable` by default, unless explicitly instructed otherwise.
+- `data-expandable` causes clicking the display span to open a centered full-screen edit dialog instead of editing inline. The JS auto-wires any input with this attribute to its paired display (matched by the `{id}-display` naming convention). No JS changes are needed to add or remove this behavior — simply add or delete the attribute in `index.html`.
+
 ## Key Behaviors
 
 - The app reads a character YAML file on startup
