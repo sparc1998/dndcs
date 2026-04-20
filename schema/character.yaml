@@ -29,7 +29,23 @@ properties:
         type: string
       alignment:
         type: string
+      age:
+        type: string
+      height:
+        type: string
+      weight:
+        type: string
+      size_category:
+        type: string
+      eyes:
+        type: string
+      hair:
+        type: string
+      skin:
+        type: string
       level:
+        type: string
+      hd:
         type: string
       experience:
         type: string

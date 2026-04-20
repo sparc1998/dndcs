@@ -276,8 +276,21 @@ async function applyConfig() {
     fitInput(document.getElementById("background"), cfg.race_line_sizing_text);
     fitInput(document.getElementById("alignment"), cfg.race_line_sizing_text);
   }
+  if (cfg.physical_measureable_sizing_text) {
+    fitInput(document.getElementById("age"), cfg.physical_measureable_sizing_text);
+    fitInput(document.getElementById("height"), cfg.physical_measureable_sizing_text);
+    fitInput(document.getElementById("weight"), cfg.physical_measureable_sizing_text);
+    fitInput(document.getElementById("size-category"), cfg.physical_measureable_sizing_text);
+  }
+  if (cfg.physical_description_sizing_text) {
+    fitInput(document.getElementById("eyes"), cfg.physical_description_sizing_text);
+    fitInput(document.getElementById("hair"), cfg.physical_description_sizing_text);
+    fitInput(document.getElementById("skin"), cfg.physical_description_sizing_text);
+  }
   if (cfg.level_sizing_text)
     fitInput(document.getElementById("level"), cfg.level_sizing_text);
+  if (cfg.hd_sizing_text)
+    fitInput(document.getElementById("hd"), cfg.hd_sizing_text);
   if (cfg.experience_sizing_text)
     fitInput(document.getElementById("experience"), cfg.experience_sizing_text);
 }
@@ -299,28 +312,52 @@ function render() {
   const classRaw = character.bio?.class ?? "";
   const subclassRaw = character.bio?.subclass ?? "";
   const levelRaw = character.bio?.level ?? "";
+  const hdRaw = character.bio?.hd ?? "";
   const experienceRaw = character.bio?.experience ?? "";
   const raceRaw = character.bio?.race ?? "";
   const backgroundRaw = character.bio?.background ?? "";
   const alignmentRaw = character.bio?.alignment ?? "";
+  const ageRaw = character.bio?.age ?? "";
+  const heightRaw = character.bio?.height ?? "";
+  const weightRaw = character.bio?.weight ?? "";
+  const sizeCategoryRaw = character.bio?.size_category ?? "";
+  const eyesRaw = character.bio?.eyes ?? "";
+  const hairRaw = character.bio?.hair ?? "";
+  const skinRaw = character.bio?.skin ?? "";
   document.getElementById("player-name").value = playerRaw;
   document.getElementById("character-name").value = charRaw;
   document.getElementById("class").value = classRaw;
   document.getElementById("subclass").value = subclassRaw;
   document.getElementById("level").value = levelRaw;
+  document.getElementById("hd").value = hdRaw;
   document.getElementById("experience").value = experienceRaw;
   document.getElementById("race").value = raceRaw;
   document.getElementById("background").value = backgroundRaw;
   document.getElementById("alignment").value = alignmentRaw;
+  document.getElementById("age").value = ageRaw;
+  document.getElementById("height").value = heightRaw;
+  document.getElementById("weight").value = weightRaw;
+  document.getElementById("size-category").value = sizeCategoryRaw;
+  document.getElementById("eyes").value = eyesRaw;
+  document.getElementById("hair").value = hairRaw;
+  document.getElementById("skin").value = skinRaw;
   updateDisplay(document.getElementById("player-name-display"), playerRaw);
   updateDisplay(document.getElementById("character-name-display"), charRaw);
   updateDisplay(document.getElementById("class-display"), classRaw);
   updateDisplay(document.getElementById("subclass-display"), subclassRaw);
   updateDisplay(document.getElementById("level-display"), levelRaw);
+  updateDisplay(document.getElementById("hd-display"), hdRaw);
   updateDisplay(document.getElementById("experience-display"), experienceRaw);
   updateDisplay(document.getElementById("race-display"), raceRaw);
   updateDisplay(document.getElementById("background-display"), backgroundRaw);
   updateDisplay(document.getElementById("alignment-display"), alignmentRaw);
+  updateDisplay(document.getElementById("age-display"), ageRaw);
+  updateDisplay(document.getElementById("height-display"), heightRaw);
+  updateDisplay(document.getElementById("weight-display"), weightRaw);
+  updateDisplay(document.getElementById("size-category-display"), sizeCategoryRaw);
+  updateDisplay(document.getElementById("eyes-display"), eyesRaw);
+  updateDisplay(document.getElementById("hair-display"), hairRaw);
+  updateDisplay(document.getElementById("skin-display"), skinRaw);
   renderNotes();
 }
 
@@ -364,10 +401,18 @@ function collectCharacter() {
       class: document.getElementById("class").value,
       subclass: document.getElementById("subclass").value,
       level: document.getElementById("level").value,
+      hd: document.getElementById("hd").value,
       experience: document.getElementById("experience").value,
       race: document.getElementById("race").value,
       background: document.getElementById("background").value,
       alignment: document.getElementById("alignment").value,
+      age: document.getElementById("age").value,
+      height: document.getElementById("height").value,
+      weight: document.getElementById("weight").value,
+      size_category: document.getElementById("size-category").value,
+      eyes: document.getElementById("eyes").value,
+      hair: document.getElementById("hair").value,
+      skin: document.getElementById("skin").value,
     },
     campaign_notes: character.campaign_notes ?? [],
   };
@@ -464,7 +509,15 @@ document.getElementById("subclass").addEventListener("input", autosave);
 document.getElementById("race").addEventListener("input", autosave);
 document.getElementById("background").addEventListener("input", autosave);
 document.getElementById("alignment").addEventListener("input", autosave);
+document.getElementById("age").addEventListener("input", autosave);
+document.getElementById("height").addEventListener("input", autosave);
+document.getElementById("weight").addEventListener("input", autosave);
+document.getElementById("size-category").addEventListener("input", autosave);
+document.getElementById("eyes").addEventListener("input", autosave);
+document.getElementById("hair").addEventListener("input", autosave);
+document.getElementById("skin").addEventListener("input", autosave);
 document.getElementById("level").addEventListener("input", autosave);
+document.getElementById("hd").addEventListener("input", autosave);
 document.getElementById("experience").addEventListener("input", autosave);
 
 // Add Note button: parse tags, append a new note to character state, and autosave.

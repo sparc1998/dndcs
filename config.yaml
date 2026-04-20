@@ -1,8 +1,10 @@
 # D&D Character Sheet Configuration
 
-# Colors can be set to CSS values: hex (#1a1a2e), rgb(0,0,0), or named colors.
-# Fonts can be set to any web-safe font or Google Fonts name. Examples: "Helvetica Neue, Arial, sans-serif", "Cinzel", "Georgia"
-# Font sizes are integers in pixels. Recommended range: 12–20.
+# * Colors can be set to CSS values: hex (#1a1a2e), rgb(0,0,0), or named
+#   colors.
+# * Fonts can be set to any web-safe font or Google Fonts name. Examples:
+#   "Helvetica Neue, Arial, sans-serif", "Cinzel", "Georgia"
+# * Font sizes are integers in pixels. Recommended range: 12–20.
 
 # ── Backgrounds ────────────────────────────────────────────────────────────────
 
@@ -17,8 +19,8 @@ textbox_selected_bg: "white"
 textbox_unselected_bg: "white"
 
 # ── Sheet ──────────────────────────────────────────────────────────────────────
-# Applies to: all other text (field values, note content, labels, etc.) and the
-# hint text at the bottom of the data-expandable dialog box.
+# Applies to non-headers and non-button text. For example, it applies to: fields,
+# textboxes, and hint text at the bottom of the data-expandable dialog box.
 
 sheet_font: "Helvetica Neue, Arial, sans-serif"
 sheet_font_size: 14
@@ -32,9 +34,6 @@ header_font_size: 14
 header_fontcolor: "#35803E"
 
 # ── Buttons ────────────────────────────────────────────────────────────────────
-# button_font and button_font_size apply to all buttons including Save.
-# button_fontcolor and button_bg apply to action buttons (e.g. Add Note).
-# save_button_bg and save_button_fontcolor apply only to the Save button.
 
 button_font: "Helvetica Neue, Arial, sans-serif"
 button_font_size: 14
@@ -44,19 +43,24 @@ save_button_bg: "#4caf50"
 save_button_fontcolor: "#ffffff"
 
 # ── Backup ─────────────────────────────────────────────────────────────────────
-# File extension used for automatic backup saves.
-# The backup file is written alongside the character sheet on every change.
-# Examples: ".bak", ".backup", ".autosave"
+# File extension used for automatic backup saves. The backup file is written
+# alongside the character sheet on every change.
 backup_extension: ".bak"
 
 # ── Input sizing ───────────────────────────────────────────────────────────────
-# Reference strings used to sizeinput boxes.
-# The inputs will be wide enough to display this string in the configured font.
-# Set to the longest name you expect to enter.
+# Reference strings used to size input boxes.
 
+# Used for player name and character name.
 name_sizing_text: "Longgggggggggggg Longgggggggggggg Longgggggggggggg"
 class_sizing_text: "Fighter / Wizard / Ranger/ Druid / Bard"
 level_sizing_text: "20 / 20 / 20 / 20 / 20"
+# Used for HD.
+hd_sizing_text: "10d10 + 10d8 + 10d6"
 experience_sizing_text: "1000000"
 subclass_sizing_text: "Champion / Bladesinger / Hunter / Circle of the Land / Lore"
+# Used for race, background, and alignment.
 race_line_sizing_text: "guild artisan (brewers) extra text"
+# Used for age, height, weight, and size category.
+physical_measureable_sizing_text: "240"
+# Used for eyes, hair, and skin.
+physical_description_sizing_text: "Auburn with streaks"

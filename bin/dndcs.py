@@ -46,7 +46,10 @@ _DEFAULTS: dict[str, Any] = {
     "class_sizing_text": "Fighter / Wizard",
     "subclass_sizing_text": "Champion / Bladesinger",
     "race_line_sizing_text": "Variant Human",
+    "physical_measureable_sizing_text": "Medium",
+    "physical_description_sizing_text": "Auburn with streaks",
     "level_sizing_text": "20 / 20",
+    "hd_sizing_text": "10d10 + 10d8",
     "experience_sizing_text": "000000",
 }
 
