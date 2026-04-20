@@ -9,7 +9,8 @@
     :root {
       --main-bg: #f2f2f2;
       --sidebar-bg: #e4e6e8;
-      --textbox-bg: #ffffff;
+      --textbox-selected-bg: #ffffff;
+      --textbox-unselected-bg: #ffffff;
       --card-bg: #eaeaea;
       --tag-bg: #c8e6c9;
       --header-font: Helvetica Neue, Arial, sans-serif;
@@ -23,8 +24,7 @@
       --save-button-fontcolor: #ffffff;
       --sheet-font: Helvetica Neue, Arial, sans-serif;
       --sheet-font-size: 14px;
-      --sheet-fontcolor: #111111;
-      --muted: color-mix(in srgb, var(--sheet-fontcolor) 50%, var(--main-bg));
+      --sheet-fontcolor: #000000;
     }
 
     *,
@@ -58,7 +58,7 @@
     #sidebar {
       width: 200px;
       background: var(--sidebar-bg);
-      border-left: 1px solid color-mix(in srgb, var(--sidebar-bg) 60%, white);
+      border-left: 1px solid var(--sidebar-bg);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -70,7 +70,7 @@
     #tabs {
       display: flex;
       gap: 0.5rem;
-      border-bottom: 2px solid var(--muted);
+      border-bottom: 2px solid var(--sheet-fontcolor);
       padding-bottom: 0;
     }
 
@@ -78,7 +78,7 @@
       background: none;
       border: none;
       border-bottom: 3px solid transparent;
-      color: var(--muted);
+      color: var(--sheet-fontcolor);
       cursor: pointer;
       font-family: var(--header-font);
       font-size: var(--header-font-size);
@@ -93,7 +93,7 @@
     }
 
     .tab-btn:hover:not(.active) {
-      color: color-mix(in srgb, var(--header-fontcolor) 60%, var(--muted));
+      color: var(--header-fontcolor);
     }
 
     /* ── Tab panels ── */
@@ -120,13 +120,13 @@
     label {
       font-family: var(--sheet-font);
       font-size: var(--sheet-font-size);
-      color: var(--muted);
+      color: var(--sheet-fontcolor);
     }
 
     input[type="text"],
     textarea {
-      background: var(--textbox-bg);
-      border: 1px solid color-mix(in srgb, var(--textbox-bg) 50%, white);
+      background: var(--textbox-selected-bg);
+      border: 1px solid var(--textbox-selected-bg);
       border-radius: 6px;
       color: var(--sheet-fontcolor);
       font-family: var(--sheet-font);
@@ -152,7 +152,7 @@
 
     .note-card {
       background: var(--card-bg);
-      border: 1px solid color-mix(in srgb, var(--card-bg) 60%, white);
+      border: 1px solid var(--card-bg);
       border-radius: 8px;
       padding: 1rem;
       display: flex;
@@ -169,7 +169,7 @@
 
     .tag-chip {
       background: var(--tag-bg);
-      border: 1px solid color-mix(in srgb, var(--tag-bg) 50%, white);
+      border: 1px solid var(--tag-bg);
       border-radius: 20px;
       color: var(--header-fontcolor);
       font-family: var(--header-font);
@@ -183,12 +183,12 @@
       font-size: var(--sheet-font-size);
       line-height: 1.5;
       padding-left: 1rem;
-      border-left: 2px solid var(--muted);
+      border-left: 2px solid var(--sheet-fontcolor);
     }
 
     /* ── Add-note form ── */
     #add-note-section {
-      border-top: 1px solid var(--muted);
+      border-top: 1px solid var(--sheet-fontcolor);
       padding-top: 1rem;
       display: flex;
       flex-direction: column;
@@ -199,7 +199,7 @@
       font-family: var(--header-font);
       font-size: var(--header-font-size);
       font-weight: normal;
-      color: var(--muted);
+      color: var(--sheet-fontcolor);
     }
 
     .btn {
@@ -217,7 +217,7 @@
     }
 
     .btn:hover {
-      background: color-mix(in srgb, var(--button-bg) 80%, white);
+      background: var(--button-bg);
     }
 
     .btn:active {
@@ -229,7 +229,7 @@
       font-family: var(--header-font);
       font-size: var(--header-font-size);
       font-weight: normal;
-      color: var(--muted);
+      color: var(--sheet-fontcolor);
       text-align: center;
     }
 
@@ -249,7 +249,7 @@
     }
 
     #save-btn:hover {
-      background: color-mix(in srgb, var(--save-button-bg) 80%, white);
+      background: var(--save-button-bg);
     }
 
     #save-btn:active {
@@ -259,7 +259,7 @@
     #status {
       font-family: var(--sheet-font);
       font-size: var(--sheet-font-size);
-      color: var(--muted);
+      color: var(--sheet-fontcolor);
       text-align: center;
       min-height: 1.2em;
     }
@@ -280,14 +280,14 @@
       color: var(--sheet-fontcolor);
       padding: 0.2rem 0.4rem;
       min-width: 160px;
-      background: color-mix(in srgb, var(--textbox-bg) 50%, #ccc);
-      border: 1px solid color-mix(in srgb, var(--textbox-bg) 50%, white);
+      background: var(--textbox-unselected-bg);
+      border: 1px solid var(--textbox-unselected-bg);
       border-radius: 6px;
     }
 
     .field-display:empty::after {
       content: "—";
-      color: var(--muted);
+      color: var(--sheet-fontcolor);
     }
 
     .field-display a,
@@ -311,7 +311,7 @@
 
     #link-dialog-box {
       background: var(--sidebar-bg);
-      border: 1px solid color-mix(in srgb, var(--sidebar-bg) 60%, white);
+      border: 1px solid var(--sidebar-bg);
       border-radius: 8px;
       padding: 1.25rem;
       display: flex;
@@ -344,16 +344,16 @@
     }
 
     #link-dialog-btns button:hover {
-      background: color-mix(in srgb, var(--button-bg) 80%, white);
+      background: var(--button-bg);
     }
 
     #link-cancel-btn {
-      background: color-mix(in srgb, var(--sidebar-bg) 60%, #888);
+      background: var(--sidebar-bg);
       color: var(--sheet-fontcolor);
     }
 
     #link-cancel-btn:hover {
-      background: color-mix(in srgb, var(--sidebar-bg) 40%, #888);
+      background: var(--sidebar-bg);
     }
 
     #link-remove-btn {
@@ -362,7 +362,7 @@
     }
 
     #link-remove-btn:hover {
-      background: color-mix(in srgb, var(--save-button-bg) 80%, white);
+      background: var(--save-button-bg);
     }
   </style>
 </head>
@@ -575,7 +575,8 @@
       const direct = [
         ["main_bg", "--main-bg"],
         ["sidebar_bg", "--sidebar-bg"],
-        ["textbox_bg", "--textbox-bg"],
+        ["textbox_selected_bg", "--textbox-selected-bg"],
+        ["textbox_unselected_bg", "--textbox-unselected-bg"],
         ["card_bg", "--card-bg"],
         ["tag_bg", "--tag-bg"],
         ["header_font", "--header-font"],

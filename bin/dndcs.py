@@ -25,7 +25,8 @@ TEMPLATE = (_PROJECT_ROOT / "static" / "index.html").read_text()
 _DEFAULTS: dict[str, Any] = {
     "main_bg": "#1a1a2e",
     "sidebar_bg": "#16213e",
-    "textbox_bg": "#0f3460",
+    "textbox_selected_bg": "#0f3460",
+    "textbox_unselected_bg": "#0f3460",
     "card_bg": "#16213e",
     "tag_bg": "#0f3460",
     "header_font": "Helvetica Neue, Arial, sans-serif",
