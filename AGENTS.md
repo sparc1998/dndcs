@@ -47,6 +47,7 @@ uv run check-jsonschema --schemafile schema/character.yaml <data_file.yaml>
 ### Colors
 - Use config values exactly as provided. Do not derive lighter or darker variants via `color-mix`, opacity, or any other transformation.
 - Do not add a `--muted` or similar computed variable. If a color is needed, add it explicitly to `config.yaml` and `_DEFAULTS` in `dndcs.py`.
+- Whenever a `config.yaml` setting is applied to something new, update the comments in `config.yaml` to reflect all places it applies.
 
 ### Text box sizing
 - All text boxes visible in the bio header row must be sized using their corresponding `*_sizing_text` config value, applied via `fitInput`.
