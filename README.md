@@ -89,3 +89,7 @@ uv run check-jsonschema --schemafile schema/character.yaml <file.yaml>
 * Rework campaign notes
 * Make large box panel at the bottom to type text
 * Support numeric syntax
+* Bullet point syntax in text boxes.
+* Allow clicking a text box link without opening dialog.
+* Split up html/css/js.
+* Resizing data-expandable text boxes doesn't work.
