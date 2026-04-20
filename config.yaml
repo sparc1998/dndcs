@@ -37,9 +37,9 @@ header_fontcolor: "#35803E"
 
 button_font: "Helvetica Neue, Arial, sans-serif"
 button_font_size: 14
-button_fontcolor: "#ffffff"
 button_bg: "#4caf50"
-save_button_bg: "#c0392b"
+button_fontcolor: "#ffffff"
+save_button_bg: "#4caf50"
 save_button_fontcolor: "#ffffff"
 
 # ── Backup ─────────────────────────────────────────────────────────────────────
