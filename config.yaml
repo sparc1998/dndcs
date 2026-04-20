@@ -52,5 +52,5 @@ backup_extension: ".bak"
 # Reference strings used to size the player name and character name input boxes.
 # The input will be wide enough to display this string in the configured font.
 # Set to the longest name you expect to enter.
-player_name_sizing_text: "Firstname Lastname"
-character_name_sizing_text: "Thalindra Moonwhisper"
+player_name_sizing_text: "Longgggggggggggg Longgggggggggggg Longgggggggggggg"
+character_name_sizing_text: "Longgggggggggggg Longgggggggggggg Longgggggggggggg"

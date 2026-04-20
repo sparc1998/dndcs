@@ -279,7 +279,6 @@
       font-size: var(--sheet-font-size);
       color: var(--sheet-fontcolor);
       padding: 0.2rem 0.4rem;
-      min-width: 160px;
       background: var(--textbox-unselected-bg);
       border: 1px solid var(--textbox-unselected-bg);
       border-radius: 6px;
@@ -563,7 +562,10 @@
       const textW = ctx.measureText(sizingText).width;
       const cs = getComputedStyle(el);
       const padW = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight) + 4;
-      el.style.width = Math.max(textW + padW, 160) + "px";
+      const w = Math.max(textW + padW, 160) + "px";
+      el.style.width = w;
+      const display = document.getElementById(el.id + "-display");
+      if (display) display.style.width = w;
       if (wasHidden) el.classList.add("hidden");
     }
 
