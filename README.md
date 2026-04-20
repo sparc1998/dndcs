@@ -86,4 +86,6 @@ uv run check-jsonschema --schemafile schema/character.yaml <file.yaml>
 
 ## TODO
 
+* Add ctrl/cmd+f functionality for search.
+* Fix up horizontal spacing around bullet points.
 * Rework campaign notes

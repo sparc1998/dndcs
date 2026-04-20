@@ -614,6 +614,12 @@ document.addEventListener("keydown", (e) => {
   autosave();
 });
 
+document.addEventListener("keydown", (e) => {
+  if (!(e.metaKey || e.ctrlKey) || e.key !== "s") return;
+  e.preventDefault();
+  document.getElementById("save-btn").click();
+});
+
 // Autosave bio fields on every keystroke (these inputs are normally hidden behind
 // their display spans, but they remain the source of truth for collectCharacter).
 document.getElementById("player-name").addEventListener("input", autosave);
