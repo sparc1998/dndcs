@@ -459,7 +459,7 @@ textarea:focus {
 
 #edit-dialog-hint,
 #edit-dialog-syntax-hint {
-  color: var(--muted, #888);
+  color: var(--sheet-fontcolor);
   font-family: var(--sheet-font);
   font-size: var(--sheet-font-size);
   opacity: 0.75;
