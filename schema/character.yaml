@@ -43,6 +43,8 @@ properties:
         type: string
       skin:
         type: string
+      personality_traits:
+        type: string
       level:
         type: string
       hd:

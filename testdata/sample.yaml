@@ -4,10 +4,24 @@ bio:
   class: Ranger
   subclass: Champion / Bladesinger / Hunter / Circle of the Land / Lore
   level: '5'
+  hd: ''
   experience: '6500'
   race: a[bcd](http://wikipedia.com)ef
   background: ''
   alignment: '[abc](https://wikipedia.com)'
+  age: ''
+  height: ''
+  weight: ''
+  size_category: ''
+  eyes: ''
+  hair: ''
+  skin: ''
+  personality_traits: 'i''ve added some very long text here. i''ve added some very
+    long text here. i''ve added some very long text here. i''ve added some very long
+    text here. i''ve added some very long text here. i''ve added some very long text
+    here. i''ve added some very long text here. i''ve added some very long text here.
+    i''ve added some very long text here. i''ve added some very long text here. i''ve
+    added some very long text here. '
 campaign_notes:
 - notes:
   - Met the party at the Broken Flagon inn in Millhaven.

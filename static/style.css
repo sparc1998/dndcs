@@ -120,6 +120,15 @@ body {
   gap: 1.25rem;
 }
 
+/* Wraps all bio rows; align-self: flex-start makes it shrink to its widest child
+   so the personality traits field can use width: 100% to match that width. */
+#bio-rows {
+  align-self: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
 /* ── Form fields ── */
 
 /* Generic field wrapper used for label + input pairs. */

@@ -293,6 +293,8 @@ async function applyConfig() {
     fitInput(document.getElementById("hd"), cfg.hd_sizing_text);
   if (cfg.experience_sizing_text)
     fitInput(document.getElementById("experience"), cfg.experience_sizing_text);
+  const bioRows = document.getElementById("bio-rows");
+  bioRows.style.maxWidth = bioRows.offsetWidth + "px";
 }
 
 // ── Data & render ──────────────────────────────────────────────────────────
@@ -324,6 +326,7 @@ function render() {
   const eyesRaw = character.bio?.eyes ?? "";
   const hairRaw = character.bio?.hair ?? "";
   const skinRaw = character.bio?.skin ?? "";
+  const personalityTraitsRaw = character.bio?.personality_traits ?? "";
   document.getElementById("player-name").value = playerRaw;
   document.getElementById("character-name").value = charRaw;
   document.getElementById("class").value = classRaw;
@@ -341,6 +344,7 @@ function render() {
   document.getElementById("eyes").value = eyesRaw;
   document.getElementById("hair").value = hairRaw;
   document.getElementById("skin").value = skinRaw;
+  document.getElementById("personality-traits").value = personalityTraitsRaw;
   updateDisplay(document.getElementById("player-name-display"), playerRaw);
   updateDisplay(document.getElementById("character-name-display"), charRaw);
   updateDisplay(document.getElementById("class-display"), classRaw);
@@ -358,6 +362,7 @@ function render() {
   updateDisplay(document.getElementById("eyes-display"), eyesRaw);
   updateDisplay(document.getElementById("hair-display"), hairRaw);
   updateDisplay(document.getElementById("skin-display"), skinRaw);
+  updateDisplay(document.getElementById("personality-traits-display"), personalityTraitsRaw);
   renderNotes();
 }
 
@@ -413,6 +418,7 @@ function collectCharacter() {
       eyes: document.getElementById("eyes").value,
       hair: document.getElementById("hair").value,
       skin: document.getElementById("skin").value,
+      personality_traits: document.getElementById("personality-traits").value,
     },
     campaign_notes: character.campaign_notes ?? [],
   };
@@ -516,6 +522,7 @@ document.getElementById("size-category").addEventListener("input", autosave);
 document.getElementById("eyes").addEventListener("input", autosave);
 document.getElementById("hair").addEventListener("input", autosave);
 document.getElementById("skin").addEventListener("input", autosave);
+document.getElementById("personality-traits").addEventListener("input", autosave);
 document.getElementById("level").addEventListener("input", autosave);
 document.getElementById("hd").addEventListener("input", autosave);
 document.getElementById("experience").addEventListener("input", autosave);
