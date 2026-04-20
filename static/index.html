@@ -563,7 +563,10 @@
 
     document.querySelectorAll("[data-expandable]").forEach((input) => {
       const display = document.getElementById(input.id + "-display");
-      if (display) display.addEventListener("click", () => openEditPopover(input, display));
+      if (display) display.addEventListener("click", (e) => {
+        if (e.target.closest("a")) return;
+        openEditPopover(input, display);
+      });
     });
 
     function openLinkDialog(el) {
