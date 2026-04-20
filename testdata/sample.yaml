@@ -1,6 +1,9 @@
 bio:
   player_name: Ryan
   character_name: Thalindra Moonwhisper
+  class: Ranger
+  level: "5"
+  experience: "6500"
 
 campaign_notes:
   - tags:

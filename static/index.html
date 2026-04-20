@@ -64,6 +64,7 @@
       align-items: center;
       padding: 1.5rem 1rem;
       gap: 1rem;
+      overflow-y: auto;
     }
 
     /* ── Tabs ── */
@@ -387,6 +388,23 @@
           <input type="text" id="character-name" class="hidden" placeholder="Character name" style="padding: 0.2rem 0.4rem;" />
         </div>
       </div>
+      <div style="display: flex; flex-direction: row; gap: 1.5rem; align-items: flex-end;">
+        <div class="field" style="flex-direction: row; align-items: center;">
+          <label for="class">Class(es)</label>
+          <span id="class-display" class="field-display"></span>
+          <input type="text" id="class" class="hidden" placeholder="Class" style="padding: 0.2rem 0.4rem;" />
+        </div>
+        <div class="field" style="flex-direction: row; align-items: center;">
+          <label for="level">Level(s)</label>
+          <span id="level-display" class="field-display"></span>
+          <input type="text" id="level" class="hidden" placeholder="Level" style="padding: 0.2rem 0.4rem;" />
+        </div>
+        <div class="field" style="flex-direction: row; align-items: center;">
+          <label for="experience">Experience</label>
+          <span id="experience-display" class="field-display"></span>
+          <input type="text" id="experience" class="hidden" placeholder="Experience" style="padding: 0.2rem 0.4rem;" />
+        </div>
+      </div>
     </div>
 
     <!-- Campaign Notes panel -->
@@ -604,10 +622,16 @@
         if (cfg[key] != null) root.style.setProperty(cssVar, cfg[key] + "px");
       }
 
-      if (cfg.player_name_sizing_text)
-        fitInput(document.getElementById("player-name"), cfg.player_name_sizing_text);
-      if (cfg.character_name_sizing_text)
-        fitInput(document.getElementById("character-name"), cfg.character_name_sizing_text);
+      if (cfg.name_sizing_text) {
+        fitInput(document.getElementById("player-name"), cfg.name_sizing_text);
+        fitInput(document.getElementById("character-name"), cfg.name_sizing_text);
+      }
+      if (cfg.class_sizing_text)
+        fitInput(document.getElementById("class"), cfg.class_sizing_text);
+      if (cfg.level_sizing_text)
+        fitInput(document.getElementById("level"), cfg.level_sizing_text);
+      if (cfg.experience_sizing_text)
+        fitInput(document.getElementById("experience"), cfg.experience_sizing_text);
     }
 
     async function load() {
@@ -619,10 +643,19 @@
     function render() {
       const playerRaw = character.bio?.player_name ?? "";
       const charRaw = character.bio?.character_name ?? "";
+      const classRaw = character.bio?.class ?? "";
+      const levelRaw = character.bio?.level ?? "";
+      const experienceRaw = character.bio?.experience ?? "";
       document.getElementById("player-name").value = playerRaw;
       document.getElementById("character-name").value = charRaw;
+      document.getElementById("class").value = classRaw;
+      document.getElementById("level").value = levelRaw;
+      document.getElementById("experience").value = experienceRaw;
       updateDisplay(document.getElementById("player-name-display"), playerRaw);
       updateDisplay(document.getElementById("character-name-display"), charRaw);
+      updateDisplay(document.getElementById("class-display"), classRaw);
+      updateDisplay(document.getElementById("level-display"), levelRaw);
+      updateDisplay(document.getElementById("experience-display"), experienceRaw);
       renderNotes();
     }
 
@@ -659,6 +692,9 @@
         bio: {
           player_name: document.getElementById("player-name").value,
           character_name: document.getElementById("character-name").value,
+          class: document.getElementById("class").value,
+          level: document.getElementById("level").value,
+          experience: document.getElementById("experience").value,
         },
         campaign_notes: character.campaign_notes ?? [],
       };
@@ -683,9 +719,15 @@
 
     setupEditable("player-name-display", "player-name");
     setupEditable("character-name-display", "character-name");
+    setupEditable("class-display", "class");
+    setupEditable("level-display", "level");
+    setupEditable("experience-display", "experience");
 
     document.getElementById("player-name").addEventListener("input", autosave);
     document.getElementById("character-name").addEventListener("input", autosave);
+    document.getElementById("class").addEventListener("input", autosave);
+    document.getElementById("level").addEventListener("input", autosave);
+    document.getElementById("experience").addEventListener("input", autosave);
 
     document.getElementById("new-tags").addEventListener("keydown", (e) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") { e.preventDefault(); openLinkDialog(e.target); }

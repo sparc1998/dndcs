@@ -42,8 +42,10 @@ _DEFAULTS: dict[str, Any] = {
     "sheet_font_size": 15,
     "sheet_fontcolor": "#e0d7c6",
     "backup_extension": ".bak",
-    "player_name_sizing_text": "Firstname Lastname",
-    "character_name_sizing_text": "Thalindra Moonwhisper",
+    "name_sizing_text": "Firstname Lastname",
+    "class_sizing_text": "Fighter / Wizard",
+    "level_sizing_text": "20 / 20",
+    "experience_sizing_text": "000000",
 }
 
 

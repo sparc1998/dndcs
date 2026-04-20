@@ -49,8 +49,11 @@ save_button_fontcolor: "#ffffff"
 backup_extension: ".bak"
 
 # ── Input sizing ───────────────────────────────────────────────────────────────
-# Reference strings used to size the player name and character name input boxes.
-# The input will be wide enough to display this string in the configured font.
+# Reference strings used to sizeinput boxes.
+# The inputs will be wide enough to display this string in the configured font.
 # Set to the longest name you expect to enter.
-player_name_sizing_text: "Longgggggggggggg Longgggggggggggg Longgggggggggggg"
-character_name_sizing_text: "Longgggggggggggg Longgggggggggggg Longgggggggggggg"
+
+name_sizing_text: "Longgggggggggggg Longgggggggggggg Longgggggggggggg"
+class_sizing_text: "Fighter / Wizard / Ranger/ Druid / Bard"
+level_sizing_text: "20 / 20 / 20 / 20 / 20"
+experience_sizing_text: "1000000"

@@ -19,6 +19,12 @@ properties:
       character_name:
         type: string
         minLength: 1
+      class:
+        type: string
+      level:
+        type: string
+      experience:
+        type: string
   campaign_notes:
     type: array
     items:
