@@ -275,6 +275,7 @@
 
     /* ── Editable display (click-to-edit) ── */
     .field-display {
+      display: inline-block;
       cursor: text;
       font-family: var(--sheet-font);
       font-size: var(--sheet-font-size);
@@ -380,29 +381,29 @@
         <div class="field" style="flex-direction: row; align-items: center;">
           <label for="player-name">Player Name</label>
           <span id="player-name-display" class="field-display"></span>
-          <input type="text" id="player-name" class="hidden" placeholder="Your name" style="padding: 0.2rem 0.4rem;" />
+          <input type="text" id="player-name" class="hidden" placeholder="Your name" style="padding: 0.2rem 0.4rem;" data-linkable />
         </div>
         <div class="field" style="flex-direction: row; align-items: center;">
           <label for="character-name">Character Name</label>
           <span id="character-name-display" class="field-display"></span>
-          <input type="text" id="character-name" class="hidden" placeholder="Character name" style="padding: 0.2rem 0.4rem;" />
+          <input type="text" id="character-name" class="hidden" placeholder="Character name" style="padding: 0.2rem 0.4rem;" data-linkable />
         </div>
       </div>
       <div style="display: flex; flex-direction: row; gap: 1.5rem; align-items: flex-end;">
         <div class="field" style="flex-direction: row; align-items: center;">
           <label for="class">Class(es)</label>
           <span id="class-display" class="field-display"></span>
-          <input type="text" id="class" class="hidden" placeholder="Class" style="padding: 0.2rem 0.4rem;" />
+          <input type="text" id="class" class="hidden" placeholder="Class" style="padding: 0.2rem 0.4rem;" data-linkable />
         </div>
         <div class="field" style="flex-direction: row; align-items: center;">
           <label for="level">Level(s)</label>
           <span id="level-display" class="field-display"></span>
-          <input type="text" id="level" class="hidden" placeholder="Level" style="padding: 0.2rem 0.4rem;" />
+          <input type="text" id="level" class="hidden" placeholder="Level" style="padding: 0.2rem 0.4rem;" data-linkable />
         </div>
         <div class="field" style="flex-direction: row; align-items: center;">
           <label for="experience">Experience</label>
           <span id="experience-display" class="field-display"></span>
-          <input type="text" id="experience" class="hidden" placeholder="Experience" style="padding: 0.2rem 0.4rem;" />
+          <input type="text" id="experience" class="hidden" placeholder="Experience" style="padding: 0.2rem 0.4rem;" data-linkable />
         </div>
       </div>
     </div>
@@ -415,11 +416,11 @@
         <h3>Add Note</h3>
         <div class="field">
           <label for="new-tags">Tags (comma-separated)</label>
-          <input type="text" id="new-tags" placeholder="session-3, dungeon" />
+          <input type="text" id="new-tags" placeholder="session-3, dungeon" data-linkable />
         </div>
         <div class="field">
           <label for="new-note">Note</label>
-          <textarea id="new-note" rows="3" placeholder="Write a note…"></textarea>
+          <textarea id="new-note" rows="3" placeholder="Write a note…" data-linkable></textarea>
         </div>
         <button class="btn" id="add-note-btn">Add Note</button>
       </div>
@@ -495,10 +496,6 @@
       input.addEventListener("blur", commit);
       input.addEventListener("keydown", (e) => {
         if (e.key === "Enter") { input.blur(); return; }
-        if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-          e.preventDefault();
-          openLinkDialog(input);
-        }
       });
     }
 
@@ -580,7 +577,7 @@
       const textW = ctx.measureText(sizingText).width;
       const cs = getComputedStyle(el);
       const padW = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight) + 4;
-      const w = Math.max(textW + padW, 160) + "px";
+      const w = (textW + padW) + "px";
       el.style.width = w;
       const display = document.getElementById(el.id + "-display");
       if (display) display.style.width = w;
@@ -729,11 +726,10 @@
     document.getElementById("level").addEventListener("input", autosave);
     document.getElementById("experience").addEventListener("input", autosave);
 
-    document.getElementById("new-tags").addEventListener("keydown", (e) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") { e.preventDefault(); openLinkDialog(e.target); }
-    });
-    document.getElementById("new-note").addEventListener("keydown", (e) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") { e.preventDefault(); openLinkDialog(e.target); }
+    document.querySelectorAll("[data-linkable]").forEach((el) => {
+      el.addEventListener("keydown", (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key === "k") { e.preventDefault(); openLinkDialog(el); }
+      });
     });
 
     document.getElementById("add-note-btn").addEventListener("click", async () => {

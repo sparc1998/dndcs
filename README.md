@@ -83,3 +83,9 @@ uv run check-jsonschema --schemafile schema/character.yaml <file.yaml>
 
 - View history (compact list): `git log --oneline`
 - Undo uncommitted changes in a file: `git checkout -- <filename>`
+
+## TODO
+
+* Rework campaign notes
+* Make large box panel at the bottom to type text
+* Support numeric syntax
