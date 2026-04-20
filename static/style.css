@@ -329,7 +329,9 @@ textarea:focus {
 /* Restore indentation for bullet lists; the global reset zeroes padding so
    list markers render outside the container without this. */
 .field-display ul,
-.note-entry ul {
+.field-display ol,
+.note-entry ul,
+.note-entry ol {
   padding-left: 1.25em;
 }
 

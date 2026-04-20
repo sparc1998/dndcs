@@ -66,24 +66,34 @@ function renderLinks(raw) {
   return result;
 }
 
-// Renders raw text with link and bullet-point formatting.
-// Lines starting with "* " are grouped into <ul><li> elements.
-// Non-bullet lines are rendered with renderLinks and joined with <br>.
+// Renders raw text with link, bullet-point, and numbered-list formatting.
+// Lines starting with "* " become <ul><li> elements.
+// Lines starting with "<digits>) " become <ol><li> elements (any number works).
+// Consecutive lines of the same list type are grouped together.
+// Non-list lines are rendered with renderLinks and joined with <br>.
 function renderFormatted(raw) {
   const lines = raw.split('\n');
   const parts = [];
   let listItems = [];
+  let listType = null;
 
   const flushList = () => {
     if (listItems.length) {
-      parts.push('<ul>' + listItems.map(t => `<li>${t}</li>`).join('') + '</ul>');
+      parts.push(`<${listType}>` + listItems.map(t => `<li>${t}</li>`).join('') + `</${listType}>`);
       listItems = [];
+      listType = null;
     }
   };
 
   for (const line of lines) {
     if (line.startsWith('* ')) {
+      if (listType !== 'ul') flushList();
+      listType = 'ul';
       listItems.push(renderLinks(line.slice(2)));
+    } else if (/^\d+\) /.test(line)) {
+      if (listType !== 'ol') flushList();
+      listType = 'ol';
+      listItems.push(renderLinks(line.replace(/^\d+\) /, '')));
     } else {
       flushList();
       parts.push(renderLinks(line));
@@ -120,7 +130,7 @@ function openEditDialog(inputEl, displayEl) {
   if (inputEl.hasAttribute("data-formula")) {
     syntaxHint.textContent = "Formulas: 1 + 2 * 3 · Comments: {your note here}";
   } else if (inputEl.hasAttribute("data-formattable")) {
-    syntaxHint.textContent = `${_modKey}+K to insert link · [label](url) · * bullet`;
+    syntaxHint.textContent = `${_modKey}+K to insert link · [label](url) · * bullet · 1) numbered`;
   } else {
     syntaxHint.textContent = "";
   }
