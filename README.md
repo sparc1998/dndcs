@@ -86,7 +86,6 @@ uv run check-jsonschema --schemafile schema/character.yaml <file.yaml>
 
 ## TODO
 
-* Rework campaign notes
 * Support numeric syntax
 * Bullet point syntax in text boxes.
-* Split up html/css/js.
+* Rework campaign notes

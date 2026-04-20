@@ -10,12 +10,10 @@ let _linkDialogOpen = false;
 let _linkTarget = null;    // context saved when the link dialog opens: { el, selStart, selEnd, existingMatch }
 
 // Tracks which field the edit dialog is currently editing.
-let _editDialogField = null;    // the hidden <input> whose value is being edited
-let _editDialogDisplay = null;  // the paired <span class="field-display"> to update on close
+let _editDialogField = null;          // the hidden <input> whose value is being edited
+let _editDialogDisplay = null;        // the paired <span class="field-display"> to update on close
+let _editDialogOriginalValue = null;  // value at open time, restored on Escape
 
-// True when a mousedown started on the backdrop; used to distinguish backdrop clicks
-// from resize drags that end outside the dialog box.
-let _backdropMousedown = false;
 
 // ── Utilities ──────────────────────────────────────────────────────────────
 
@@ -52,14 +50,14 @@ function updateDisplay(displayEl, rawText) {
 function openEditDialog(inputEl, displayEl) {
   _editDialogField = inputEl;
   _editDialogDisplay = displayEl;
+  _editDialogOriginalValue = inputEl.value;
   const ta = document.getElementById("edit-dialog-textarea");
   ta.value = inputEl.value;
   document.getElementById("edit-dialog").classList.remove("hidden");
   requestAnimationFrame(() => { ta.focus(); });
 }
 
-// Closes the edit dialog, writing the textarea's value back to the hidden field
-// input, re-rendering the display span, and triggering an autosave.
+// Closes the edit dialog saving the current textarea value (Done button / backdrop / Cmd+Enter).
 function closeEditDialog() {
   if (_editDialogField) {
     const ta = document.getElementById("edit-dialog-textarea");
@@ -70,6 +68,20 @@ function closeEditDialog() {
   document.getElementById("edit-dialog").classList.add("hidden");
   _editDialogField = null;
   _editDialogDisplay = null;
+  _editDialogOriginalValue = null;
+}
+
+// Closes the edit dialog restoring the original value (Escape key).
+function cancelEditDialog() {
+  if (_editDialogField && _editDialogOriginalValue !== null) {
+    _editDialogField.value = _editDialogOriginalValue;
+    updateDisplay(_editDialogDisplay, _editDialogOriginalValue);
+    autosave();
+  }
+  document.getElementById("edit-dialog").classList.add("hidden");
+  _editDialogField = null;
+  _editDialogDisplay = null;
+  _editDialogOriginalValue = null;
 }
 
 // ── Link dialog ────────────────────────────────────────────────────────────
@@ -331,19 +343,11 @@ document.querySelectorAll("[data-linkable]").forEach((el) => {
   });
 });
 
-// Edit dialog: Done button, backdrop click, Escape key, and textarea sync.
+// Edit dialog: Done button, Escape key, and textarea sync.
 document.getElementById("edit-dialog-done-btn").addEventListener("click", closeEditDialog);
-document.getElementById("edit-dialog").addEventListener("mousedown", (e) => {
-  // Record whether the mousedown started on the backdrop so we can distinguish
-  // a backdrop click from a resize drag that ends outside the dialog box.
-  _backdropMousedown = e.target === document.getElementById("edit-dialog");
-});
-document.getElementById("edit-dialog").addEventListener("click", (e) => {
-  if (_backdropMousedown && e.target === document.getElementById("edit-dialog")) closeEditDialog();
-});
 document.getElementById("edit-dialog").addEventListener("keydown", (e) => {
-  // Only close on Escape if the link dialog isn't also open (let it close first).
-  if (e.key === "Escape" && !_linkDialogOpen) closeEditDialog();
+  if (e.key === "Escape" && !_linkDialogOpen) cancelEditDialog();
+  if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) closeEditDialog();
 });
 document.getElementById("edit-dialog-textarea").addEventListener("input", () => {
   // Sync the textarea's value back to the hidden field input on every keystroke

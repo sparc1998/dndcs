@@ -449,6 +449,15 @@ textarea:focus {
   justify-content: flex-end;
 }
 
+#edit-dialog-hint {
+  align-self: center;
+  color: var(--muted, #888);
+  font-size: 0.78rem;
+  margin-right: auto;
+  opacity: 0.75;
+  user-select: none;
+}
+
 #edit-dialog-btns button {
   background: var(--button-bg);
   border: none;
