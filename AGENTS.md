@@ -49,11 +49,24 @@ uv run check-jsonschema --schemafile schema/character.yaml <data_file.yaml>
 - Do not add a `--muted` or similar computed variable. If a color is needed, add it explicitly to `config.yaml` and `_DEFAULTS` in `dndcs.py`.
 - Whenever a `config.yaml` setting is applied to something new, update the comments in `config.yaml` to reflect all places it applies.
 
+### Adding a new bio field
+
+When adding a new bio header field, update all of the following:
+
+1. **`static/index.html`** — add the `<label>`, `<span class="field-display">`, and `<input>` with `data-linkable` and `data-expandable`.
+2. **`config.yaml`** — add a `*_sizing_text` entry for the field.
+3. **`bin/dndcs.py`** — add the same `*_sizing_text` key to `_DEFAULTS`.
+4. **`static/app.js`** — four places:
+   - `applyConfig`: call `fitInput` with the new sizing text.
+   - `render`: read `character.bio?.<field>` and set the input value and display span via `updateDisplay`.
+   - `collectCharacter`: include the field in the returned `bio` object.
+   - autosave listener: add an `"input"` event listener for the new input.
+5. **`schema/character.yaml`** — add the field as an optional `type: string` property under `bio`.
+
 ### Text box sizing
 - All text boxes visible in the bio header row must be sized using their corresponding `*_sizing_text` config value, applied via `fitInput`.
 - `fitInput` sets an inline `width` on both the `<input>` and the paired `<span class="field-display">`. No other sizing (e.g. `min-width`, `width: 100%`) should override this.
 - `<span class="field-display">` must remain `display: inline-block` so that inline `width` takes effect.
-- When adding a new bio header text box, add a matching `*_sizing_text` key to `config.yaml`, `_DEFAULTS` in `dndcs.py`, and wire it up in `applyConfig` in `index.html`.
 
 ### Link behavior
 - All new text boxes should have `data-linkable` by default, unless explicitly instructed otherwise.

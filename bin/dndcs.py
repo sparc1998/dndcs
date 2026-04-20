@@ -44,6 +44,7 @@ _DEFAULTS: dict[str, Any] = {
     "backup_extension": ".bak",
     "name_sizing_text": "Firstname Lastname",
     "class_sizing_text": "Fighter / Wizard",
+    "subclass_sizing_text": "Champion / Bladesinger",
     "level_sizing_text": "20 / 20",
     "experience_sizing_text": "000000",
 }

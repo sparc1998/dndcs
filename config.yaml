@@ -56,5 +56,6 @@ backup_extension: ".bak"
 
 name_sizing_text: "Longgggggggggggg Longgggggggggggg Longgggggggggggg"
 class_sizing_text: "Fighter / Wizard / Ranger/ Druid / Bard"
+subclass_sizing_text: "Champion / Bladesinger / Hunter / Circle of the Land / Lore"
 level_sizing_text: "20 / 20 / 20 / 20 / 20"
 experience_sizing_text: "1000000"

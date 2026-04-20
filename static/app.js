@@ -263,6 +263,8 @@ async function applyConfig() {
   }
   if (cfg.class_sizing_text)
     fitInput(document.getElementById("class"), cfg.class_sizing_text);
+  if (cfg.subclass_sizing_text)
+    fitInput(document.getElementById("subclass"), cfg.subclass_sizing_text);
   if (cfg.level_sizing_text)
     fitInput(document.getElementById("level"), cfg.level_sizing_text);
   if (cfg.experience_sizing_text)
@@ -284,16 +286,19 @@ function render() {
   const playerRaw = character.bio?.player_name ?? "";
   const charRaw = character.bio?.character_name ?? "";
   const classRaw = character.bio?.class ?? "";
+  const subclassRaw = character.bio?.subclass ?? "";
   const levelRaw = character.bio?.level ?? "";
   const experienceRaw = character.bio?.experience ?? "";
   document.getElementById("player-name").value = playerRaw;
   document.getElementById("character-name").value = charRaw;
   document.getElementById("class").value = classRaw;
+  document.getElementById("subclass").value = subclassRaw;
   document.getElementById("level").value = levelRaw;
   document.getElementById("experience").value = experienceRaw;
   updateDisplay(document.getElementById("player-name-display"), playerRaw);
   updateDisplay(document.getElementById("character-name-display"), charRaw);
   updateDisplay(document.getElementById("class-display"), classRaw);
+  updateDisplay(document.getElementById("subclass-display"), subclassRaw);
   updateDisplay(document.getElementById("level-display"), levelRaw);
   updateDisplay(document.getElementById("experience-display"), experienceRaw);
   renderNotes();
@@ -337,6 +342,7 @@ function collectCharacter() {
       player_name: document.getElementById("player-name").value,
       character_name: document.getElementById("character-name").value,
       class: document.getElementById("class").value,
+      subclass: document.getElementById("subclass").value,
       level: document.getElementById("level").value,
       experience: document.getElementById("experience").value,
     },
@@ -419,6 +425,7 @@ document.getElementById("link-dialog").addEventListener("keydown", (e) => {
 document.getElementById("player-name").addEventListener("input", autosave);
 document.getElementById("character-name").addEventListener("input", autosave);
 document.getElementById("class").addEventListener("input", autosave);
+document.getElementById("subclass").addEventListener("input", autosave);
 document.getElementById("level").addEventListener("input", autosave);
 document.getElementById("experience").addEventListener("input", autosave);
 

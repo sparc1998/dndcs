@@ -21,6 +21,8 @@ properties:
         minLength: 1
       class:
         type: string
+      subclass:
+        type: string
       level:
         type: string
       experience:
