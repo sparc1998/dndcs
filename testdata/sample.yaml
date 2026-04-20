@@ -5,6 +5,9 @@ bio:
   subclass: Champion / Bladesinger / Hunter / Circle of the Land / Lore
   level: '5'
   experience: '6500'
+  race: a[bcd](http://wikipedia.com)ef
+  background: ''
+  alignment: ''
 campaign_notes:
 - notes:
   - Met the party at the Broken Flagon inn in Millhaven.

@@ -17,6 +17,10 @@ let _editDialogField = null;          // the hidden <input> whose value is being
 let _editDialogDisplay = null;        // the paired <span class="field-display"> to update on close
 let _editDialogOriginalValue = null;  // value at open time, restored on Escape
 
+// Undo stack for dialog saves: each entry is { field, display, value } representing
+// the state before that save, so Cmd/Ctrl+Z can restore it.
+const _undoStack = [];
+
 
 // ── Utilities ──────────────────────────────────────────────────────────────
 
@@ -101,6 +105,8 @@ function openEditDialog(inputEl, displayEl) {
 function closeEditDialog() {
   if (_editDialogField) {
     const ta = document.getElementById("edit-dialog-textarea");
+    if (ta.value !== _editDialogOriginalValue)
+      _undoStack.push({ field: _editDialogField, display: _editDialogDisplay, value: _editDialogOriginalValue });
     _editDialogField.value = ta.value;
     updateDisplay(_editDialogDisplay, ta.value);
     autosave();
@@ -435,6 +441,19 @@ document.getElementById("link-url").addEventListener("keydown", (e) => {
 });
 document.getElementById("link-dialog").addEventListener("keydown", (e) => {
   if (e.key === "Escape") closeLinkDialog(true);
+});
+
+// Undo the last dialog save with Cmd/Ctrl+Z (suppressed while the dialog is open
+// so native textarea undo still works during editing).
+document.addEventListener("keydown", (e) => {
+  if (!(e.metaKey || e.ctrlKey) || e.key !== "z") return;
+  if (!document.getElementById("edit-dialog").classList.contains("hidden")) return;
+  if (!_undoStack.length) return;
+  e.preventDefault();
+  const { field, display, value } = _undoStack.pop();
+  field.value = value;
+  updateDisplay(display, value);
+  autosave();
 });
 
 // Autosave bio fields on every keystroke (these inputs are normally hidden behind
