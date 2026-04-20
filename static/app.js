@@ -119,7 +119,7 @@ function openEditDialog(inputEl, displayEl) {
   const syntaxHint = document.getElementById("edit-dialog-syntax-hint");
   if (inputEl.hasAttribute("data-formula")) {
     syntaxHint.textContent = "Formulas: 1 + 2 * 3 · Comments: {your note here}";
-  } else if (inputEl.hasAttribute("data-formatable")) {
+  } else if (inputEl.hasAttribute("data-formattable")) {
     syntaxHint.textContent = `${_modKey}+K to insert link · [label](url) · * bullet`;
   } else {
     syntaxHint.textContent = "";
@@ -481,8 +481,8 @@ document.querySelectorAll("[data-expandable]").forEach((input) => {
 });
 
 // Open the link dialog with cmd-k (Mac) or ctrl-k (Windows/Linux) on any
-// data-formatable element, provided text is selected.
-document.querySelectorAll("[data-formatable]").forEach((el) => {
+// data-formattable element, provided text is selected.
+document.querySelectorAll("[data-formattable]").forEach((el) => {
   el.addEventListener("keydown", (e) => {
     if ((e.metaKey || e.ctrlKey) && e.key === "k") { e.preventDefault(); openLinkDialog(el); }
   });
