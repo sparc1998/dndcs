@@ -82,6 +82,14 @@ function openEditDialog(inputEl, displayEl) {
   _editDialogOriginalValue = inputEl.value;
   const ta = document.getElementById("edit-dialog-textarea");
   ta.value = inputEl.value;
+  const syntaxHint = document.getElementById("edit-dialog-syntax-hint");
+  if (inputEl.hasAttribute("data-formula")) {
+    syntaxHint.textContent = "Formulas: 1 + 2 * 3 · Comments: {your note here}";
+  } else if (inputEl.hasAttribute("data-linkable")) {
+    syntaxHint.textContent = "⌘K to insert link · [label](url)";
+  } else {
+    syntaxHint.textContent = "";
+  }
   document.getElementById("edit-dialog").classList.remove("hidden");
   requestAnimationFrame(() => { ta.focus(); });
 }
@@ -95,6 +103,7 @@ function closeEditDialog() {
     autosave();
   }
   document.getElementById("edit-dialog").classList.add("hidden");
+  document.getElementById("edit-dialog-syntax-hint").textContent = "";
   _editDialogField = null;
   _editDialogDisplay = null;
   _editDialogOriginalValue = null;
@@ -108,6 +117,7 @@ function cancelEditDialog() {
     autosave();
   }
   document.getElementById("edit-dialog").classList.add("hidden");
+  document.getElementById("edit-dialog-syntax-hint").textContent = "";
   _editDialogField = null;
   _editDialogDisplay = null;
   _editDialogOriginalValue = null;

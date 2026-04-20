@@ -449,11 +449,18 @@ textarea:focus {
   justify-content: flex-end;
 }
 
-#edit-dialog-hint {
-  align-self: center;
+#edit-dialog-hints {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  justify-content: center;
+  margin-right: auto;
+}
+
+#edit-dialog-hint,
+#edit-dialog-syntax-hint {
   color: var(--muted, #888);
   font-size: 0.78rem;
-  margin-right: auto;
   opacity: 0.75;
   user-select: none;
 }
