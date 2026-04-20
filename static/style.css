@@ -129,6 +129,20 @@ body {
   gap: 1.25rem;
 }
 
+/* Two-column grid for the trait fields so all textboxes start at the same x.
+   max-content sizes the label column to the widest label automatically. */
+.trait-rows {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 1.25rem 1.5rem;
+  align-items: start;
+  width: 100%;
+}
+
+.trait-rows .field-display {
+  width: 100%;
+}
+
 /* ── Form fields ── */
 
 /* Generic field wrapper used for label + input pairs. */
