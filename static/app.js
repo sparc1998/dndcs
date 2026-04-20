@@ -360,6 +360,9 @@ function render() {
   const hairRaw = character.bio?.hair ?? "";
   const skinRaw = character.bio?.skin ?? "";
   const personalityTraitsRaw = character.bio?.personality_traits ?? "";
+  const idealsRaw = character.bio?.ideals ?? "";
+  const bondsRaw = character.bio?.bonds ?? "";
+  const traitsRaw = character.bio?.traits ?? "";
   document.getElementById("player-name").value = playerRaw;
   document.getElementById("character-name").value = charRaw;
   document.getElementById("class").value = classRaw;
@@ -378,6 +381,9 @@ function render() {
   document.getElementById("hair").value = hairRaw;
   document.getElementById("skin").value = skinRaw;
   document.getElementById("personality-traits").value = personalityTraitsRaw;
+  document.getElementById("ideals").value = idealsRaw;
+  document.getElementById("bonds").value = bondsRaw;
+  document.getElementById("traits").value = traitsRaw;
   updateDisplay(document.getElementById("player-name-display"), playerRaw);
   updateDisplay(document.getElementById("character-name-display"), charRaw);
   updateDisplay(document.getElementById("class-display"), classRaw);
@@ -396,6 +402,9 @@ function render() {
   updateDisplay(document.getElementById("hair-display"), hairRaw);
   updateDisplay(document.getElementById("skin-display"), skinRaw);
   updateDisplay(document.getElementById("personality-traits-display"), personalityTraitsRaw);
+  updateDisplay(document.getElementById("ideals-display"), idealsRaw);
+  updateDisplay(document.getElementById("bonds-display"), bondsRaw);
+  updateDisplay(document.getElementById("traits-display"), traitsRaw);
   renderNotes();
 }
 
@@ -452,6 +461,9 @@ function collectCharacter() {
       hair: document.getElementById("hair").value,
       skin: document.getElementById("skin").value,
       personality_traits: document.getElementById("personality-traits").value,
+      ideals: document.getElementById("ideals").value,
+      bonds: document.getElementById("bonds").value,
+      traits: document.getElementById("traits").value,
     },
     campaign_notes: character.campaign_notes ?? [],
   };
