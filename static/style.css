@@ -326,6 +326,13 @@ textarea:focus {
   color: var(--sheet-fontcolor);
 }
 
+/* Restore indentation for bullet lists; the global reset zeroes padding so
+   list markers render outside the container without this. */
+.field-display ul,
+.note-entry ul {
+  padding-left: 1.25em;
+}
+
 /* Rendered links inside display spans and note entries share the same style. */
 .field-display a,
 .note-entry a {

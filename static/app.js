@@ -66,16 +66,43 @@ function renderLinks(raw) {
   return result;
 }
 
+// Renders raw text with link and bullet-point formatting.
+// Lines starting with "* " are grouped into <ul><li> elements.
+// Non-bullet lines are rendered with renderLinks and joined with <br>.
+function renderFormatted(raw) {
+  const lines = raw.split('\n');
+  const parts = [];
+  let listItems = [];
+
+  const flushList = () => {
+    if (listItems.length) {
+      parts.push('<ul>' + listItems.map(t => `<li>${t}</li>`).join('') + '</ul>');
+      listItems = [];
+    }
+  };
+
+  for (const line of lines) {
+    if (line.startsWith('* ')) {
+      listItems.push(renderLinks(line.slice(2)));
+    } else {
+      flushList();
+      parts.push(renderLinks(line));
+    }
+  }
+  flushList();
+  return parts.join('<br>');
+}
+
 // Renders raw text into a display element.
 // For data-formula fields the formula is evaluated and only the result is shown.
-// For all other fields markdown links are rendered.
+// For all other fields markdown links and bullet points are rendered.
 function updateDisplay(displayEl, rawText) {
   const inputId = displayEl.id.replace(/-display$/, "");
   const inputEl = document.getElementById(inputId);
   if (inputEl && inputEl.hasAttribute("data-formula")) {
     displayEl.textContent = renderFormula(rawText);
   } else {
-    displayEl.innerHTML = renderLinks(rawText);
+    displayEl.innerHTML = renderFormatted(rawText);
   }
 }
 
@@ -92,8 +119,8 @@ function openEditDialog(inputEl, displayEl) {
   const syntaxHint = document.getElementById("edit-dialog-syntax-hint");
   if (inputEl.hasAttribute("data-formula")) {
     syntaxHint.textContent = "Formulas: 1 + 2 * 3 · Comments: {your note here}";
-  } else if (inputEl.hasAttribute("data-linkable")) {
-    syntaxHint.textContent = `${_modKey}+K to insert link · [label](url)`;
+  } else if (inputEl.hasAttribute("data-formatable")) {
+    syntaxHint.textContent = `${_modKey}+K to insert link · [label](url) · * bullet`;
   } else {
     syntaxHint.textContent = "";
   }
@@ -206,23 +233,19 @@ function applyLink(url) {
 
 // ── Layout ─────────────────────────────────────────────────────────────────
 
-// Sizes a bio header input (and its paired display span) to fit a given string.
-// Uses an off-screen canvas to measure text width at the input's computed font,
-// avoiding layout reflows. The inline width is also applied to the display span
-// so both elements stay the same width regardless of which is visible.
+// Sizes a bio header display span (and its paired hidden input) to fit a given string.
+// Measures font and padding from the display span, which is always visible, then
+// applies the same width to both elements so they stay in sync.
 function fitInput(el, sizingText) {
-  const wasHidden = el.classList.contains("hidden");
-  if (wasHidden) el.classList.remove("hidden");
+  const display = document.getElementById(el.id + "-display");
+  const measureEl = display || el;
   const ctx = _measureCanvas.getContext("2d");
-  ctx.font = getComputedStyle(el).font;
+  ctx.font = getComputedStyle(measureEl).font;
   const textW = ctx.measureText(sizingText).width;
-  const cs = getComputedStyle(el);
+  const cs = getComputedStyle(measureEl);
   const padW = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight) + 4;
   const w = (textW + padW) + "px";
-  el.style.width = w;
-  const display = document.getElementById(el.id + "-display");
   if (display) display.style.width = w;
-  if (wasHidden) el.classList.add("hidden");
 }
 
 // Fetches /api/config and applies all color, font, and sizing values to the page.
@@ -388,7 +411,7 @@ function renderNotes() {
     (note.notes ?? []).forEach((n) => {
       const p = document.createElement("p");
       p.className = "note-entry";
-      p.innerHTML = renderLinks(n);
+      p.innerHTML = renderFormatted(n);
       card.appendChild(p);
     });
 
@@ -458,8 +481,8 @@ document.querySelectorAll("[data-expandable]").forEach((input) => {
 });
 
 // Open the link dialog with cmd-k (Mac) or ctrl-k (Windows/Linux) on any
-// data-linkable element, provided text is selected.
-document.querySelectorAll("[data-linkable]").forEach((el) => {
+// data-formatable element, provided text is selected.
+document.querySelectorAll("[data-formatable]").forEach((el) => {
   el.addEventListener("keydown", (e) => {
     if ((e.metaKey || e.ctrlKey) && e.key === "k") { e.preventDefault(); openLinkDialog(el); }
   });

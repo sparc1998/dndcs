@@ -51,7 +51,7 @@ backup_extension: ".bak"
 # Reference strings used to size input boxes.
 
 # Used for player name and character name.
-name_sizing_text: "Longgggggggggggg Longgggggggggggg Longgggggggggggg"
+name_sizing_text: "Longgggggggggggg Longgggg Longgggggggggggg"
 class_sizing_text: "Fighter / Wizard / Ranger/ Druid / Bard"
 level_sizing_text: "20 / 20 / 20 / 20 / 20"
 # Used for HD.
