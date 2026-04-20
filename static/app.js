@@ -434,9 +434,8 @@ document.getElementById("link-ok-btn").addEventListener("click", () => {
   applyLink(document.getElementById("link-url").value.trim());
 });
 document.getElementById("link-remove-btn").addEventListener("click", () => applyLink(""));
-document.getElementById("link-cancel-btn").addEventListener("click", () => closeLinkDialog(true));
 document.getElementById("link-url").addEventListener("keydown", (e) => {
-  if (e.key === "Enter") applyLink(document.getElementById("link-url").value.trim());
+  if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) applyLink(document.getElementById("link-url").value.trim());
   if (e.key === "Escape") closeLinkDialog(true);
 });
 document.getElementById("link-dialog").addEventListener("keydown", (e) => {
@@ -521,5 +520,6 @@ document.querySelectorAll(".tab-btn").forEach((btn) => {
 // ── Init ───────────────────────────────────────────────────────────────────
 
 document.getElementById("edit-dialog-hint").textContent = `${_modKey}+↵ to save · Esc to cancel`;
+document.getElementById("link-dialog-hint").textContent = `${_modKey}+↵ to save · Esc to cancel`;
 
 load();

@@ -362,6 +362,7 @@ textarea:focus {
   display: flex;
   gap: 0.5rem;
   justify-content: flex-end;
+  align-items: center;
 }
 
 #link-dialog-btns button {
@@ -378,16 +379,6 @@ textarea:focus {
 
 #link-dialog-btns button:hover {
   background: var(--button-bg);
-}
-
-/* Cancel uses the sidebar background so it reads as a secondary action. */
-#link-cancel-btn {
-  background: var(--sidebar-bg);
-  color: var(--sheet-fontcolor);
-}
-
-#link-cancel-btn:hover {
-  background: var(--sidebar-bg);
 }
 
 /* Remove uses the save/danger color to signal a destructive action. */
@@ -458,7 +449,8 @@ textarea:focus {
 }
 
 #edit-dialog-hint,
-#edit-dialog-syntax-hint {
+#edit-dialog-syntax-hint,
+#link-dialog-hint {
   color: var(--sheet-fontcolor);
   font-family: var(--sheet-font);
   font-size: var(--sheet-font-size);
