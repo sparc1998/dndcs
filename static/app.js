@@ -274,14 +274,14 @@ async function applyConfig() {
     ["card_bg", "--card-bg"],
     ["tag_bg", "--tag-bg"],
     ["header_font", "--header-font"],
-    ["header_fontcolor", "--header-fontcolor"],
+    ["header_font_color", "--header-font_color"],
     ["button_font", "--button-font"],
-    ["button_fontcolor", "--button-fontcolor"],
+    ["button_font_color", "--button-font_color"],
     ["button_bg", "--button-bg"],
     ["save_button_bg", "--save-button-bg"],
-    ["save_button_fontcolor", "--save-button-fontcolor"],
+    ["save_button_font_color", "--save-button-font_color"],
     ["sheet_font", "--sheet-font"],
-    ["sheet_fontcolor", "--sheet-fontcolor"],
+    ["sheet_font_color", "--sheet-font_color"],
   ];
   const px = [
     ["header_font_size", "--header-font-size"],

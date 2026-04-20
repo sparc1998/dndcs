@@ -12,16 +12,16 @@
   --tag-bg: #c8e6c9;
   --header-font: Helvetica Neue, Arial, sans-serif;
   --header-font-size: 14px;
-  --header-fontcolor: #2e7d32;
+  --header-font-color: #2e7d32;
   --button-font: Helvetica Neue, Arial, sans-serif;
   --button-font-size: 14px;
-  --button-fontcolor: #ffffff;
+  --button-font-color: #ffffff;
   --button-bg: #4caf50;
   --save-button-bg: #c0392b;
-  --save-button-fontcolor: #ffffff;
+  --save-button-font-color: #ffffff;
   --sheet-font: Helvetica Neue, Arial, sans-serif;
   --sheet-font-size: 14px;
-  --sheet-fontcolor: #000000;
+  --sheet-font-color: #000000;
 }
 
 /* Reset browser default margins, padding, and box model. */
@@ -38,7 +38,7 @@ body {
   font-family: var(--sheet-font);
   font-size: var(--sheet-font-size);
   background: var(--main-bg);
-  color: var(--sheet-fontcolor);
+  color: var(--sheet-font-color);
   height: 100vh;
   display: flex;
   overflow: hidden;
@@ -76,7 +76,7 @@ body {
 #tabs {
   display: flex;
   gap: 0.5rem;
-  border-bottom: 2px solid var(--sheet-fontcolor);
+  border-bottom: 2px solid var(--sheet-font-color);
   padding-bottom: 0;
 }
 
@@ -86,7 +86,7 @@ body {
   background: none;
   border: none;
   border-bottom: 3px solid transparent;
-  color: var(--sheet-fontcolor);
+  color: var(--sheet-font-color);
   cursor: pointer;
   font-family: var(--header-font);
   font-size: var(--header-font-size);
@@ -96,12 +96,12 @@ body {
 }
 
 .tab-btn.active {
-  color: var(--header-fontcolor);
-  border-bottom-color: var(--header-fontcolor);
+  color: var(--header-font-color);
+  border-bottom-color: var(--header-font-color);
 }
 
 .tab-btn:hover:not(.active) {
-  color: var(--header-fontcolor);
+  color: var(--header-font-color);
 }
 
 /* ── Tab panels ── */
@@ -141,7 +141,7 @@ body {
 label {
   font-family: var(--sheet-font);
   font-size: var(--sheet-font-size);
-  color: var(--sheet-fontcolor);
+  color: var(--sheet-font-color);
   white-space: nowrap;
 }
 
@@ -152,7 +152,7 @@ textarea {
   background: var(--textbox-selected-bg);
   border: 1px solid var(--textbox-selected-bg);
   border-radius: 6px;
-  color: var(--sheet-fontcolor);
+  color: var(--sheet-font-color);
   font-family: var(--sheet-font);
   font-size: var(--sheet-font-size);
   padding: 0.6rem 0.8rem;
@@ -163,7 +163,7 @@ textarea {
 
 input[type="text"]:focus,
 textarea:focus {
-  border-color: var(--header-fontcolor);
+  border-color: var(--header-font-color);
   outline: none;
 }
 
@@ -196,7 +196,7 @@ textarea:focus {
   background: var(--tag-bg);
   border: 1px solid var(--tag-bg);
   border-radius: 20px;
-  color: var(--header-fontcolor);
+  color: var(--header-font-color);
   font-family: var(--header-font);
   font-size: var(--header-font-size);
   padding: 0.2rem 0.65rem;
@@ -204,19 +204,19 @@ textarea:focus {
 
 /* Left border acts as a visual bullet / quote marker for note text. */
 .note-entry {
-  color: var(--sheet-fontcolor);
+  color: var(--sheet-font-color);
   font-family: var(--sheet-font);
   font-size: var(--sheet-font-size);
   line-height: 1.5;
   padding-left: 1rem;
-  border-left: 2px solid var(--sheet-fontcolor);
+  border-left: 2px solid var(--sheet-font-color);
 }
 
 /* ── Add-note form ── */
 
 /* Visually separated from the notes list by a top border. */
 #add-note-section {
-  border-top: 1px solid var(--sheet-fontcolor);
+  border-top: 1px solid var(--sheet-font-color);
   padding-top: 1rem;
   display: flex;
   flex-direction: column;
@@ -227,7 +227,7 @@ textarea:focus {
   font-family: var(--header-font);
   font-size: var(--header-font-size);
   font-weight: normal;
-  color: var(--sheet-fontcolor);
+  color: var(--sheet-font-color);
 }
 
 /* Generic full-width action button used in panels. */
@@ -235,7 +235,7 @@ textarea:focus {
   background: var(--button-bg);
   border: none;
   border-radius: 6px;
-  color: var(--button-fontcolor);
+  color: var(--button-font-color);
   cursor: pointer;
   font-family: var(--button-font);
   font-size: var(--button-font-size);
@@ -259,7 +259,7 @@ textarea:focus {
   font-family: var(--header-font);
   font-size: var(--header-font-size);
   font-weight: normal;
-  color: var(--sheet-fontcolor);
+  color: var(--sheet-font-color);
   text-align: center;
 }
 
@@ -268,7 +268,7 @@ textarea:focus {
   background: var(--save-button-bg);
   border: none;
   border-radius: 8px;
-  color: var(--save-button-fontcolor);
+  color: var(--save-button-font-color);
   cursor: pointer;
   font-family: var(--button-font);
   font-size: var(--button-font-size);
@@ -291,7 +291,7 @@ textarea:focus {
 #status {
   font-family: var(--sheet-font);
   font-size: var(--sheet-font-size);
-  color: var(--sheet-fontcolor);
+  color: var(--sheet-font-color);
   text-align: center;
   min-height: 1.2em;
 }
@@ -314,7 +314,7 @@ textarea:focus {
   cursor: text;
   font-family: var(--sheet-font);
   font-size: var(--sheet-font-size);
-  color: var(--sheet-fontcolor);
+  color: var(--sheet-font-color);
   padding: 0.2rem 0.4rem;
   background: var(--textbox-unselected-bg);
   border: 1px solid var(--textbox-unselected-bg);
@@ -324,7 +324,7 @@ textarea:focus {
 /* Show an em dash when the field has no content so the box doesn't collapse. */
 .field-display:empty::after {
   content: "—";
-  color: var(--sheet-fontcolor);
+  color: var(--sheet-font-color);
 }
 
 /* Restore indentation for bullet lists; the global reset zeroes padding so
@@ -339,7 +339,9 @@ textarea:focus {
 /* Rendered links inside display spans and note entries share the same style. */
 .field-display a,
 .note-entry a {
-  color: var(--header-fontcolor);
+  color: var(--header-font-color);
+  font-family: var(--sheet-font);
+  font-size: var(--sheet-font-size);
   text-decoration: underline;
 }
 
@@ -374,7 +376,7 @@ textarea:focus {
 }
 
 #link-dialog-box label {
-  color: var(--sheet-fontcolor);
+  color: var(--sheet-font-color);
 }
 
 #link-dialog-btns {
@@ -388,7 +390,7 @@ textarea:focus {
   background: var(--button-bg);
   border: none;
   border-radius: 6px;
-  color: var(--button-fontcolor);
+  color: var(--button-font-color);
   cursor: pointer;
   font-family: var(--button-font);
   font-size: var(--button-font-size);
@@ -403,7 +405,7 @@ textarea:focus {
 /* Remove uses the save/danger color to signal a destructive action. */
 #link-remove-btn {
   background: var(--save-button-bg);
-  color: var(--save-button-fontcolor);
+  color: var(--save-button-font-color);
 }
 
 #link-remove-btn:hover {
@@ -470,7 +472,7 @@ textarea:focus {
 #edit-dialog-hint,
 #edit-dialog-syntax-hint,
 #link-dialog-hint {
-  color: var(--sheet-fontcolor);
+  color: var(--sheet-font-color);
   font-family: var(--sheet-font);
   font-size: var(--sheet-font-size);
   opacity: 0.75;
@@ -481,7 +483,7 @@ textarea:focus {
   background: var(--button-bg);
   border: none;
   border-radius: 6px;
-  color: var(--button-fontcolor);
+  color: var(--button-font-color);
   cursor: pointer;
   font-family: var(--button-font);
   font-size: var(--button-font-size);

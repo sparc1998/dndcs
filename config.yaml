@@ -23,24 +23,24 @@ textbox_unselected_bg: "white"
 # textboxes, and hint text at the bottom of the data-expandable dialog box.
 
 sheet_font: "Helvetica Neue, Arial, sans-serif"
-sheet_font_size: 14
-sheet_fontcolor: "black"
+sheet_font_size: 16
+sheet_font_color: "black"
 
 # ── Header ─────────────────────────────────────────────────────────────────────
 # Applies to: tab labels, tab selection underline, sidebar section title, link text.
 
 header_font: "Helvetica Neue, Arial, sans-serif"
-header_font_size: 14
-header_fontcolor: "#35803E"
+header_font_size: 18
+header_font_color: "#35803E"
 
 # ── Buttons ────────────────────────────────────────────────────────────────────
 
 button_font: "Helvetica Neue, Arial, sans-serif"
-button_font_size: 14
+button_font_size: 16
 button_bg: "#4caf50"
-button_fontcolor: "#ffffff"
+button_font_color: "#ffffff"
 save_button_bg: "#4caf50"
-save_button_fontcolor: "#ffffff"
+save_button_font_color: "#ffffff"
 
 # ── Backup ─────────────────────────────────────────────────────────────────────
 # File extension used for automatic backup saves. The backup file is written
