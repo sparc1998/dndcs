@@ -142,6 +142,7 @@ label {
   font-family: var(--sheet-font);
   font-size: var(--sheet-font-size);
   color: var(--sheet-fontcolor);
+  white-space: nowrap;
 }
 
 /* Shared styling for all text inputs and textareas.
