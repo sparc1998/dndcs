@@ -50,16 +50,22 @@ function renderFormula(raw) {
   }
 }
 
-// Converts markdown-style [label](url) syntax in raw text into HTML <a> tags.
-// Any text outside link syntax is escaped and passed through as plain text.
-function renderLinks(raw) {
-  const linkRe = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g;
+// Renders inline markup: [label](url) links, **bold**, and _italic_.
+// Text outside any markup is HTML-escaped.
+function renderInline(raw) {
+  const re = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|\*\*([^*]+)\*\*|_([^_]+)_/g;
   let result = "";
   let last = 0;
   let m;
-  while ((m = linkRe.exec(raw)) !== null) {
+  while ((m = re.exec(raw)) !== null) {
     result += escHtml(raw.slice(last, m.index));
-    result += `<a href="${escHtml(m[2])}" target="_blank" rel="noopener noreferrer">${escHtml(m[1])}</a>`;
+    if (m[1] !== undefined) {
+      result += `<a href="${escHtml(m[2])}" target="_blank" rel="noopener noreferrer">${escHtml(m[1])}</a>`;
+    } else if (m[3] !== undefined) {
+      result += `<strong>${escHtml(m[3])}</strong>`;
+    } else {
+      result += `<em>${escHtml(m[4])}</em>`;
+    }
     last = m.index + m[0].length;
   }
   result += escHtml(raw.slice(last));
@@ -90,14 +96,14 @@ function renderFormatted(raw) {
     if (line.startsWith('* ')) {
       if (listType !== 'ul') flushList();
       listType = 'ul';
-      listItems.push(renderLinks(line.slice(2)));
+      listItems.push(renderInline(line.slice(2)));
     } else if (/^\d+\) /.test(line)) {
       if (listType !== 'ol') flushList();
       listType = 'ol';
-      listItems.push(renderLinks(line.replace(/^\d+\) /, '')));
+      listItems.push(renderInline(line.replace(/^\d+\) /, '')));
     } else {
       flushList();
-      parts.push(renderLinks(line));
+      parts.push(renderInline(line));
     }
   }
   flushList();
@@ -181,7 +187,7 @@ function openEditDialog(inputEl, displayEl) {
   if (inputEl.hasAttribute("data-formula")) {
     syntaxHint.textContent = "Formulas: 1 + 2 * 3 · Comments: {your note here}";
   } else if (inputEl.hasAttribute("data-formattable")) {
-    let hint = `${_modKey}+K to insert link · [label](url) · * bullet · 1) numbered`;
+    let hint = `${_modKey}+K to insert link · [label](url) · **bold** · _italic_ · * bullet · 1) numbered`;
     if (inputEl.hasAttribute("data-2col")) hint += " · --- to split columns";
     syntaxHint.textContent = hint;
   } else {

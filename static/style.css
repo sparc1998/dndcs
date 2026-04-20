@@ -156,6 +156,7 @@ label {
   font-family: var(--sheet-font);
   font-size: var(--sheet-font-size);
   color: var(--sheet-font-color);
+  font-weight: bold;
   white-space: nowrap;
 }
 
