@@ -45,6 +45,7 @@ _DEFAULTS: dict[str, Any] = {
     "name_sizing_text": "Firstname Lastname",
     "class_sizing_text": "Fighter / Wizard",
     "subclass_sizing_text": "Champion / Bladesinger",
+    "race_line_sizing_text": "Variant Human",
     "level_sizing_text": "20 / 20",
     "experience_sizing_text": "000000",
 }

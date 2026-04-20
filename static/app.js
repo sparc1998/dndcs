@@ -265,6 +265,11 @@ async function applyConfig() {
     fitInput(document.getElementById("class"), cfg.class_sizing_text);
   if (cfg.subclass_sizing_text)
     fitInput(document.getElementById("subclass"), cfg.subclass_sizing_text);
+  if (cfg.race_line_sizing_text) {
+    fitInput(document.getElementById("race"), cfg.race_line_sizing_text);
+    fitInput(document.getElementById("background"), cfg.race_line_sizing_text);
+    fitInput(document.getElementById("alignment"), cfg.race_line_sizing_text);
+  }
   if (cfg.level_sizing_text)
     fitInput(document.getElementById("level"), cfg.level_sizing_text);
   if (cfg.experience_sizing_text)
@@ -289,18 +294,27 @@ function render() {
   const subclassRaw = character.bio?.subclass ?? "";
   const levelRaw = character.bio?.level ?? "";
   const experienceRaw = character.bio?.experience ?? "";
+  const raceRaw = character.bio?.race ?? "";
+  const backgroundRaw = character.bio?.background ?? "";
+  const alignmentRaw = character.bio?.alignment ?? "";
   document.getElementById("player-name").value = playerRaw;
   document.getElementById("character-name").value = charRaw;
   document.getElementById("class").value = classRaw;
   document.getElementById("subclass").value = subclassRaw;
   document.getElementById("level").value = levelRaw;
   document.getElementById("experience").value = experienceRaw;
+  document.getElementById("race").value = raceRaw;
+  document.getElementById("background").value = backgroundRaw;
+  document.getElementById("alignment").value = alignmentRaw;
   updateDisplay(document.getElementById("player-name-display"), playerRaw);
   updateDisplay(document.getElementById("character-name-display"), charRaw);
   updateDisplay(document.getElementById("class-display"), classRaw);
   updateDisplay(document.getElementById("subclass-display"), subclassRaw);
   updateDisplay(document.getElementById("level-display"), levelRaw);
   updateDisplay(document.getElementById("experience-display"), experienceRaw);
+  updateDisplay(document.getElementById("race-display"), raceRaw);
+  updateDisplay(document.getElementById("background-display"), backgroundRaw);
+  updateDisplay(document.getElementById("alignment-display"), alignmentRaw);
   renderNotes();
 }
 
@@ -345,6 +359,9 @@ function collectCharacter() {
       subclass: document.getElementById("subclass").value,
       level: document.getElementById("level").value,
       experience: document.getElementById("experience").value,
+      race: document.getElementById("race").value,
+      background: document.getElementById("background").value,
+      alignment: document.getElementById("alignment").value,
     },
     campaign_notes: character.campaign_notes ?? [],
   };
@@ -426,6 +443,9 @@ document.getElementById("player-name").addEventListener("input", autosave);
 document.getElementById("character-name").addEventListener("input", autosave);
 document.getElementById("class").addEventListener("input", autosave);
 document.getElementById("subclass").addEventListener("input", autosave);
+document.getElementById("race").addEventListener("input", autosave);
+document.getElementById("background").addEventListener("input", autosave);
+document.getElementById("alignment").addEventListener("input", autosave);
 document.getElementById("level").addEventListener("input", autosave);
 document.getElementById("experience").addEventListener("input", autosave);
 

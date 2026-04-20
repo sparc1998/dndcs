@@ -23,6 +23,12 @@ properties:
         type: string
       subclass:
         type: string
+      race:
+        type: string
+      background:
+        type: string
+      alignment:
+        type: string
       level:
         type: string
       experience:
