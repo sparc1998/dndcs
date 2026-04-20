@@ -341,6 +341,49 @@ textarea:focus {
   color: var(--sheet-font-color);
 }
 
+/* ── Background / History / Allies & Affiliations ── */
+
+.bha-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  width: 100%;
+}
+
+.bha-header {
+  text-align: center;
+  font-family: var(--sheet-font);
+  font-size: var(--sheet-font-size);
+  color: var(--sheet-font-color);
+}
+
+/* Override inline-block so the 2-col display spans full width as a flex row.
+   align-items: stretch makes both columns equal height so the border-left
+   divider on .two-col-right extends the full height of the box. */
+.field-display-2col {
+  display: flex !important;
+  width: 100%;
+  align-items: stretch;
+}
+
+.two-col-left,
+.two-col-right,
+.two-col-single {
+  flex: 1;
+  min-width: 0;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+}
+
+.two-col-left  { padding-right: 1rem; }
+.two-col-right { padding-left: 1rem; border-left: 1px solid var(--sheet-font-color); }
+
+.col-rule {
+  border: none;
+  border-top: 1px solid rgba(128, 128, 128, 0.4);
+  margin: 0.5rem 0;
+}
+
 /* Restore indentation for bullet lists; the global reset zeroes padding so
    list markers render outside the container without this. */
 .field-display ul,

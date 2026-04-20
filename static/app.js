@@ -70,7 +70,8 @@ function renderLinks(raw) {
 // Lines starting with "* " become <ul><li> elements.
 // Lines starting with "<digits>) " become <ol><li> elements (any number works).
 // Consecutive lines of the same list type are grouped together.
-// Non-list lines are rendered with renderLinks and joined with <br>.
+// <br> is only inserted between two non-block parts so lists don't add extra
+// whitespace; use a blank line in the source to get intentional extra spacing.
 function renderFormatted(raw) {
   const lines = raw.split('\n');
   const parts = [];
@@ -100,17 +101,67 @@ function renderFormatted(raw) {
     }
   }
   flushList();
-  return parts.join('<br>');
+
+  const isBlock = s => s.startsWith('<ul>') || s.startsWith('<ol>');
+  let html = '';
+  for (let i = 0; i < parts.length; i++) {
+    if (i > 0 && !isBlock(parts[i - 1]) && !isBlock(parts[i])) html += '<br>';
+    html += parts[i];
+  }
+  return html;
+}
+
+const _isSeparator = line => /^-{2,}\s*$/.test(line);
+
+// Splits raw text into two columns at the "--"-or-more line closest to the
+// character midpoint. All separator lines are stripped from both halves.
+// Falls back to a single column if no separator is present.
+function render2Col(raw) {
+  if (!raw.trim()) return '';
+  const lines = raw.split('\n');
+  const mid = raw.length / 2;
+  let splitIdx = -1;
+  let bestDist = Infinity;
+  let charOffset = 0;
+  for (let i = 0; i < lines.length; i++) {
+    if (_isSeparator(lines[i])) {
+      const dist = Math.abs(charOffset + lines[i].length / 2 - mid);
+      if (dist < bestDist) { bestDist = dist; splitIdx = i; }
+    }
+    charOffset += lines[i].length + 1;
+  }
+  // Render a half-column: trim trailing separators/blanks, split remaining
+  // --- lines into segments, render each with renderFormatted, join with <hr>.
+  const renderHalf = arr => {
+    const lines = [...arr];
+    while (lines.length && (lines[lines.length - 1] === '' || _isSeparator(lines[lines.length - 1]))) lines.pop();
+    const segments = [];
+    let cur = [];
+    for (const line of lines) {
+      if (_isSeparator(line)) { segments.push(cur); cur = []; }
+      else cur.push(line);
+    }
+    segments.push(cur);
+    return segments.map(s => renderFormatted(s.join('\n'))).join('<hr class="col-rule">');
+  };
+  if (splitIdx === -1) {
+    return `<div class="two-col-single">${renderHalf(lines)}</div>`;
+  }
+  return `<div class="two-col-left">${renderHalf(lines.slice(0, splitIdx))}</div>` +
+         `<div class="two-col-right">${renderHalf(lines.slice(splitIdx + 1))}</div>`;
 }
 
 // Renders raw text into a display element.
 // For data-formula fields the formula is evaluated and only the result is shown.
+// For data-2col fields the text is split into two columns at the nearest "--" line.
 // For all other fields markdown links and bullet points are rendered.
 function updateDisplay(displayEl, rawText) {
   const inputId = displayEl.id.replace(/-display$/, "");
   const inputEl = document.getElementById(inputId);
   if (inputEl && inputEl.hasAttribute("data-formula")) {
     displayEl.textContent = renderFormula(rawText);
+  } else if (inputEl && inputEl.hasAttribute("data-2col")) {
+    displayEl.innerHTML = render2Col(rawText);
   } else {
     displayEl.innerHTML = renderFormatted(rawText);
   }
@@ -130,7 +181,9 @@ function openEditDialog(inputEl, displayEl) {
   if (inputEl.hasAttribute("data-formula")) {
     syntaxHint.textContent = "Formulas: 1 + 2 * 3 · Comments: {your note here}";
   } else if (inputEl.hasAttribute("data-formattable")) {
-    syntaxHint.textContent = `${_modKey}+K to insert link · [label](url) · * bullet · 1) numbered`;
+    let hint = `${_modKey}+K to insert link · [label](url) · * bullet · 1) numbered`;
+    if (inputEl.hasAttribute("data-2col")) hint += " · --- to split columns";
+    syntaxHint.textContent = hint;
   } else {
     syntaxHint.textContent = "";
   }
@@ -361,6 +414,7 @@ function render() {
   const skinRaw = character.bio?.skin ?? "";
   const personalityTraitsRaw = character.bio?.personality_traits ?? "";
   const idealsRaw = character.bio?.ideals ?? "";
+  const backgroundHistoryRaw = character.bio?.background_history ?? "";
   const bondsRaw = character.bio?.bonds ?? "";
   const traitsRaw = character.bio?.traits ?? "";
   document.getElementById("player-name").value = playerRaw;
@@ -382,6 +436,7 @@ function render() {
   document.getElementById("skin").value = skinRaw;
   document.getElementById("personality-traits").value = personalityTraitsRaw;
   document.getElementById("ideals").value = idealsRaw;
+  document.getElementById("background-history").value = backgroundHistoryRaw;
   document.getElementById("bonds").value = bondsRaw;
   document.getElementById("traits").value = traitsRaw;
   updateDisplay(document.getElementById("player-name-display"), playerRaw);
@@ -403,6 +458,7 @@ function render() {
   updateDisplay(document.getElementById("skin-display"), skinRaw);
   updateDisplay(document.getElementById("personality-traits-display"), personalityTraitsRaw);
   updateDisplay(document.getElementById("ideals-display"), idealsRaw);
+  updateDisplay(document.getElementById("background-history-display"), backgroundHistoryRaw);
   updateDisplay(document.getElementById("bonds-display"), bondsRaw);
   updateDisplay(document.getElementById("traits-display"), traitsRaw);
   renderNotes();
@@ -464,6 +520,7 @@ function collectCharacter() {
       ideals: document.getElementById("ideals").value,
       bonds: document.getElementById("bonds").value,
       traits: document.getElementById("traits").value,
+      background_history: document.getElementById("background-history").value,
     },
     campaign_notes: character.campaign_notes ?? [],
   };
