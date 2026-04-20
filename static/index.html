@@ -643,8 +643,12 @@
     });
 
     document.getElementById("edit-popover-done-btn").addEventListener("click", closeEditPopover);
+    let _backdropMousedown = false;
+    document.getElementById("edit-popover").addEventListener("mousedown", (e) => {
+      _backdropMousedown = e.target === document.getElementById("edit-popover");
+    });
     document.getElementById("edit-popover").addEventListener("click", (e) => {
-      if (e.target === document.getElementById("edit-popover")) closeEditPopover();
+      if (_backdropMousedown && e.target === document.getElementById("edit-popover")) closeEditPopover();
     });
     document.getElementById("edit-popover").addEventListener("keydown", (e) => {
       if (e.key === "Escape" && !_linkDialogOpen) closeEditPopover();
