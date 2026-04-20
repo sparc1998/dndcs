@@ -2,7 +2,7 @@
 
 let character = null;
 
-const _isMac = /Mac|iPhone|iPad|iPod/.test(navigator.userAgentData?.platform ?? navigator.platform ?? "");
+const _isMac = /Mac|iPhone|iPad|iPod/.test(navigator.platform);
 const _modKey = _isMac ? "⌘" : "Ctrl";
 
 // Off-screen canvas used by fitInput to measure text width without touching the DOM.
@@ -93,7 +93,7 @@ function openEditDialog(inputEl, displayEl) {
   if (inputEl.hasAttribute("data-formula")) {
     syntaxHint.textContent = "Formulas: 1 + 2 * 3 · Comments: {your note here}";
   } else if (inputEl.hasAttribute("data-linkable")) {
-    syntaxHint.textContent = `${_modKey}K to insert link · [label](url)`;
+    syntaxHint.textContent = `${_modKey}+K to insert link · [label](url)`;
   } else {
     syntaxHint.textContent = "";
   }
@@ -520,6 +520,6 @@ document.querySelectorAll(".tab-btn").forEach((btn) => {
 
 // ── Init ───────────────────────────────────────────────────────────────────
 
-document.getElementById("edit-dialog-hint").textContent = `${_modKey}↵ to save · Esc to cancel`;
+document.getElementById("edit-dialog-hint").textContent = `${_modKey}+↵ to save · Esc to cancel`;
 
 load();
