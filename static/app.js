@@ -201,8 +201,10 @@ function openEditDialog(inputEl, displayEl) {
 function closeEditDialog() {
   if (_editDialogField) {
     const ta = document.getElementById("edit-dialog-textarea");
-    if (ta.value !== _editDialogOriginalValue)
-      _undoStack.push({ field: _editDialogField, display: _editDialogDisplay, value: _editDialogOriginalValue });
+    if (ta.value !== _editDialogOriginalValue) {
+      const f = _editDialogField, d = _editDialogDisplay, v = _editDialogOriginalValue;
+      _undoStack.push({ undo: () => { f.value = v; updateDisplay(d, v); autosave(); } });
+    }
     _editDialogField.value = ta.value;
     updateDisplay(_editDialogDisplay, ta.value);
     autosave();
@@ -524,11 +526,13 @@ function closeNoteDialog() {
   if (tags.length === 0) tags.push("general");
   const note = { tags, text: rawText };
   character.campaign_notes = character.campaign_notes ?? [];
+  const previousNotes = character.campaign_notes.map((n) => ({ ...n, tags: [...n.tags] }));
   if (_noteDialogIndex === null) {
     character.campaign_notes.unshift(note);
   } else {
     character.campaign_notes[_noteDialogIndex] = note;
   }
+  _undoStack.push({ undo: () => { character.campaign_notes = previousNotes; renderNotes(); autosave(); } });
   document.getElementById("note-dialog").classList.add("hidden");
   document.getElementById("note-dialog-syntax-hint").textContent = "";
   _noteDialogIndex = null;
@@ -657,10 +661,7 @@ document.addEventListener("keydown", (e) => {
   if (!document.getElementById("note-dialog").classList.contains("hidden")) return;
   if (!_undoStack.length) return;
   e.preventDefault();
-  const { field, display, value } = _undoStack.pop();
-  field.value = value;
-  updateDisplay(display, value);
-  autosave();
+  _undoStack.pop().undo();
 });
 
 document.addEventListener("keydown", (e) => {
