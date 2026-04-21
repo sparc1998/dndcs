@@ -328,24 +328,19 @@ async function applyConfig() {
   const direct = [
     ["main_bg", "--main-bg"],
     ["sidebar_bg", "--sidebar-bg"],
-    ["textbox_selected_bg", "--textbox-selected-bg"],
-    ["textbox_unselected_bg", "--textbox-unselected-bg"],
+    ["dialog_bg", "--dialog-bg"],
     ["card_bg", "--card-bg"],
     ["tag_bg", "--tag-bg"],
     ["header_font", "--header-font"],
-    ["header_font_color", "--header-font_color"],
-    ["button_font", "--button-font"],
-    ["button_font_color", "--button-font_color"],
+    ["secondary_font_color", "--secondary-font-color"],
+    ["button_font_color", "--button-font-color"],
     ["button_bg", "--button-bg"],
-    ["save_button_bg", "--save-button-bg"],
-    ["save_button_font_color", "--save-button-font_color"],
-    ["sheet_font", "--sheet-font"],
-    ["sheet_font_color", "--sheet-font_color"],
+    ["main_font", "--main-font"],
+    ["primary_font_color", "--primary-font-color"],
   ];
   const px = [
     ["header_font_size", "--header-font-size"],
-    ["button_font_size", "--button-font-size"],
-    ["sheet_font_size", "--sheet-font-size"],
+    ["main_font_size", "--main-font-size"],
   ];
 
   for (const [key, cssVar] of direct) {

@@ -1,46 +1,31 @@
 # D&D Character Sheet Configuration
 
-# * Colors can be set to CSS values: hex (#1a1a2e), rgb(0,0,0), or named
-#   colors.
-# * Fonts can be set to any web-safe font or Google Fonts name. Examples:
-#   "Helvetica Neue, Arial, sans-serif", "Cinzel", "Georgia"
-# * Font sizes are integers in pixels. Recommended range: 12–20.
+# ── Colors ────────────────────────────────────────────────────────────────────
+# Colors can be set to CSS values: hex (#1a1a2e), rgb(0,0,0), or named colors.
 
-# ── Backgrounds ────────────────────────────────────────────────────────────────
-
-# Primary/sidebar/card/tag background colors
+# Background colors
 main_bg: "#d5f0d9"
 sidebar_bg: "white"
 card_bg: "#A9DCAF"
 tag_bg: "#CAEACE"
+dialog_bg: "white"
+button_bg: "#4caf50"
 
-# Background color for textboxes
-textbox_selected_bg: "white"
-textbox_unselected_bg: "white"
+# Text colors
+primary_font_color: "black"
+# Secondary font is used for the headers, tab selection underline, links, and tags.
+secondary_font_color: "#35803E"
+button_font_color: "white"
 
-# ── Sheet ──────────────────────────────────────────────────────────────────────
-# Applies to non-headers and non-button text. For example, it applies to: fields,
-# textboxes, and hint text at the bottom of the data-expandable dialog box.
+# ── Fonts ──────────────────────────────────────────────────────────────────
+# Fonts can be set to any web-safe font or Google Fonts name. Examples:
+#   "Helvetica Neue, Arial, sans-serif", "Cinzel", "Georgia"
+# Font sizes are integers in pixels. Recommended range: 12–20.
 
-sheet_font: "Helvetica Neue, Arial, sans-serif"
-sheet_font_size: 14
-sheet_font_color: "black"
-
-# ── Header ─────────────────────────────────────────────────────────────────────
-# Applies to: tab labels, tab selection underline, sidebar section title, link text.
-
+main_font: "Helvetica Neue, Arial, sans-serif"
+main_font_size: 14
 header_font: "Helvetica Neue, Arial, sans-serif"
 header_font_size: 18
-header_font_color: "#35803E"
-
-# ── Buttons ────────────────────────────────────────────────────────────────────
-
-button_font: "Helvetica Neue, Arial, sans-serif"
-button_font_size: 14
-button_bg: "#4caf50"
-button_font_color: "#ffffff"
-save_button_bg: "#4caf50"
-save_button_font_color: "#ffffff"
 
 # ── Backup ─────────────────────────────────────────────────────────────────────
 # File extension used for automatic backup saves. The backup file is written
