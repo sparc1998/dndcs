@@ -570,6 +570,9 @@ document.querySelectorAll("[data-formattable]").forEach((el) => {
 
 // Edit dialog: Done button, Escape key, and textarea sync.
 document.getElementById("edit-dialog-done-btn").addEventListener("click", closeEditDialog);
+document.getElementById("edit-dialog").addEventListener("click", (e) => {
+  if (!document.getElementById("edit-dialog-box").contains(e.target)) cancelEditDialog();
+});
 document.getElementById("edit-dialog").addEventListener("keydown", (e) => {
   if (e.key === "Escape" && !_linkDialogOpen) cancelEditDialog();
   if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) closeEditDialog();
@@ -591,6 +594,9 @@ document.getElementById("link-remove-btn").addEventListener("click", () => apply
 document.getElementById("link-url").addEventListener("keydown", (e) => {
   if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) applyLink(document.getElementById("link-url").value.trim());
   if (e.key === "Escape") closeLinkDialog(true);
+});
+document.getElementById("link-dialog").addEventListener("click", (e) => {
+  if (!document.getElementById("link-dialog-box").contains(e.target)) closeLinkDialog(true);
 });
 document.getElementById("link-dialog").addEventListener("keydown", (e) => {
   if (e.key === "Escape") closeLinkDialog(true);
