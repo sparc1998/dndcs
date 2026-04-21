@@ -27,6 +27,7 @@ _DEFAULTS: dict[str, Any] = {
     "sidebar_bg": "#16213e",
     "dialog_bg": "#0f3460",
     "card_bg": "#16213e",
+    "card_hover_bg": "#1a2a4a",
     "tag_bg": "#0f3460",
     "header_font": "Helvetica Neue, Arial, sans-serif",
     "header_font_size": 14,

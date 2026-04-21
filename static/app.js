@@ -330,6 +330,7 @@ async function applyConfig() {
     ["sidebar_bg", "--sidebar-bg"],
     ["dialog_bg", "--dialog-bg"],
     ["card_bg", "--card-bg"],
+    ["card_hover_bg", "--card-hover-bg"],
     ["tag_bg", "--tag-bg"],
     ["header_font", "--header-font"],
     ["secondary_font_color", "--secondary-font-color"],
@@ -465,14 +466,22 @@ function render() {
   renderNotes();
 }
 
-// Rebuilds the #notes-list DOM from the character's campaign_notes array.
-// Each note becomes a card with tag chips and one paragraph per note entry.
+// Converts legacy { tags, notes: [...] } format to { tags, text }.
+function normalizeNote(note) {
+  if (note.text !== undefined) return note;
+  return { tags: note.tags ?? [], text: (note.notes ?? []).join("\n") };
+}
+
+// Rebuilds the #notes-list DOM from character.campaign_notes.
+// Each note becomes a clickable card with tag chips and rendered text.
 function renderNotes() {
+  character.campaign_notes = (character.campaign_notes ?? []).map(normalizeNote);
   const list = document.getElementById("notes-list");
   list.innerHTML = "";
-  (character.campaign_notes ?? []).forEach((note) => {
+  character.campaign_notes.forEach((note, i) => {
     const card = document.createElement("div");
     card.className = "note-card";
+    card.addEventListener("click", () => openNoteDialog(i));
 
     const tagsRow = document.createElement("div");
     tagsRow.className = "tags-row";
@@ -484,15 +493,53 @@ function renderNotes() {
     });
     card.appendChild(tagsRow);
 
-    (note.notes ?? []).forEach((n) => {
-      const p = document.createElement("p");
-      p.className = "note-entry";
-      p.innerHTML = renderFormatted(n);
-      card.appendChild(p);
-    });
+    const textDiv = document.createElement("div");
+    textDiv.className = "note-entry";
+    textDiv.innerHTML = renderFormatted(note.text ?? "");
+    card.appendChild(textDiv);
 
     list.appendChild(card);
   });
+}
+
+// ── Note dialog ────────────────────────────────────────────────────────────
+
+let _noteDialogIndex = null;
+
+function openNoteDialog(index) {
+  _noteDialogIndex = index;
+  const note = index === null ? { tags: [], text: "" } : character.campaign_notes[index];
+  document.getElementById("note-dialog-tags").value = (note.tags ?? []).join(", ");
+  document.getElementById("note-dialog-text").value = note.text ?? "";
+  document.getElementById("note-dialog-syntax-hint").textContent =
+    `${_modKey}+K to insert link · [label](url) · **bold** · _italic_ · * bullet · 1) numbered`;
+  document.getElementById("note-dialog").classList.remove("hidden");
+  requestAnimationFrame(() => { document.getElementById("note-dialog-text").focus(); });
+}
+
+function closeNoteDialog() {
+  const rawTags = document.getElementById("note-dialog-tags").value;
+  const rawText = document.getElementById("note-dialog-text").value;
+  const tags = rawTags.split(",").map((t) => t.trim()).filter(Boolean);
+  if (tags.length === 0) tags.push("general");
+  const note = { tags, text: rawText };
+  character.campaign_notes = character.campaign_notes ?? [];
+  if (_noteDialogIndex === null) {
+    character.campaign_notes.unshift(note);
+  } else {
+    character.campaign_notes[_noteDialogIndex] = note;
+  }
+  document.getElementById("note-dialog").classList.add("hidden");
+  document.getElementById("note-dialog-syntax-hint").textContent = "";
+  _noteDialogIndex = null;
+  renderNotes();
+  autosave();
+}
+
+function cancelNoteDialog() {
+  document.getElementById("note-dialog").classList.add("hidden");
+  document.getElementById("note-dialog-syntax-hint").textContent = "";
+  _noteDialogIndex = null;
 }
 
 // Assembles the current character object from live DOM field values.
@@ -607,6 +654,7 @@ document.getElementById("link-dialog").addEventListener("keydown", (e) => {
 document.addEventListener("keydown", (e) => {
   if (!(e.metaKey || e.ctrlKey) || e.key !== "z") return;
   if (!document.getElementById("edit-dialog").classList.contains("hidden")) return;
+  if (!document.getElementById("note-dialog").classList.contains("hidden")) return;
   if (!_undoStack.length) return;
   e.preventDefault();
   const { field, display, value } = _undoStack.pop();
@@ -642,22 +690,16 @@ document.getElementById("level").addEventListener("input", autosave);
 document.getElementById("hd").addEventListener("input", autosave);
 document.getElementById("experience").addEventListener("input", autosave);
 
-// Add Note button: parse tags, append a new note to character state, and autosave.
-document.getElementById("add-note-btn").addEventListener("click", async () => {
-  const rawTags = document.getElementById("new-tags").value;
-  const rawNote = document.getElementById("new-note").value.trim();
-  if (!rawNote) return;
-  const tags = rawTags
-    .split(",")
-    .map((t) => t.trim())
-    .filter(Boolean);
-  if (tags.length === 0) tags.push("general");
-  character.campaign_notes = character.campaign_notes ?? [];
-  character.campaign_notes.push({ tags, notes: [rawNote] });
-  document.getElementById("new-tags").value = "";
-  document.getElementById("new-note").value = "";
-  renderNotes();
-  await autosave();
+document.getElementById("add-note-btn").addEventListener("click", () => openNoteDialog(null));
+
+// Note dialog: Done button, backdrop click, and keyboard shortcuts.
+document.getElementById("note-dialog-done-btn").addEventListener("click", closeNoteDialog);
+document.getElementById("note-dialog").addEventListener("click", (e) => {
+  if (!document.getElementById("note-dialog-box").contains(e.target)) cancelNoteDialog();
+});
+document.getElementById("note-dialog").addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && !_linkDialogOpen) cancelNoteDialog();
+  if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) closeNoteDialog();
 });
 
 // Save button: writes current state to the output file via /api/save and
@@ -696,5 +738,6 @@ document.querySelectorAll(".tab-btn").forEach((btn) => {
 
 document.getElementById("edit-dialog-hint").textContent = `${_modKey}+↵ to save · Esc to cancel`;
 document.getElementById("link-dialog-hint").textContent = `${_modKey}+↵ to save · Esc to cancel`;
+document.getElementById("note-dialog-hint").textContent = `${_modKey}+↵ to save · Esc to cancel`;
 
 load();

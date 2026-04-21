@@ -7,6 +7,7 @@
 main_bg: "#d5f0d9"
 sidebar_bg: "white"
 card_bg: "#A9DCAF"
+card_hover_bg: "#96CC9C"
 tag_bg: "#CAEACE"
 dialog_bg: "white"
 button_bg: "#4caf50"

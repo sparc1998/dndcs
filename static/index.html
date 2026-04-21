@@ -158,22 +158,10 @@
       </div>
     </div>
 
-    <!-- Campaign Notes panel: scrollable list of past notes + form to add new ones -->
+    <!-- Campaign Notes panel: add button + scrollable list of note cards -->
     <div id="panel-campaign" class="panel">
+      <button class="btn" id="add-note-btn">Add Note</button>
       <div id="notes-list"></div>
-
-      <div id="add-note-section">
-        <h3>Add Note</h3>
-        <div class="field">
-          <label for="new-tags">Tags (comma-separated)</label>
-          <input type="text" id="new-tags" placeholder="session-3, dungeon" data-formattable />
-        </div>
-        <div class="field">
-          <label for="new-note">Note</label>
-          <textarea id="new-note" rows="3" placeholder="Write a note…" data-formattable></textarea>
-        </div>
-        <button class="btn" id="add-note-btn">Add Note</button>
-      </div>
     </div>
   </section>
 
@@ -183,6 +171,21 @@
     <button id="save-btn">Save</button>
     <div id="status"></div>
   </aside>
+
+  <!-- Note dialog: resizable dialog for adding and editing campaign notes. -->
+  <div id="note-dialog" class="hidden" role="dialog" aria-modal="true">
+    <div id="note-dialog-box">
+      <input type="text" id="note-dialog-tags" placeholder="Tags (comma-separated)" />
+      <textarea id="note-dialog-text" data-formattable></textarea>
+      <div id="note-dialog-btns">
+        <div id="note-dialog-hints">
+          <span id="note-dialog-hint"></span>
+          <span id="note-dialog-syntax-hint"></span>
+        </div>
+        <button id="note-dialog-done-btn">Done</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Edit dialog: centered resizable textarea opened when clicking a data-expandable field display.
        Sits below the link dialog in z-index so cmd-k still works while editing. -->

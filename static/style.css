@@ -8,6 +8,7 @@
   --sidebar-bg: #e4e6e8;
   --dialog-bg: #ffffff;
   --card-bg: #eaeaea;
+  --card-hover-bg: #d8d8d8;
   --tag-bg: #c8e6c9;
   --header-font: Helvetica Neue, Arial, sans-serif;
   --header-font-size: 14px;
@@ -177,6 +178,13 @@ textarea:focus {
   outline: none;
 }
 
+/* Always show a visible border on inputs inside the edit and note dialogs. */
+#edit-dialog-box textarea,
+#note-dialog-box input,
+#note-dialog-box textarea {
+  border-color: var(--secondary-font-color);
+}
+
 /* ── Campaign notes ── */
 
 #notes-list {
@@ -193,6 +201,12 @@ textarea:focus {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  cursor: pointer;
+}
+
+.note-card:hover {
+  background: var(--card-hover-bg);
+  border-color: var(--card-hover-bg);
 }
 
 .note-card .tags-row {
@@ -220,24 +234,6 @@ textarea:focus {
   line-height: 1.5;
   padding-left: 1rem;
   border-left: 2px solid var(--primary-font-color);
-}
-
-/* ── Add-note form ── */
-
-/* Visually separated from the notes list by a top border. */
-#add-note-section {
-  border-top: 1px solid var(--primary-font-color);
-  padding-top: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-#add-note-section h3 {
-  font-family: var(--header-font);
-  font-size: var(--header-font-size);
-  font-weight: normal;
-  color: var(--primary-font-color);
 }
 
 /* Generic full-width action button used in panels. */
@@ -328,6 +324,11 @@ textarea:focus {
   background: var(--card-bg);
   border: 1px solid var(--card-bg);
   border-radius: 6px;
+}
+
+.field-display:hover {
+  background: var(--card-hover-bg);
+  border-color: var(--card-hover-bg);
 }
 
 /* Show an em dash when the field has no content so the box doesn't collapse. */
@@ -462,6 +463,77 @@ textarea:focus {
 
 #link-remove-btn:hover {
   background: var(--button-bg);
+}
+
+/* ── Note dialog ── */
+
+#note-dialog {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+#note-dialog-box {
+  background: var(--sidebar-bg);
+  border: 1px solid var(--sidebar-bg);
+  border-radius: 8px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 50%;
+  height: 28em;
+  min-width: 200px;
+  min-height: 10em;
+  resize: both;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+}
+
+#note-dialog-text {
+  flex: 1;
+  min-height: 0;
+  resize: none;
+  width: 100%;
+}
+
+#note-dialog-btns {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+#note-dialog-hints {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  justify-content: center;
+  margin-right: auto;
+}
+
+#note-dialog-hint,
+#note-dialog-syntax-hint {
+  color: var(--primary-font-color);
+  font-family: var(--main-font);
+  font-size: var(--main-font-size);
+  opacity: 0.75;
+  user-select: none;
+}
+
+#note-dialog-btns button {
+  background: var(--button-bg);
+  border: none;
+  border-radius: 6px;
+  color: var(--button-font-color);
+  cursor: pointer;
+  font-family: var(--main-font);
+  font-size: var(--main-font-size);
+  font-weight: normal;
+  padding: 0.4rem 0.9rem;
 }
 
 /* ── Edit dialog ── */
