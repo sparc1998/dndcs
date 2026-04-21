@@ -154,7 +154,7 @@ function render2Col(raw) {
     return `<div class="two-col-single">${renderHalf(lines)}</div>`;
   }
   return `<div class="two-col-left">${renderHalf(lines.slice(0, splitIdx))}</div>` +
-         `<div class="two-col-right">${renderHalf(lines.slice(splitIdx + 1))}</div>`;
+    `<div class="two-col-right">${renderHalf(lines.slice(splitIdx + 1))}</div>`;
 }
 
 // Renders raw text into a display element.
@@ -188,7 +188,7 @@ function openEditDialog(inputEl, displayEl) {
     syntaxHint.textContent = "Formulas: 1 + 2 * 3 · Comments: {your note here}";
   } else if (inputEl.hasAttribute("data-formattable")) {
     let hint = `${_modKey}+K to insert link · [label](url) · **bold** · _italic_ · * bullet · 1) numbered`;
-    if (inputEl.hasAttribute("data-2col")) hint += " · --- to split columns";
+    if (inputEl.hasAttribute("data-2col")) hint += " · --- to split entries";
     syntaxHint.textContent = hint;
   } else {
     syntaxHint.textContent = "";
