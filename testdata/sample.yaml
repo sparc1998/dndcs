@@ -1,79 +1,72 @@
 bio:
   player_name: Ryan
-  character_name: Thalindra Moonwhisper
-  class: Ranger
-  subclass: Champion / Bladesinger / Hunter / Circle of the Land / Lore
-  experience: '6500'
-  level: '5'
-  hd: ''
-  race: a[bcd](http://wikipedia.com)ef
-  background: ''
-  alignment: '[abc](https://wikipedia.com)'
-  age: ''
-  height: ''
-  weight: ''
-  size_category: ''
-  eyes: ''
-  hair: ''
-  skin: ''
-  personality_traits: 'i''ve added some very long text here. i''ve added some very
-    long text here. i''ve added some very long text here. i''ve added some very long
-    text here. i''ve added some very long text here. i''ve added some very long text
-    here. i''ve added some very long text here. i''ve added some very long text here.
-    i''ve added some **very long text** here. i''ve **added** some very long text
-    here. i''ve added some very long text here.
+  character_name: Ser Aldric Vane
+  class: Fighter
+  subclass: Champion
+  experience: '23000'
+  level: '7'
+  hd: 7d10
+  race: Human (Variant)
+  background: Noble
+  alignment: Lawful Good
+  age: '34'
+  height: 6'1"
+  weight: '195'
+  size_category: M
+  eyes: Steel grey
+  hair: Black, silver at the temples
+  skin: Fair
+  personality_traits: |-
+    I hold myself and others to an exacting standard. When given a choice between the honorable path and the easy one, I do not hesitate.
 
-    1) bullet
+    I have little patience for cowardice or cruelty, and I say so plainly.
+  ideals: Honor. A knight's word is a bond that cannot be broken — I would sooner
+    fall in battle than break an oath.
+  bonds: My younger sister Mira was taken by the Crimson Hand three years ago. Finding
+    her drives every decision I make.
+  traits: I am slow to trust those who have not proven themselves in hardship. I find
+    it nearly impossible to ask for help.
+  background_history: |-
+    Born the eldest son of House Vane, a minor noble family in the borderlands, Aldric was trained as a knight from childhood. He served as a squire to Sir Brennan Coldforge of the King's Vanguard, earning his spurs at nineteen after holding a river crossing against a warband twice their number.
 
-    1) bullet'
-  ideals: ''
-  bonds: ''
-  traits: ''
-  background_history: "This is a really long sentence. This is a really long sentence.\
-    \ This is a really long sentence. This is a really long sentence. This is a really\
-    \ long sentence. This is a really long sentence. This is a really long sentence.\
-    \ This is a really long sentence. This is a really long sentence. This is a really\
-    \ long sentence. This is a really long sentence. This is a really long sentence.\
-    \ This is a really long sentence.\n1. bullet\n1. bullet\n---\nThis is a really\
-    \ long sentence. This is a really long sentence. This is a really long sentence.\
-    \ This is a really long sentence. This is a really long sentence. This is a really\
-    \ long sentence. This is a really long sentence. This is a really long sentence.\
-    \ This is a really long sentence.\n---\nThis is a really long sentence. This is\
-    \ a really long sentence. This is a really long sentence. This is a really long\
-    \ sentence. This is a really long sentence. This is a really long sentence. This\
-    \ is a really long sentence. This is a really long sentence. This is a really\
-    \ long sentence. This is a really long sentence. This is a really long sentence.\
-    \ \n---\nThis is a really long sentence. This is a really long sentence. This\
-    \ is a really long sentence. This is a really long sentence. This is a really\
-    \ long sentence. This is a really long sentence. This is a really long sentence.\n\
-    * bullet\n* bullet\n* bullet\n* bullet\n---\nThis is a really long sentence. This\
-    \ is a really long sentence. This is a _really long sentence_. This is a really\
-    \ long sentence. This is a really long sentence. This is a really long sentence.\
-    \ This is a really long sentence. This is a really long sentence. This is a really\
-    \ long sentence. This is a really long sentence. This is a really long sentence.\
-    \ This is a really long sentence. This is a really long sentence. This is a really\
-    \ long sentence. This is a really long sentence. This is a really long sentence."
+    He left royal service after his sister's disappearance, convinced the Crimson Hand had agents within the court. Since then he has worked as a sword-for-hire, following every lead that points toward the cult.
+    ---
+    **House Vane** — Estranged; his father blames Aldric for abandoning his post at court.
+
+    **Sir Brennan Coldforge** — Former mentor, now Knight-Commander of the Vanguard. Loyal, though wary of Aldric's obsession.
+
+    **The Ember Compact** — A loose network of monster hunters who aided Aldric in Thornvale. He owes them a significant favor.
+
+    **Mira Vane** — Younger sister, whereabouts unknown. Last seen near the village of Crestfall.
 campaign_notes:
 - tags:
-  - town
-  text: This is a new note.
+  - session-1
+  - setup
+  text: |-
+    Met the party at the Silver Stag inn in Crestfall — Zira (tiefling rogue), Brother Ossian (cleric of Pelor), and Wren Ashwick (wizard).
+
+    The innkeeper described disappearances near the old mill over the past month: three farmhands and a traveling merchant, all gone without a trace.
+
+    Agreed to investigate at dawn.
 - tags:
   - session-2
   - dungeon
   - combat
-  text: 'Explored the ruins beneath the old mill.
+  text: |-
+    Explored the mill basement. A hidden trapdoor beneath the grinding wheel led to a network of cellars.
 
-    Defeated a group of kobolds guarding a locked iron door.
+    * Defeated six Crimson Hand initiates and a half-orc enforcer named Gruda.
+    * Found a ledger with names — possible informants in town.
+    * Gruda surrendered and was handed over to the town constable pending questioning.
 
-    Found a map fragment pointing to the Thornwood Forest.'
-- tags:
-  - session-1
-  - tavern
-  text: '* Met the party at the Broken Flagon inn in Millhaven.
-
-    * A mysterious hooded figure warned us not to seek the Ember Crown.'
+    No sign of Mira, but a torn piece of cloth matching her traveling cloak was near the eastern tunnel.
 - tags:
   - npc
   - ally
-  text: 'Greta the blacksmith: can forge silvered weapons, owes us a favor after we
-    cleared the rats.'
+  text: '**Constable Petra Dunn** (Crestfall) — Skeptical of outsiders but warmed
+    up after the mill raid. Will share what she learns from Gruda''s questioning.'
+- tags:
+  - lead
+  - crimson-hand
+  text: The ledger names a contact called "the Archivist," operating out of Duskport.
+    Likely the next destination.

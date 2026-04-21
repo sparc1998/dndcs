@@ -10,6 +10,15 @@ from typing import Any
 import yaml
 from flask import Flask, Response, jsonify, render_template_string, request
 
+
+def _str_representer(dumper: yaml.Dumper, data: str) -> yaml.ScalarNode:
+    if "\n" in data:
+        return dumper.represent_scalar("tag:yaml.org,2002:str", data, style="|")
+    return dumper.represent_scalar("tag:yaml.org,2002:str", data)
+
+
+yaml.add_representer(str, _str_representer)
+
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 _PROJECT_ROOT = Path(__file__).parent.parent

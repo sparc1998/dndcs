@@ -49,6 +49,6 @@ subclass_sizing_text: "Champion / Bladesinger / Hunter / Circle of the Land / Lo
 # Used for race, background, and alignment.
 race_line_sizing_text: "guild artisan (brewers) extra text"
 # Used for age, height, weight, and size category.
-physical_measureable_sizing_text: "240"
+physical_measureable_sizing_text: "monstrosity"
 # Used for eyes, hair, and skin.
-physical_description_sizing_text: "Auburn with streaks"
+physical_description_sizing_text: "Auburn with streaks and bangs"
