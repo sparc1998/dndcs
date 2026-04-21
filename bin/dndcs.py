@@ -38,6 +38,7 @@ _DEFAULTS: dict[str, Any] = {
     "main_font_size": 15,
     "primary_font_color": "#e0d7c6",
     "backup_extension": ".bak",
+    # Sizing keys — must mirror config.yaml; wired to fields via data-sizing-key in index.html.
     "name_sizing_text": "Firstname Lastname",
     "class_sizing_text": "Fighter / Wizard",
     "subclass_sizing_text": "Champion / Bladesinger",

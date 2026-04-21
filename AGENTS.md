@@ -51,30 +51,36 @@ uv run check-jsonschema --schemafile schema/character.yaml <data_file.yaml>
 
 ### Adding a new bio field
 
-When adding a new bio header field, update all of the following:
+When adding a new bio field, update all of the following:
 
-1. **`static/index.html`** — add the `<label>`, `<span class="field-display">`, and `<input>` with `data-linkable` and `data-expandable`.
-2. **`config.yaml`** — add a `*_sizing_text` entry for the field.
-3. **`bin/dndcs.py`** — add the same `*_sizing_text` key to `_DEFAULTS`.
-4. **`static/app.js`** — four places:
-   - `applyConfig`: call `fitInput` with the new sizing text.
-   - `render`: read `character.bio?.<field>` and set the input value and display span via `updateDisplay`.
-   - `collectCharacter`: include the field in the returned `bio` object.
-   - autosave listener: add an `"input"` event listener for the new input.
-5. **`schema/character.yaml`** — add the field as an optional `type: string` property under `bio`.
+1. **`static/index.html`** — add the `<label>`, `<span class="field-display" id="X-display">`, and `<input type="hidden">` with the appropriate data-attributes (see **Data-attributes** below). No JS changes needed for render, save, or autosave wiring.
+2. **`schema/character.yaml`** — add the field as an optional `type: string` property under `bio`.
+3. **`config.yaml`** and **`bin/dndcs.py`** — only if the field needs a new sizing key (see **Text box sizing** below).
+
+### Data-attributes
+
+These HTML `data-*` attributes on `<input>` elements define self-contained behaviors. Adding or removing an attribute in `index.html` is the only change needed — all wiring is driven by `querySelectorAll` at parse time.
+
+| Attribute | What it does | Notes |
+|---|---|---|
+| `data-field-key="<key>"` | Links input to `character.bio[key]` for load, save, and autosave | Required on all bio fields |
+| `data-sizing-key="<key>"` | Links input to a `config.yaml` sizing key for `fitInput()` width-fitting | Only for bio header fields; key must exist in `config.yaml` and `_DEFAULTS` in `dndcs.py` |
+| `data-expandable` | Clicking the paired `<span id="X-display">` opens the full-screen edit dialog | Requires a `<span id="{input-id}-display">` sibling |
+| `data-formattable` | Enables markdown rendering (links, bold, italic, bullets) and Cmd+K link shortcut | Put on `<input>` or `<textarea>`; update `buildSyntaxHint()` in `app.js` if adding new syntax |
+| `data-formula` | Display shows evaluated arithmetic result instead of raw text | Mutually exclusive with `data-formattable` |
+| `data-2col` | Display is split at the nearest `--` separator into two columns | `updateDisplay()` auto-toggles `.field-display-2col` on the display span — no CSS class change needed in HTML |
+
+**`card-movable`** is a CSS class (not a `data-*` attribute) used by note cards for drag-and-drop. Behavior is wired imperatively in `renderNotes()`; the class only controls styling. Do not use `data-movable` — it has no effect.
 
 ### Text box sizing
-- All text boxes visible in the bio header row must be sized using their corresponding `*_sizing_text` config value, applied via `fitInput`.
-- `fitInput` sets an inline `width` on both the `<input>` and the paired `<span class="field-display">`. No other sizing (e.g. `min-width`, `width: 100%`) should override this.
+- All text boxes visible in the bio header row must be sized using their corresponding `*_sizing_text` config value, applied via `data-sizing-key`.
+- `fitInput` sets an inline `width` on the paired `<span class="field-display">`. No other sizing (e.g. `min-width`, `width: 100%`) should override this.
 - `<span class="field-display">` must remain `display: inline-block` so that inline `width` takes effect.
-
-### Link behavior
-- All new text boxes should have `data-linkable` by default, unless explicitly instructed otherwise.
-- `data-linkable` is a plain HTML attribute — to remove cmd-k link support from a box, simply delete the attribute from the element in `index.html`. No JS changes are needed.
+- To add a new sizing key: add it to `config.yaml` (with a comment describing where it applies), add the same key and default value to `_DEFAULTS` in `dndcs.py`, and add `data-sizing-key="<key>"` to the input in `index.html`.
 
 ### Expandable edit dialog
-- All new bio header text boxes (those with a paired `<span class="field-display">`) should have `data-expandable` by default, unless explicitly instructed otherwise.
-- `data-expandable` causes clicking the display span to open a centered full-screen edit dialog instead of editing inline. The JS auto-wires any input with this attribute to its paired display (matched by the `{id}-display` naming convention). No JS changes are needed to add or remove this behavior — simply add or delete the attribute in `index.html`.
+- All new bio fields with a paired `<span class="field-display">` should have `data-expandable` by default, unless explicitly instructed otherwise.
+- To remove the edit dialog from a field, delete `data-expandable` from the input in `index.html`. No JS changes needed.
 
 ## Key Behaviors
 

@@ -35,6 +35,8 @@ backup_extension: ".bak"
 
 # ── Input sizing ───────────────────────────────────────────────────────────────
 # Reference strings used to size input boxes.
+# Each key here must also appear in _DEFAULTS in dndcs.py.
+# To wire a key to a field, add data-sizing-key="<key>" to the input in index.html.
 
 # Used for player name and character name.
 name_sizing_text: "Longgggggggggggg Longgggg Longgggggggggggg"

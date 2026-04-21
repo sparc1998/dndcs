@@ -25,12 +25,12 @@
         <div class="field" style="flex-direction: row; align-items: center;">
           <label for="player-name">Player Name</label>
           <span id="player-name-display" class="field-display"></span>
-          <input type="hidden" id="player-name" class="hidden" placeholder="Your name" data-formattable data-expandable />
+          <input type="hidden" id="player-name" class="hidden" placeholder="Your name" data-formattable data-expandable data-field-key="player_name" data-sizing-key="name_sizing_text" />
         </div>
         <div class="field" style="flex-direction: row; align-items: center;">
           <label for="character-name">Character Name</label>
           <span id="character-name-display" class="field-display"></span>
-          <input type="hidden" id="character-name" class="hidden" placeholder="Character name" data-formattable data-expandable />
+          <input type="hidden" id="character-name" class="hidden" placeholder="Character name" data-formattable data-expandable data-field-key="character_name" data-sizing-key="name_sizing_text" />
         </div>
       </div>
 
@@ -39,12 +39,12 @@
         <div class="field" style="flex-direction: row; align-items: center;">
           <label for="class">Class(es)</label>
           <span id="class-display" class="field-display"></span>
-          <input type="hidden" id="class" class="hidden" placeholder="Class" data-formattable data-expandable />
+          <input type="hidden" id="class" class="hidden" placeholder="Class" data-formattable data-expandable data-field-key="class" data-sizing-key="class_sizing_text" />
         </div>
         <div class="field" style="flex-direction: row; align-items: center;">
           <label for="subclass">Subclass(es)</label>
           <span id="subclass-display" class="field-display"></span>
-          <input type="hidden" id="subclass" class="hidden" placeholder="Subclass" data-formattable data-expandable />
+          <input type="hidden" id="subclass" class="hidden" placeholder="Subclass" data-formattable data-expandable data-field-key="subclass" data-sizing-key="subclass_sizing_text" />
         </div>
       </div>
 
@@ -53,17 +53,17 @@
         <div class="field" style="flex-direction: row; align-items: center;">
           <label for="experience">Experience</label>
           <span id="experience-display" class="field-display"></span>
-          <input type="hidden" id="experience" class="hidden" placeholder="Experience" data-formula data-expandable />
+          <input type="hidden" id="experience" class="hidden" placeholder="Experience" data-formula data-expandable data-field-key="experience" data-sizing-key="experience_sizing_text" />
         </div>
         <div class="field" style="flex-direction: row; align-items: center;">
           <label for="level">Level(s)</label>
           <span id="level-display" class="field-display"></span>
-          <input type="hidden" id="level" class="hidden" placeholder="Level" data-formattable data-expandable />
+          <input type="hidden" id="level" class="hidden" placeholder="Level" data-formattable data-expandable data-field-key="level" data-sizing-key="level_sizing_text" />
         </div>
         <div class="field" style="flex-direction: row; align-items: center;">
           <label for="hd">HD</label>
           <span id="hd-display" class="field-display"></span>
-          <input type="hidden" id="hd" class="hidden" placeholder="HD" data-formattable data-expandable />
+          <input type="hidden" id="hd" class="hidden" placeholder="HD" data-formattable data-expandable data-field-key="hd" data-sizing-key="hd_sizing_text" />
         </div>
       </div>
 
@@ -72,17 +72,17 @@
         <div class="field" style="flex-direction: row; align-items: center;">
           <label for="race">Race</label>
           <span id="race-display" class="field-display"></span>
-          <input type="hidden" id="race" class="hidden" placeholder="Race" data-formattable data-expandable />
+          <input type="hidden" id="race" class="hidden" placeholder="Race" data-formattable data-expandable data-field-key="race" data-sizing-key="race_line_sizing_text" />
         </div>
         <div class="field" style="flex-direction: row; align-items: center;">
           <label for="background">Background</label>
           <span id="background-display" class="field-display"></span>
-          <input type="hidden" id="background" class="hidden" placeholder="Background" data-formattable data-expandable />
+          <input type="hidden" id="background" class="hidden" placeholder="Background" data-formattable data-expandable data-field-key="background" data-sizing-key="race_line_sizing_text" />
         </div>
         <div class="field" style="flex-direction: row; align-items: center;">
           <label for="alignment">Alignment</label>
           <span id="alignment-display" class="field-display"></span>
-          <input type="hidden" id="alignment" class="hidden" placeholder="Alignment" data-formattable data-expandable />
+          <input type="hidden" id="alignment" class="hidden" placeholder="Alignment" data-formattable data-expandable data-field-key="alignment" data-sizing-key="race_line_sizing_text" />
         </div>
       </div>
 
@@ -91,22 +91,22 @@
         <div class="field" style="flex-direction: row; align-items: center;">
           <label for="age">Age</label>
           <span id="age-display" class="field-display"></span>
-          <input type="hidden" id="age" class="hidden" placeholder="Age" data-formattable data-expandable />
+          <input type="hidden" id="age" class="hidden" placeholder="Age" data-formattable data-expandable data-field-key="age" data-sizing-key="physical_measureable_sizing_text" />
         </div>
         <div class="field" style="flex-direction: row; align-items: center;">
           <label for="height">Height</label>
           <span id="height-display" class="field-display"></span>
-          <input type="hidden" id="height" class="hidden" placeholder="Height" data-formattable data-expandable />
+          <input type="hidden" id="height" class="hidden" placeholder="Height" data-formattable data-expandable data-field-key="height" data-sizing-key="physical_measureable_sizing_text" />
         </div>
         <div class="field" style="flex-direction: row; align-items: center;">
           <label for="weight">Weight</label>
           <span id="weight-display" class="field-display"></span>
-          <input type="hidden" id="weight" class="hidden" placeholder="Weight" data-formattable data-expandable />
+          <input type="hidden" id="weight" class="hidden" placeholder="Weight" data-formattable data-expandable data-field-key="weight" data-sizing-key="physical_measureable_sizing_text" />
         </div>
         <div class="field" style="flex-direction: row; align-items: center;">
           <label for="size-category">Size Category</label>
           <span id="size-category-display" class="field-display"></span>
-          <input type="hidden" id="size-category" class="hidden" placeholder="Size Category" data-formattable data-expandable />
+          <input type="hidden" id="size-category" class="hidden" placeholder="Size Category" data-formattable data-expandable data-field-key="size_category" data-sizing-key="physical_measureable_sizing_text" />
         </div>
       </div>
 
@@ -115,17 +115,17 @@
         <div class="field" style="flex-direction: row; align-items: center;">
           <label for="eyes">Eyes</label>
           <span id="eyes-display" class="field-display"></span>
-          <input type="hidden" id="eyes" class="hidden" placeholder="Eyes" data-formattable data-expandable />
+          <input type="hidden" id="eyes" class="hidden" placeholder="Eyes" data-formattable data-expandable data-field-key="eyes" data-sizing-key="physical_description_sizing_text" />
         </div>
         <div class="field" style="flex-direction: row; align-items: center;">
           <label for="hair">Hair</label>
           <span id="hair-display" class="field-display"></span>
-          <input type="hidden" id="hair" class="hidden" placeholder="Hair" data-formattable data-expandable />
+          <input type="hidden" id="hair" class="hidden" placeholder="Hair" data-formattable data-expandable data-field-key="hair" data-sizing-key="physical_description_sizing_text" />
         </div>
         <div class="field" style="flex-direction: row; align-items: center;">
           <label for="skin">Skin</label>
           <span id="skin-display" class="field-display"></span>
-          <input type="hidden" id="skin" class="hidden" placeholder="Skin" data-formattable data-expandable />
+          <input type="hidden" id="skin" class="hidden" placeholder="Skin" data-formattable data-expandable data-field-key="skin" data-sizing-key="physical_description_sizing_text" />
         </div>
       </div>
 
@@ -133,26 +133,26 @@
       <div class="trait-rows">
         <label for="personality-traits">Personality<br>Traits</label>
         <span id="personality-traits-display" class="field-display" style="white-space: pre-wrap; overflow-wrap: break-word;"></span>
-        <input type="hidden" id="personality-traits" class="hidden" placeholder="Personality traits" data-formattable data-expandable />
+        <input type="hidden" id="personality-traits" class="hidden" placeholder="Personality traits" data-formattable data-expandable data-field-key="personality_traits" />
 
         <label for="ideals">Ideals</label>
         <span id="ideals-display" class="field-display" style="white-space: pre-wrap; overflow-wrap: break-word;"></span>
-        <input type="hidden" id="ideals" class="hidden" placeholder="Ideals" data-formattable data-expandable />
+        <input type="hidden" id="ideals" class="hidden" placeholder="Ideals" data-formattable data-expandable data-field-key="ideals" />
 
         <label for="bonds">Bonds</label>
         <span id="bonds-display" class="field-display" style="white-space: pre-wrap; overflow-wrap: break-word;"></span>
-        <input type="hidden" id="bonds" class="hidden" placeholder="Bonds" data-formattable data-expandable />
+        <input type="hidden" id="bonds" class="hidden" placeholder="Bonds" data-formattable data-expandable data-field-key="bonds" />
 
         <label for="traits">Traits</label>
         <span id="traits-display" class="field-display" style="white-space: pre-wrap; overflow-wrap: break-word;"></span>
-        <input type="hidden" id="traits" class="hidden" placeholder="Traits" data-formattable data-expandable />
+        <input type="hidden" id="traits" class="hidden" placeholder="Traits" data-formattable data-expandable data-field-key="traits" />
       </div>
 
       <!-- Background, History, Allies, & Affiliations -->
       <div class="bha-section">
         <div class="bha-header">Background, History, Allies, &amp; Affiliations</div>
-        <div id="background-history-display" class="field-display field-display-2col"></div>
-        <input type="hidden" id="background-history" class="hidden" data-2col data-formattable data-expandable />
+        <div id="background-history-display" class="field-display"></div>
+        <input type="hidden" id="background-history" class="hidden" data-2col data-formattable data-expandable data-field-key="background_history" />
       </div>
 
       </div>

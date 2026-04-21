@@ -3,9 +3,9 @@ bio:
   character_name: Thalindra Moonwhisper
   class: Ranger
   subclass: Champion / Bladesinger / Hunter / Circle of the Land / Lore
+  experience: '6500'
   level: '5'
   hd: ''
-  experience: '6500'
   race: a[bcd](http://wikipedia.com)ef
   background: ''
   alignment: '[abc](https://wikipedia.com)'
@@ -58,12 +58,6 @@ campaign_notes:
   - town
   text: This is a new note.
 - tags:
-  - session-1
-  - tavern
-  text: '* Met the party at the Broken Flagon inn in Millhaven.
-
-    * A mysterious hooded figure warned us not to seek the Ember Crown.'
-- tags:
   - session-2
   - dungeon
   - combat
@@ -72,6 +66,12 @@ campaign_notes:
     Defeated a group of kobolds guarding a locked iron door.
 
     Found a map fragment pointing to the Thornwood Forest.'
+- tags:
+  - session-1
+  - tavern
+  text: '* Met the party at the Broken Flagon inn in Millhaven.
+
+    * A mysterious hooded figure warned us not to seek the Ember Crown.'
 - tags:
   - npc
   - ally

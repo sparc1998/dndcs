@@ -22,6 +22,41 @@ let _editDialogOriginalValue = null;  // value at open time, restored on Escape
 const _undoStack = [];
 
 
+// ── Property registry ────────────────────────────────────────────────────────
+// The following HTML data-attributes define self-contained behaviors. Each entry
+// lists what it does, where it is handled, and what to update when adding it to
+// a new element.
+//
+// data-field-key   — links the input to character.bio[key] for render/collect/autosave.
+//                    To add a bio field: add this attribute + a display span in index.html.
+//                    No JS changes needed.
+//
+// data-sizing-key  — links the input to a config.yaml sizing key for fitInput() width-fitting.
+//                    To add: add this attribute in index.html, add the key to config.yaml,
+//                    and add the same key to _DEFAULTS in dndcs.py. No JS changes needed.
+//
+// data-expandable  — clicking the paired display span opens the full-screen edit dialog.
+//                    Wired once at parse time by querySelectorAll (static elements only).
+//                    To add: put on the hidden <input>; ensure a <span id="X-display"> exists.
+//
+// data-formattable — enables markdown rendering (links, bold, italic, bullets) + Cmd+K shortcut.
+//                    To add: put on any <input> or <textarea>.
+//                    To change syntax: update buildSyntaxHint() and renderInline()/renderFormatted().
+//
+// data-formula     — display shows evaluated arithmetic result instead of raw text.
+//                    Mutually exclusive with data-formattable.
+//                    To add: put on the hidden <input>.
+//
+// data-2col        — display is split at the nearest "--" separator into two columns.
+//                    updateDisplay() auto-toggles .field-display-2col on the display span.
+//                    To add: put on the hidden <input>. No CSS class change needed in HTML.
+//
+// card-movable     — CSS class (not a data-attr) that enables drag-and-drop on note cards.
+//                    Behavior is wired imperatively in renderNotes(); class drives CSS only.
+//                    To change drag behavior: update renderNotes().
+// ────────────────────────────────────────────────────────────────────────────
+
+
 // ── Utilities ──────────────────────────────────────────────────────────────
 
 // Escapes <, >, &, and " so raw user text can be safely injected as innerHTML.
@@ -157,6 +192,20 @@ function render2Col(raw) {
     `<div class="two-col-right">${renderHalf(lines.slice(splitIdx + 1))}</div>`;
 }
 
+// Returns the syntax hint string for a given input element based on its data-attributes.
+function buildSyntaxHint(inputEl) {
+  if (!inputEl) return "";
+  if (inputEl.hasAttribute("data-formula")) {
+    return "Formulas: 1 + 2 * 3 · Comments: {your note here}";
+  }
+  if (inputEl.hasAttribute("data-formattable")) {
+    let hint = `${_modKey}+K to insert link · [label](url) · **bold** · _italic_ · * bullet · 1) numbered`;
+    if (inputEl.hasAttribute("data-2col")) hint += " · --- to split entries";
+    return hint;
+  }
+  return "";
+}
+
 // Renders raw text into a display element.
 // For data-formula fields the formula is evaluated and only the result is shown.
 // For data-2col fields the text is split into two columns at the nearest "--" line.
@@ -164,6 +213,7 @@ function render2Col(raw) {
 function updateDisplay(displayEl, rawText) {
   const inputId = displayEl.id.replace(/-display$/, "");
   const inputEl = document.getElementById(inputId);
+  displayEl.classList.toggle("field-display-2col", !!inputEl?.hasAttribute("data-2col"));
   if (inputEl && inputEl.hasAttribute("data-formula")) {
     displayEl.textContent = renderFormula(rawText);
   } else if (inputEl && inputEl.hasAttribute("data-2col")) {
@@ -184,15 +234,7 @@ function openEditDialog(inputEl, displayEl) {
   const ta = document.getElementById("edit-dialog-textarea");
   ta.value = inputEl.value;
   const syntaxHint = document.getElementById("edit-dialog-syntax-hint");
-  if (inputEl.hasAttribute("data-formula")) {
-    syntaxHint.textContent = "Formulas: 1 + 2 * 3 · Comments: {your note here}";
-  } else if (inputEl.hasAttribute("data-formattable")) {
-    let hint = `${_modKey}+K to insert link · [label](url) · **bold** · _italic_ · * bullet · 1) numbered`;
-    if (inputEl.hasAttribute("data-2col")) hint += " · --- to split entries";
-    syntaxHint.textContent = hint;
-  } else {
-    syntaxHint.textContent = "";
-  }
+  syntaxHint.textContent = buildSyntaxHint(inputEl);
   document.getElementById("edit-dialog").classList.remove("hidden");
   requestAnimationFrame(() => { ta.focus(); });
 }
@@ -353,36 +395,10 @@ async function applyConfig() {
     if (cfg[key] != null) root.style.setProperty(cssVar, cfg[key] + "px");
   }
 
-  if (cfg.name_sizing_text) {
-    fitInput(document.getElementById("player-name"), cfg.name_sizing_text);
-    fitInput(document.getElementById("character-name"), cfg.name_sizing_text);
-  }
-  if (cfg.class_sizing_text)
-    fitInput(document.getElementById("class"), cfg.class_sizing_text);
-  if (cfg.subclass_sizing_text)
-    fitInput(document.getElementById("subclass"), cfg.subclass_sizing_text);
-  if (cfg.race_line_sizing_text) {
-    fitInput(document.getElementById("race"), cfg.race_line_sizing_text);
-    fitInput(document.getElementById("background"), cfg.race_line_sizing_text);
-    fitInput(document.getElementById("alignment"), cfg.race_line_sizing_text);
-  }
-  if (cfg.physical_measureable_sizing_text) {
-    fitInput(document.getElementById("age"), cfg.physical_measureable_sizing_text);
-    fitInput(document.getElementById("height"), cfg.physical_measureable_sizing_text);
-    fitInput(document.getElementById("weight"), cfg.physical_measureable_sizing_text);
-    fitInput(document.getElementById("size-category"), cfg.physical_measureable_sizing_text);
-  }
-  if (cfg.physical_description_sizing_text) {
-    fitInput(document.getElementById("eyes"), cfg.physical_description_sizing_text);
-    fitInput(document.getElementById("hair"), cfg.physical_description_sizing_text);
-    fitInput(document.getElementById("skin"), cfg.physical_description_sizing_text);
-  }
-  if (cfg.level_sizing_text)
-    fitInput(document.getElementById("level"), cfg.level_sizing_text);
-  if (cfg.hd_sizing_text)
-    fitInput(document.getElementById("hd"), cfg.hd_sizing_text);
-  if (cfg.experience_sizing_text)
-    fitInput(document.getElementById("experience"), cfg.experience_sizing_text);
+  document.querySelectorAll("[data-sizing-key]").forEach(el => {
+    const key = el.dataset.sizingKey;
+    if (cfg[key]) fitInput(el, cfg[key]);
+  });
   const bioRows = document.getElementById("bio-rows");
   bioRows.style.maxWidth = bioRows.offsetWidth + "px";
 }
@@ -399,72 +415,12 @@ async function load() {
 // Populates all bio field inputs and display spans from the character object,
 // then re-renders the campaign notes list.
 function render() {
-  const playerRaw = character.bio?.player_name ?? "";
-  const charRaw = character.bio?.character_name ?? "";
-  const classRaw = character.bio?.class ?? "";
-  const subclassRaw = character.bio?.subclass ?? "";
-  const levelRaw = character.bio?.level ?? "";
-  const hdRaw = character.bio?.hd ?? "";
-  const experienceRaw = character.bio?.experience ?? "";
-  const raceRaw = character.bio?.race ?? "";
-  const backgroundRaw = character.bio?.background ?? "";
-  const alignmentRaw = character.bio?.alignment ?? "";
-  const ageRaw = character.bio?.age ?? "";
-  const heightRaw = character.bio?.height ?? "";
-  const weightRaw = character.bio?.weight ?? "";
-  const sizeCategoryRaw = character.bio?.size_category ?? "";
-  const eyesRaw = character.bio?.eyes ?? "";
-  const hairRaw = character.bio?.hair ?? "";
-  const skinRaw = character.bio?.skin ?? "";
-  const personalityTraitsRaw = character.bio?.personality_traits ?? "";
-  const idealsRaw = character.bio?.ideals ?? "";
-  const backgroundHistoryRaw = character.bio?.background_history ?? "";
-  const bondsRaw = character.bio?.bonds ?? "";
-  const traitsRaw = character.bio?.traits ?? "";
-  document.getElementById("player-name").value = playerRaw;
-  document.getElementById("character-name").value = charRaw;
-  document.getElementById("class").value = classRaw;
-  document.getElementById("subclass").value = subclassRaw;
-  document.getElementById("level").value = levelRaw;
-  document.getElementById("hd").value = hdRaw;
-  document.getElementById("experience").value = experienceRaw;
-  document.getElementById("race").value = raceRaw;
-  document.getElementById("background").value = backgroundRaw;
-  document.getElementById("alignment").value = alignmentRaw;
-  document.getElementById("age").value = ageRaw;
-  document.getElementById("height").value = heightRaw;
-  document.getElementById("weight").value = weightRaw;
-  document.getElementById("size-category").value = sizeCategoryRaw;
-  document.getElementById("eyes").value = eyesRaw;
-  document.getElementById("hair").value = hairRaw;
-  document.getElementById("skin").value = skinRaw;
-  document.getElementById("personality-traits").value = personalityTraitsRaw;
-  document.getElementById("ideals").value = idealsRaw;
-  document.getElementById("background-history").value = backgroundHistoryRaw;
-  document.getElementById("bonds").value = bondsRaw;
-  document.getElementById("traits").value = traitsRaw;
-  updateDisplay(document.getElementById("player-name-display"), playerRaw);
-  updateDisplay(document.getElementById("character-name-display"), charRaw);
-  updateDisplay(document.getElementById("class-display"), classRaw);
-  updateDisplay(document.getElementById("subclass-display"), subclassRaw);
-  updateDisplay(document.getElementById("level-display"), levelRaw);
-  updateDisplay(document.getElementById("hd-display"), hdRaw);
-  updateDisplay(document.getElementById("experience-display"), experienceRaw);
-  updateDisplay(document.getElementById("race-display"), raceRaw);
-  updateDisplay(document.getElementById("background-display"), backgroundRaw);
-  updateDisplay(document.getElementById("alignment-display"), alignmentRaw);
-  updateDisplay(document.getElementById("age-display"), ageRaw);
-  updateDisplay(document.getElementById("height-display"), heightRaw);
-  updateDisplay(document.getElementById("weight-display"), weightRaw);
-  updateDisplay(document.getElementById("size-category-display"), sizeCategoryRaw);
-  updateDisplay(document.getElementById("eyes-display"), eyesRaw);
-  updateDisplay(document.getElementById("hair-display"), hairRaw);
-  updateDisplay(document.getElementById("skin-display"), skinRaw);
-  updateDisplay(document.getElementById("personality-traits-display"), personalityTraitsRaw);
-  updateDisplay(document.getElementById("ideals-display"), idealsRaw);
-  updateDisplay(document.getElementById("background-history-display"), backgroundHistoryRaw);
-  updateDisplay(document.getElementById("bonds-display"), bondsRaw);
-  updateDisplay(document.getElementById("traits-display"), traitsRaw);
+  document.querySelectorAll("[data-field-key]").forEach(el => {
+    const raw = character.bio?.[el.dataset.fieldKey] ?? "";
+    el.value = raw;
+    const display = document.getElementById(el.id + "-display");
+    if (display) updateDisplay(display, raw);
+  });
   renderNotes();
 }
 
@@ -558,7 +514,7 @@ function openNoteDialog(index) {
   document.getElementById("note-dialog-tags").value = (note.tags ?? []).join(", ");
   document.getElementById("note-dialog-text").value = note.text ?? "";
   document.getElementById("note-dialog-syntax-hint").textContent =
-    `${_modKey}+K to insert link · [label](url) · **bold** · _italic_ · * bullet · 1) numbered`;
+    buildSyntaxHint(document.getElementById("note-dialog-text"));
   document.getElementById("note-dialog").classList.remove("hidden");
   requestAnimationFrame(() => { document.getElementById("note-dialog-text").focus(); });
 }
@@ -593,33 +549,11 @@ function cancelNoteDialog() {
 // Assembles the current character object from live DOM field values.
 // campaign_notes is carried over from the last loaded/saved state unchanged.
 function collectCharacter() {
-  return {
-    bio: {
-      player_name: document.getElementById("player-name").value,
-      character_name: document.getElementById("character-name").value,
-      class: document.getElementById("class").value,
-      subclass: document.getElementById("subclass").value,
-      level: document.getElementById("level").value,
-      hd: document.getElementById("hd").value,
-      experience: document.getElementById("experience").value,
-      race: document.getElementById("race").value,
-      background: document.getElementById("background").value,
-      alignment: document.getElementById("alignment").value,
-      age: document.getElementById("age").value,
-      height: document.getElementById("height").value,
-      weight: document.getElementById("weight").value,
-      size_category: document.getElementById("size-category").value,
-      eyes: document.getElementById("eyes").value,
-      hair: document.getElementById("hair").value,
-      skin: document.getElementById("skin").value,
-      personality_traits: document.getElementById("personality-traits").value,
-      ideals: document.getElementById("ideals").value,
-      bonds: document.getElementById("bonds").value,
-      traits: document.getElementById("traits").value,
-      background_history: document.getElementById("background-history").value,
-    },
-    campaign_notes: character.campaign_notes ?? [],
-  };
+  const bio = {};
+  document.querySelectorAll("[data-field-key]").forEach(el => {
+    bio[el.dataset.fieldKey] = el.value;
+  });
+  return { bio, campaign_notes: character.campaign_notes ?? [] };
 }
 
 // Saves the current character state to /api/character (the autosave .bak file).
@@ -714,26 +648,10 @@ document.addEventListener("keydown", (e) => {
   document.getElementById("save-btn").click();
 });
 
-// Autosave bio fields on every keystroke (these inputs are normally hidden behind
-// their display spans, but they remain the source of truth for collectCharacter).
-document.getElementById("player-name").addEventListener("input", autosave);
-document.getElementById("character-name").addEventListener("input", autosave);
-document.getElementById("class").addEventListener("input", autosave);
-document.getElementById("subclass").addEventListener("input", autosave);
-document.getElementById("race").addEventListener("input", autosave);
-document.getElementById("background").addEventListener("input", autosave);
-document.getElementById("alignment").addEventListener("input", autosave);
-document.getElementById("age").addEventListener("input", autosave);
-document.getElementById("height").addEventListener("input", autosave);
-document.getElementById("weight").addEventListener("input", autosave);
-document.getElementById("size-category").addEventListener("input", autosave);
-document.getElementById("eyes").addEventListener("input", autosave);
-document.getElementById("hair").addEventListener("input", autosave);
-document.getElementById("skin").addEventListener("input", autosave);
-document.getElementById("personality-traits").addEventListener("input", autosave);
-document.getElementById("level").addEventListener("input", autosave);
-document.getElementById("hd").addEventListener("input", autosave);
-document.getElementById("experience").addEventListener("input", autosave);
+// Autosave bio fields on every keystroke.
+document.querySelectorAll("[data-field-key]").forEach(el => {
+  el.addEventListener("input", autosave);
+});
 
 document.getElementById("add-note-btn").addEventListener("click", () => openNoteDialog(null));
 
