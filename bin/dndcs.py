@@ -135,6 +135,11 @@ def main() -> None:
         "--out", type=Path, default=None, help="Output file (default: overwrite input)"
     )
     parser.add_argument("--port", type=int, default=9123, help="Port to serve on (default: 9123)")
+    parser.add_argument(
+        "--host",
+        default="127.0.0.1",
+        help="Address to bind to (default: 127.0.0.1 for local use only; use 0.0.0.0 to accept connections from other machines on the network)",
+    )
     args = parser.parse_args()
 
     _char_file = args.sheet.resolve()
@@ -147,8 +152,8 @@ def main() -> None:
 
     print(f"Character sheet: {_char_file}")
     print(f"Output file:     {_out_file}")
-    print(f"Serving at:      http://localhost:{args.port}")
-    app.run(host="127.0.0.1", port=args.port, debug=False)
+    print(f"Serving at:      http://{args.host}:{args.port}")
+    app.run(host=args.host, port=args.port, debug=False)
 
 
 if __name__ == "__main__":
