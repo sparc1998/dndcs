@@ -209,6 +209,24 @@ textarea:focus {
   border-color: var(--card-hover-bg);
 }
 
+/* Draggable card: grab cursor and visual feedback during a drag operation. */
+.card-movable {
+  cursor: grab;
+}
+
+.card-movable.dragging {
+  opacity: 0.4;
+  cursor: grabbing;
+}
+
+.card-movable.drag-above {
+  box-shadow: 0 -3px 0 0 var(--secondary-font-color);
+}
+
+.card-movable.drag-below {
+  box-shadow: 0 3px 0 0 var(--secondary-font-color);
+}
+
 .note-card .tags-row {
   display: flex;
   flex-wrap: wrap;

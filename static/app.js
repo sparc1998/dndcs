@@ -475,15 +475,59 @@ function normalizeNote(note) {
 }
 
 // Rebuilds the #notes-list DOM from character.campaign_notes.
-// Each note becomes a clickable card with tag chips and rendered text.
+// Each note becomes a clickable, draggable card with tag chips and rendered text.
+let _dragIndex = null;
+
 function renderNotes() {
   character.campaign_notes = (character.campaign_notes ?? []).map(normalizeNote);
   const list = document.getElementById("notes-list");
   list.innerHTML = "";
   character.campaign_notes.forEach((note, i) => {
     const card = document.createElement("div");
-    card.className = "note-card";
-    card.addEventListener("click", () => openNoteDialog(i));
+    card.className = "note-card card-movable";
+
+    // Suppress click when the mouse-up was the end of a drag, not a tap.
+    let _dragged = false;
+    card.addEventListener("click", () => { if (_dragged) { _dragged = false; return; } openNoteDialog(i); });
+
+    // Drag-and-drop reordering.
+    card.draggable = true;
+    card.addEventListener("dragstart", (e) => {
+      _dragIndex = i;
+      _dragged = true;
+      e.dataTransfer.effectAllowed = "move";
+      requestAnimationFrame(() => card.classList.add("dragging"));
+    });
+    card.addEventListener("dragend", () => {
+      card.classList.remove("dragging");
+      list.querySelectorAll(".note-card").forEach((c) => c.classList.remove("drag-above", "drag-below"));
+    });
+    card.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = "move";
+      list.querySelectorAll(".note-card").forEach((c) => c.classList.remove("drag-above", "drag-below"));
+      const mid = card.getBoundingClientRect().top + card.getBoundingClientRect().height / 2;
+      card.classList.add(e.clientY < mid ? "drag-above" : "drag-below");
+    });
+    card.addEventListener("dragleave", () => {
+      card.classList.remove("drag-above", "drag-below");
+    });
+    card.addEventListener("drop", (e) => {
+      e.preventDefault();
+      card.classList.remove("drag-above", "drag-below");
+      if (_dragIndex === null || _dragIndex === i) return;
+      const mid = card.getBoundingClientRect().top + card.getBoundingClientRect().height / 2;
+      const isAbove = e.clientY < mid;
+      const notes = character.campaign_notes;
+      const [moved] = notes.splice(_dragIndex, 1);
+      const insertAt = isAbove
+        ? (_dragIndex < i ? i - 1 : i)
+        : (_dragIndex < i ? i : i + 1);
+      notes.splice(insertAt, 0, moved);
+      _dragIndex = null;
+      renderNotes();
+      autosave();
+    });
 
     const tagsRow = document.createElement("div");
     tagsRow.className = "tags-row";
