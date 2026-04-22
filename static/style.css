@@ -395,7 +395,7 @@ textarea:focus {
 
 .col-rule {
   border: none;
-  border-top: 1px solid rgba(128, 128, 128, 0.4);
+  border-top: 1px solid var(--sep-color);
   margin: 0.5rem 0;
 }
 
@@ -565,7 +565,7 @@ textarea:focus {
 #level-log-table td {
   padding: 0.5rem 0.75rem;
   text-align: left;
-  border-bottom: 1px solid var(--card-bg);
+  border-bottom: 1px solid var(--sep-color);
   overflow-wrap: break-word;
   vertical-align: top;
 }
@@ -578,12 +578,10 @@ textarea:focus {
 
 #level-log-table th:nth-child(1),
 #level-log-table td:nth-child(1) {
-  width: 4em;
 }
 
 #level-log-table th:nth-child(2),
 #level-log-table td:nth-child(2) {
-  width: 25%;
 }
 
 #level-log-table tbody tr {

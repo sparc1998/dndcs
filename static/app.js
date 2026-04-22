@@ -358,7 +358,7 @@ function fitInput(el, sizingText) {
   const cs = getComputedStyle(measureEl);
   const padW = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight) + 4;
   const w = (textW + padW) + "px";
-  if (display) display.style.width = w;
+  (display ?? el).style.width = w;
 }
 
 // Fetches /api/config and applies all color, font, and sizing values to the page.
@@ -382,6 +382,7 @@ async function applyConfig() {
     ["button_bg", "--button-bg"],
     ["main_font", "--main-font"],
     ["primary_font_color", "--primary-font-color"],
+    ["sep_color", "--sep-color"],
   ];
   const px = [
     ["header_font_size", "--header-font-size"],
@@ -395,6 +396,7 @@ async function applyConfig() {
     if (cfg[key] != null) root.style.setProperty(cssVar, cfg[key] + "px");
   }
 
+  _cfg = cfg;
   document.querySelectorAll("[data-sizing-key]").forEach(el => {
     const key = el.dataset.sizingKey;
     if (cfg[key]) fitInput(el, cfg[key]);
@@ -509,6 +511,7 @@ function renderNotes() {
 
 let _noteDialogIndex = null;
 let _levelLogDialogIndex = null;
+let _cfg = {};
 
 function openNoteDialog(index) {
   _noteDialogIndex = index;
@@ -582,6 +585,10 @@ function openLevelLogDialog(index) {
   document.getElementById("level-log-dialog-details").value = entry.details ?? "";
   updateDisplay(document.getElementById("level-log-dialog-details-display"), entry.details ?? "");
   document.getElementById("level-log-dialog").classList.remove("hidden");
+  document.querySelectorAll("#level-log-dialog [data-sizing-key]").forEach(el => {
+    const key = el.dataset.sizingKey;
+    if (_cfg[key]) fitInput(el, _cfg[key]);
+  });
 }
 
 function closeLevelLogDialog() {

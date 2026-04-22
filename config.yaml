@@ -6,8 +6,8 @@
 # Background colors
 main_bg: "#d5f0d9"
 sidebar_bg: "white"
-card_bg: "#A9DCAF"
-card_hover_bg: "#96CC9C"
+card_bg: "#BBE4C0"
+card_hover_bg: "#A6D2AB"
 tag_bg: "#CAEACE"
 dialog_bg: "white"
 button_bg: "#4caf50"
@@ -17,6 +17,9 @@ primary_font_color: "black"
 # Secondary font is used for the headers, tab selection underline, links, and tags.
 secondary_font_color: "#35803E"
 button_font_color: "white"
+
+# sep_color is used for row separators in the level log table and --- separators in the 2-col display.
+sep_color: "#35803E"
 
 # ── Fonts ──────────────────────────────────────────────────────────────────
 # Fonts can be set to any web-safe font or Google Fonts name. Examples:
