@@ -73,23 +73,16 @@ campaign_notes:
 level_log:
 - class: Fighter
   details: Starting class. Chose Defense fighting style and took the Alert feat.
-  level: 1
-- level: 2
-  class: Fighter
+- class: Fighter
   details: Gained Action Surge and picked up [Second Wind improvement](https://wikipedia.com).
 - class: Fighter
   details: Chose Champion archetype for improved critical hit range.
-  level: 3
 - class: Fighter
   details: ASI — increased Strength from 16 to 18.
-  level: 4
 - class: Fighter
   details: Extra Attack. Attacks per action increased to two.
-  level: 5
 - class: Fighter
   details: ASI — increased Constitution from 14 to 16.
-  level: 6
 - class: Fighter
   details: Champion feature — Remarkable Athlete. Proficiency bonus added to unmodified
     Strength/Dexterity/Constitution checks.
-  level: 7

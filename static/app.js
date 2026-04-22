@@ -561,7 +561,7 @@ function renderLevelLog() {
     const tr = document.createElement("tr");
     tr.addEventListener("click", () => openLevelLogDialog(i));
     const tdLevel = document.createElement("td");
-    tdLevel.textContent = entry.level;
+    tdLevel.textContent = i + 1;
     const tdClass = document.createElement("td");
     tdClass.innerHTML = renderFormatted(entry.class ?? "");
     const tdDetails = document.createElement("td");
@@ -576,20 +576,20 @@ function renderLevelLog() {
 function openLevelLogDialog(index) {
   _levelLogDialogIndex = index;
   const entry = index === null
-    ? { level: (character.level_log?.length ?? 0) + 1, class: "", details: "" }
+    ? { class: "", details: "" }
     : character.level_log[index];
-  document.getElementById("level-log-dialog-level").value = String(entry.level);
   document.getElementById("level-log-dialog-class").value = entry.class ?? "";
   document.getElementById("level-log-dialog-details").value = entry.details ?? "";
+  document.getElementById("level-log-dialog-syntax-hint").textContent =
+    buildSyntaxHint(document.getElementById("level-log-dialog-class"));
   document.getElementById("level-log-dialog").classList.remove("hidden");
   requestAnimationFrame(() => { document.getElementById("level-log-dialog-class").focus(); });
 }
 
 function closeLevelLogDialog() {
-  const level = parseInt(document.getElementById("level-log-dialog-level").value, 10);
   const cls = document.getElementById("level-log-dialog-class").value;
   const details = document.getElementById("level-log-dialog-details").value;
-  const entry = { level, class: cls, details };
+  const entry = { class: cls, details };
   character.level_log = character.level_log ?? [];
   const previousLog = character.level_log.map(e => ({ ...e }));
   if (_levelLogDialogIndex === null) {
@@ -599,6 +599,7 @@ function closeLevelLogDialog() {
   }
   _undoStack.push({ undo: () => { character.level_log = previousLog; renderLevelLog(); autosave(); } });
   document.getElementById("level-log-dialog").classList.add("hidden");
+  document.getElementById("level-log-dialog-syntax-hint").textContent = "";
   _levelLogDialogIndex = null;
   renderLevelLog();
   autosave();
@@ -606,6 +607,7 @@ function closeLevelLogDialog() {
 
 function cancelLevelLogDialog() {
   document.getElementById("level-log-dialog").classList.add("hidden");
+  document.getElementById("level-log-dialog-syntax-hint").textContent = "";
   _levelLogDialogIndex = null;
 }
 
@@ -784,5 +786,11 @@ document.getElementById("edit-dialog-hint").textContent = `${_modKey}+↵ to sav
 document.getElementById("link-dialog-hint").textContent = `${_modKey}+↵ to save · Esc to cancel`;
 document.getElementById("note-dialog-hint").textContent = `${_modKey}+↵ to save · Esc to cancel`;
 document.getElementById("level-log-dialog-hint").textContent = `${_modKey}+↵ to save · Esc to cancel`;
+
+["level-log-dialog-class", "level-log-dialog-details"].forEach(id => {
+  document.getElementById(id).addEventListener("focus", () => {
+    document.getElementById("level-log-dialog-syntax-hint").textContent = buildSyntaxHint(document.getElementById(id));
+  });
+});
 
 load();

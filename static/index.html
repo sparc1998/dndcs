@@ -193,10 +193,6 @@
     <div id="level-log-dialog-box">
       <div id="level-log-dialog-header">
         <div class="field" style="flex-direction: row; align-items: center;">
-          <label>Level</label>
-          <input type="text" id="level-log-dialog-level" readonly />
-        </div>
-        <div class="field" style="flex-direction: row; align-items: center;">
           <label>Class</label>
           <input type="text" id="level-log-dialog-class" data-formattable />
         </div>
@@ -204,7 +200,8 @@
       <textarea id="level-log-dialog-details" data-formattable></textarea>
       <div id="level-log-dialog-btns">
         <div id="level-log-dialog-hints">
-          <span id="level-log-dialog-hint"></span>
+          <span id="level-log-dialog-hint" class="dialog-hint"></span>
+          <span id="level-log-dialog-syntax-hint" class="dialog-hint"></span>
         </div>
         <button id="level-log-dialog-done-btn">Done</button>
       </div>
@@ -218,8 +215,8 @@
       <textarea id="note-dialog-text" data-formattable></textarea>
       <div id="note-dialog-btns">
         <div id="note-dialog-hints">
-          <span id="note-dialog-hint"></span>
-          <span id="note-dialog-syntax-hint"></span>
+          <span id="note-dialog-hint" class="dialog-hint"></span>
+          <span id="note-dialog-syntax-hint" class="dialog-hint"></span>
         </div>
         <button id="note-dialog-done-btn">Done</button>
       </div>
@@ -233,8 +230,8 @@
       <textarea id="edit-dialog-textarea" data-formattable></textarea>
       <div id="edit-dialog-btns">
         <div id="edit-dialog-hints">
-          <span id="edit-dialog-hint"></span>
-          <span id="edit-dialog-syntax-hint"></span>
+          <span id="edit-dialog-hint" class="dialog-hint"></span>
+          <span id="edit-dialog-syntax-hint" class="dialog-hint"></span>
         </div>
         <button id="edit-dialog-done-btn">Done</button>
       </div>
@@ -248,7 +245,7 @@
       <label for="link-url">URL</label>
       <input type="text" id="link-url" placeholder="https://…" />
       <div id="link-dialog-btns">
-        <span id="link-dialog-hint"></span>
+        <span id="link-dialog-hint" class="dialog-hint"></span>
         <button id="link-ok-btn">Done</button>
         <button id="link-remove-btn" class="hidden">Remove link</button>
       </div>

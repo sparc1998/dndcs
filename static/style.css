@@ -534,14 +534,6 @@ textarea:focus {
   margin-right: auto;
 }
 
-#note-dialog-hint,
-#note-dialog-syntax-hint {
-  color: var(--primary-font-color);
-  font-family: var(--main-font);
-  font-size: var(--main-font-size);
-  opacity: 0.75;
-  user-select: none;
-}
 
 #note-dialog-btns button {
   background: var(--button-bg);
@@ -664,14 +656,6 @@ textarea:focus {
   margin-right: auto;
 }
 
-#level-log-dialog-hint {
-  color: var(--primary-font-color);
-  font-family: var(--main-font);
-  font-size: var(--main-font-size);
-  opacity: 0.75;
-  user-select: none;
-}
-
 #level-log-dialog-btns button {
   background: var(--button-bg);
   border: none;
@@ -741,9 +725,7 @@ textarea:focus {
   margin-right: auto;
 }
 
-#edit-dialog-hint,
-#edit-dialog-syntax-hint,
-#link-dialog-hint {
+.dialog-hint {
   color: var(--primary-font-color);
   font-family: var(--main-font);
   font-size: var(--main-font-size);

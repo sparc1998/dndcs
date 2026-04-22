@@ -64,14 +64,10 @@ properties:
     items:
       type: object
       required:
-        - level
         - class
         - details
       additionalProperties: false
       properties:
-        level:
-          type: integer
-          minimum: 1
         class:
           type: string
         details:
