@@ -38,6 +38,28 @@ bio:
     **The Ember Compact** — A loose network of monster hunters who aided Aldric in Thornvale. He owes them a significant favor.
 
     **Mira Vane** — Younger sister, whereabouts unknown. Last seen near the village of Crestfall.
+level_log:
+- level: 1
+  class: Fighter
+  details: Starting class. Chose Defense fighting style and took the Alert feat.
+- level: 2
+  class: Fighter
+  details: Gained Action Surge and picked up Second Wind improvement.
+- level: 3
+  class: Fighter
+  details: Chose Champion archetype for improved critical hit range.
+- level: 4
+  class: Fighter
+  details: ASI — increased Strength from 16 to 18.
+- level: 5
+  class: Fighter
+  details: Extra Attack. Attacks per action increased to two.
+- level: 6
+  class: Fighter
+  details: ASI — increased Constitution from 14 to 16.
+- level: 7
+  class: Fighter
+  details: Champion feature — Remarkable Athlete. Proficiency bonus added to unmodified Strength/Dexterity/Constitution checks.
 campaign_notes:
 - tags:
   - session-1

@@ -422,6 +422,7 @@ function render() {
     if (display) updateDisplay(display, raw);
   });
   renderNotes();
+  renderLevelLog();
 }
 
 // Converts legacy { tags, notes: [...] } format to { tags, text }.
@@ -507,6 +508,7 @@ function renderNotes() {
 // ── Note dialog ────────────────────────────────────────────────────────────
 
 let _noteDialogIndex = null;
+let _levelLogDialogIndex = null;
 
 function openNoteDialog(index) {
   _noteDialogIndex = index;
@@ -546,14 +548,74 @@ function cancelNoteDialog() {
   _noteDialogIndex = null;
 }
 
+// ── Level log ──────────────────────────────────────────────────────────────
+
+function renderLevelLog() {
+  character.level_log = character.level_log ?? [];
+  const tbody = document.getElementById("level-log-tbody");
+  tbody.innerHTML = "";
+  character.level_log.forEach((entry, i) => {
+    const tr = document.createElement("tr");
+    tr.addEventListener("click", () => openLevelLogDialog(i));
+    const tdLevel = document.createElement("td");
+    tdLevel.textContent = entry.level;
+    const tdClass = document.createElement("td");
+    tdClass.innerHTML = renderFormatted(entry.class ?? "");
+    const tdDetails = document.createElement("td");
+    tdDetails.innerHTML = renderFormatted(entry.details ?? "");
+    tr.appendChild(tdLevel);
+    tr.appendChild(tdClass);
+    tr.appendChild(tdDetails);
+    tbody.appendChild(tr);
+  });
+}
+
+function openLevelLogDialog(index) {
+  _levelLogDialogIndex = index;
+  const entry = index === null
+    ? { level: (character.level_log?.length ?? 0) + 1, class: "", details: "" }
+    : character.level_log[index];
+  document.getElementById("level-log-dialog-level").value = String(entry.level);
+  updateDisplay(document.getElementById("level-log-dialog-level-display"), String(entry.level));
+  document.getElementById("level-log-dialog-class").value = entry.class ?? "";
+  updateDisplay(document.getElementById("level-log-dialog-class-display"), entry.class ?? "");
+  document.getElementById("level-log-dialog-details").value = entry.details ?? "";
+  updateDisplay(document.getElementById("level-log-dialog-details-display"), entry.details ?? "");
+  document.getElementById("level-log-dialog").classList.remove("hidden");
+}
+
+function closeLevelLogDialog() {
+  const level = parseInt(document.getElementById("level-log-dialog-level").value, 10);
+  const cls = document.getElementById("level-log-dialog-class").value;
+  const details = document.getElementById("level-log-dialog-details").value;
+  const entry = { level, class: cls, details };
+  character.level_log = character.level_log ?? [];
+  const previousLog = character.level_log.map(e => ({ ...e }));
+  if (_levelLogDialogIndex === null) {
+    character.level_log.push(entry);
+  } else {
+    character.level_log[_levelLogDialogIndex] = entry;
+  }
+  _undoStack.push({ undo: () => { character.level_log = previousLog; renderLevelLog(); autosave(); } });
+  document.getElementById("level-log-dialog").classList.add("hidden");
+  _levelLogDialogIndex = null;
+  renderLevelLog();
+  autosave();
+}
+
+function cancelLevelLogDialog() {
+  document.getElementById("level-log-dialog").classList.add("hidden");
+  _levelLogDialogIndex = null;
+}
+
 // Assembles the current character object from live DOM field values.
-// campaign_notes is carried over from the last loaded/saved state unchanged.
+// campaign_notes and level_log are carried over from the last loaded/saved state unchanged.
 function collectCharacter() {
   const bio = {};
   document.querySelectorAll("[data-field-key]").forEach(el => {
     bio[el.dataset.fieldKey] = el.value;
   });
-  return { bio, campaign_notes: character.campaign_notes ?? [] };
+  return { bio, campaign_notes: character.campaign_notes ?? [], level_log: character.level_log ?? [] };
 }
 
 // Saves the current character state to /api/character (the autosave .bak file).
@@ -603,8 +665,8 @@ document.getElementById("edit-dialog").addEventListener("click", (e) => {
   if (!document.getElementById("edit-dialog-box").contains(e.target)) cancelEditDialog();
 });
 document.getElementById("edit-dialog").addEventListener("keydown", (e) => {
-  if (e.key === "Escape" && !_linkDialogOpen) cancelEditDialog();
-  if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) closeEditDialog();
+  if (e.key === "Escape" && !_linkDialogOpen) { cancelEditDialog(); e.stopPropagation(); }
+  if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) { closeEditDialog(); e.stopPropagation(); }
 });
 document.getElementById("edit-dialog-textarea").addEventListener("input", () => {
   // Sync the textarea's value back to the hidden field input on every keystroke
@@ -637,6 +699,7 @@ document.addEventListener("keydown", (e) => {
   if (!(e.metaKey || e.ctrlKey) || e.key !== "z") return;
   if (!document.getElementById("edit-dialog").classList.contains("hidden")) return;
   if (!document.getElementById("note-dialog").classList.contains("hidden")) return;
+  if (!document.getElementById("level-log-dialog").classList.contains("hidden")) return;
   if (!_undoStack.length) return;
   e.preventDefault();
   _undoStack.pop().undo();
@@ -654,6 +717,23 @@ document.querySelectorAll("[data-field-key]").forEach(el => {
 });
 
 document.getElementById("add-note-btn").addEventListener("click", () => openNoteDialog(null));
+document.getElementById("add-level-log-btn").addEventListener("click", () => openLevelLogDialog(null));
+
+// Level log dialog: Done button, backdrop click, and keyboard shortcuts.
+document.getElementById("level-log-dialog-done-btn").addEventListener("click", closeLevelLogDialog);
+document.getElementById("level-log-dialog").addEventListener("click", (e) => {
+  if (!document.getElementById("level-log-dialog-box").contains(e.target)) cancelLevelLogDialog();
+});
+// Document-level handler so Escape/Cmd+Enter work regardless of focus position,
+// including after returning from the edit dialog. Guards ensure it only fires when
+// level-log-dialog is the topmost open dialog.
+document.addEventListener("keydown", (e) => {
+  if (document.getElementById("level-log-dialog").classList.contains("hidden")) return;
+  if (!document.getElementById("edit-dialog").classList.contains("hidden")) return;
+  if (!document.getElementById("link-dialog").classList.contains("hidden")) return;
+  if (e.key === "Escape") { e.preventDefault(); cancelLevelLogDialog(); }
+  if ((e.metaKey || e.ctrlKey) && e.key === "Enter") { e.preventDefault(); closeLevelLogDialog(); }
+});
 
 // Note dialog: Done button, backdrop click, and keyboard shortcuts.
 document.getElementById("note-dialog-done-btn").addEventListener("click", closeNoteDialog);
@@ -702,5 +782,6 @@ document.querySelectorAll(".tab-btn").forEach((btn) => {
 document.getElementById("edit-dialog-hint").textContent = `${_modKey}+↵ to save · Esc to cancel`;
 document.getElementById("link-dialog-hint").textContent = `${_modKey}+↵ to save · Esc to cancel`;
 document.getElementById("note-dialog-hint").textContent = `${_modKey}+↵ to save · Esc to cancel`;
+document.getElementById("level-log-dialog-hint").textContent = `${_modKey}+↵ to save · Esc to cancel`;
 
 load();

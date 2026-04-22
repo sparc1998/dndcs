@@ -57,6 +57,8 @@ _DEFAULTS: dict[str, Any] = {
     "level_sizing_text": "20 / 20",
     "hd_sizing_text": "10d10 + 10d8",
     "experience_sizing_text": "000000",
+    "level_log_class_sizing_text": "Fighter / Wizard",
+    "std_num_sizing_text": "20",
 }
 
 
@@ -138,7 +140,10 @@ def main() -> None:
     parser.add_argument(
         "--host",
         default="127.0.0.1",
-        help="Address to bind to (default: 127.0.0.1 for local use only; use 0.0.0.0 to accept connections from other machines on the network)",
+        help=(
+            "Address to bind to (default: 127.0.0.1 for local use only;"
+            " use 0.0.0.0 to accept connections from other machines on the network)"
+        ),
     )
     args = parser.parse_args()
 

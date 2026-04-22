@@ -554,6 +554,126 @@ textarea:focus {
   padding: 0.4rem 0.9rem;
 }
 
+/* ── Level log table ── */
+
+#level-log-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#level-log-table th,
+#level-log-table td {
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--card-bg);
+  overflow-wrap: break-word;
+  vertical-align: top;
+}
+
+#level-log-table th {
+  font-weight: bold;
+  border-bottom: 2px solid var(--primary-font-color);
+  white-space: nowrap;
+}
+
+#level-log-table th:nth-child(1),
+#level-log-table td:nth-child(1) {
+  width: 4em;
+}
+
+#level-log-table th:nth-child(2),
+#level-log-table td:nth-child(2) {
+  width: 25%;
+}
+
+#level-log-table tbody tr {
+  cursor: pointer;
+}
+
+#level-log-table tbody tr:hover {
+  background: var(--card-hover-bg);
+}
+
+/* ── Level log dialog ── */
+
+/* z-index 40: below edit-dialog (50) so edit-dialog layers on top when expanding a field. */
+#level-log-dialog {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 40;
+}
+
+#level-log-dialog-box {
+  background: var(--sidebar-bg);
+  border: 1px solid var(--sidebar-bg);
+  border-radius: 8px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 50%;
+  height: 22em;
+  min-width: 200px;
+  min-height: 10em;
+  resize: both;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+}
+
+#level-log-dialog-header {
+  display: flex;
+  flex-direction: row;
+  gap: 1.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Override inline-block so details display fills remaining vertical space. */
+#level-log-dialog-details-display {
+  flex: 1;
+  display: block !important;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+#level-log-dialog-btns {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+#level-log-dialog-hints {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  justify-content: center;
+  margin-right: auto;
+}
+
+#level-log-dialog-hint {
+  color: var(--primary-font-color);
+  font-family: var(--main-font);
+  font-size: var(--main-font-size);
+  opacity: 0.75;
+  user-select: none;
+}
+
+#level-log-dialog-btns button {
+  background: var(--button-bg);
+  border: none;
+  border-radius: 6px;
+  color: var(--button-font-color);
+  cursor: pointer;
+  font-family: var(--main-font);
+  font-size: var(--main-font-size);
+  font-weight: normal;
+  padding: 0.4rem 0.9rem;
+}
+
 /* ── Edit dialog ── */
 
 /* Full-screen backdrop for the expandable field edit dialog.

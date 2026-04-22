@@ -52,3 +52,7 @@ race_line_sizing_text: "guild artisan (brewers) extra text"
 physical_measureable_sizing_text: "monstrosity"
 # Used for eyes, hair, and skin.
 physical_description_sizing_text: "Auburn with streaks and bangs"
+# Used for class field in the level log dialog.
+level_log_class_sizing_text: "FighterFighter"
+# Used for numeric level display in the level log dialog.
+std_num_sizing_text: " 20 "

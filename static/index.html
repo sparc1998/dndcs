@@ -14,6 +14,7 @@
     <nav id="tabs">
       <button class="tab-btn active" data-tab="bio">Bio</button>
       <button class="tab-btn" data-tab="campaign">Campaign Notes</button>
+      <button class="tab-btn" data-tab="level-log">Level Log</button>
     </nav>
 
     <!-- Bio panel: character identity fields displayed as click-to-edit spans -->
@@ -163,6 +164,21 @@
       <button class="btn" id="add-note-btn">Add Note</button>
       <div id="notes-list"></div>
     </div>
+
+    <!-- Level Log panel: add button + table of level-up entries -->
+    <div id="panel-level-log" class="panel">
+      <button class="btn" id="add-level-log-btn">Add Entry</button>
+      <table id="level-log-table">
+        <thead>
+          <tr>
+            <th>Level</th>
+            <th>Class</th>
+            <th>Details</th>
+          </tr>
+        </thead>
+        <tbody id="level-log-tbody"></tbody>
+      </table>
+    </div>
   </section>
 
   <!-- Sidebar: save action and status feedback -->
@@ -171,6 +187,32 @@
     <button id="save-btn">Save</button>
     <div id="status"></div>
   </aside>
+
+  <!-- Level log dialog: resizable dialog for adding and editing level log entries. -->
+  <div id="level-log-dialog" class="hidden" role="dialog" aria-modal="true">
+    <div id="level-log-dialog-box">
+      <div id="level-log-dialog-header">
+        <div class="field" style="flex-direction: row; align-items: center;">
+          <label>Level</label>
+          <span id="level-log-dialog-level-display" class="field-display"></span>
+          <input type="hidden" id="level-log-dialog-level" data-sizing-key="std_num_sizing_text" />
+        </div>
+        <div class="field" style="flex-direction: row; align-items: center;">
+          <label>Class</label>
+          <span id="level-log-dialog-class-display" class="field-display"></span>
+          <input type="hidden" id="level-log-dialog-class" data-formattable data-expandable data-sizing-key="level_log_class_sizing_text" />
+        </div>
+      </div>
+      <span id="level-log-dialog-details-display" class="field-display" style="white-space: pre-wrap; overflow-wrap: break-word;"></span>
+      <input type="hidden" id="level-log-dialog-details" data-formattable data-expandable />
+      <div id="level-log-dialog-btns">
+        <div id="level-log-dialog-hints">
+          <span id="level-log-dialog-hint"></span>
+        </div>
+        <button id="level-log-dialog-done-btn">Done</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Note dialog: resizable dialog for adding and editing campaign notes. -->
   <div id="note-dialog" class="hidden" role="dialog" aria-modal="true">
