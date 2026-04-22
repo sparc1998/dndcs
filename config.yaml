@@ -43,10 +43,9 @@ backup_extension: ".bak"
 
 # Used for player name and character name.
 name_sizing_text: "Longgggggggggggg Longgggg Longgggggggggggg"
-class_sizing_text: "Fighter / Wizard / Ranger/ Druid / Bard"
-level_sizing_text: "20 / 20 / 20 / 20 / 20"
+class_sizing_text: "Fighter (5) / Wizard (5) / Ranger (5) / Druid (5) / Bard (5)"
 # Used for HD.
-hd_sizing_text: "10d10 + 10d8 + 10d6"
+hd_sizing_text: "10d10 + 10d8 + 10d6 + 10d6 + 10d6"
 experience_sizing_text: "1000000"
 subclass_sizing_text: "Champion / Bladesinger / Hunter / Circle of the Land / Lore"
 # Used for race, background, and alignment.
@@ -57,5 +56,5 @@ physical_measureable_sizing_text: "monstrosity"
 physical_description_sizing_text: "Auburn with streaks and bangs"
 # Used for class field in the level log dialog.
 level_log_class_sizing_text: "FighterFighter"
-# Used for numeric level display in the level log dialog.
+# Used for the bio header Level field and numeric level display in the level log dialog and table.
 std_num_sizing_text: " 20 "

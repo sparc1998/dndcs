@@ -17,7 +17,7 @@ bio:
   hair: Black, silver at the temples
   skin: Fair
   personality_traits: |-
-    I hold myself and others to an exacting standard. When given a choice between the honorable path and the easy one, I do not hesitate.
+    I hold myself and [others](http://wikipedia.com) to an exacting standard. When given a choice between the honorable path and the easy one, I do not hesitate.
 
     I have little patience for cowardice or cruelty, and I say so plainly.
   ideals: Honor. A knight's word is a bond that cannot be broken — I would sooner
@@ -74,9 +74,9 @@ level_log:
 - class: Fighter
   details: Starting class. Chose Defense fighting style and took the Alert feat.
   level: 1
-- class: Fighter
-  details: Gained Action Surge and picked up Second Wind improvement.
-  level: 2
+- level: 2
+  class: Fighter
+  details: Gained Action Surge and picked up [Second Wind improvement](https://wikipedia.com).
 - class: Fighter
   details: Chose Champion archetype for improved critical hit range.
   level: 3

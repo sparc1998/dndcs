@@ -579,16 +579,10 @@ function openLevelLogDialog(index) {
     ? { level: (character.level_log?.length ?? 0) + 1, class: "", details: "" }
     : character.level_log[index];
   document.getElementById("level-log-dialog-level").value = String(entry.level);
-  updateDisplay(document.getElementById("level-log-dialog-level-display"), String(entry.level));
   document.getElementById("level-log-dialog-class").value = entry.class ?? "";
-  updateDisplay(document.getElementById("level-log-dialog-class-display"), entry.class ?? "");
   document.getElementById("level-log-dialog-details").value = entry.details ?? "";
-  updateDisplay(document.getElementById("level-log-dialog-details-display"), entry.details ?? "");
   document.getElementById("level-log-dialog").classList.remove("hidden");
-  document.querySelectorAll("#level-log-dialog [data-sizing-key]").forEach(el => {
-    const key = el.dataset.sizingKey;
-    if (_cfg[key]) fitInput(el, _cfg[key]);
-  });
+  requestAnimationFrame(() => { document.getElementById("level-log-dialog-class").focus(); });
 }
 
 function closeLevelLogDialog() {
@@ -690,8 +684,8 @@ document.getElementById("link-ok-btn").addEventListener("click", () => {
 });
 document.getElementById("link-remove-btn").addEventListener("click", () => applyLink(""));
 document.getElementById("link-url").addEventListener("keydown", (e) => {
-  if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) applyLink(document.getElementById("link-url").value.trim());
-  if (e.key === "Escape") closeLinkDialog(true);
+  if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) { applyLink(document.getElementById("link-url").value.trim()); e.stopPropagation(); }
+  if (e.key === "Escape") { closeLinkDialog(true); e.stopPropagation(); }
 });
 document.getElementById("link-dialog").addEventListener("click", (e) => {
   if (!document.getElementById("link-dialog-box").contains(e.target)) closeLinkDialog(true);

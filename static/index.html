@@ -57,9 +57,9 @@
           <input type="hidden" id="experience" class="hidden" placeholder="Experience" data-formula data-expandable data-field-key="experience" data-sizing-key="experience_sizing_text" />
         </div>
         <div class="field" style="flex-direction: row; align-items: center;">
-          <label for="level">Level(s)</label>
+          <label for="level">Level</label>
           <span id="level-display" class="field-display"></span>
-          <input type="hidden" id="level" class="hidden" placeholder="Level" data-formattable data-expandable data-field-key="level" data-sizing-key="level_sizing_text" />
+          <input type="hidden" id="level" class="hidden" placeholder="Level" data-formattable data-expandable data-field-key="level" data-sizing-key="std_num_sizing_text" />
         </div>
         <div class="field" style="flex-direction: row; align-items: center;">
           <label for="hd">HD</label>
@@ -194,17 +194,14 @@
       <div id="level-log-dialog-header">
         <div class="field" style="flex-direction: row; align-items: center;">
           <label>Level</label>
-          <span id="level-log-dialog-level-display" class="field-display"></span>
-          <input type="hidden" id="level-log-dialog-level" data-sizing-key="std_num_sizing_text" />
+          <input type="text" id="level-log-dialog-level" readonly />
         </div>
         <div class="field" style="flex-direction: row; align-items: center;">
           <label>Class</label>
-          <span id="level-log-dialog-class-display" class="field-display"></span>
-          <input type="hidden" id="level-log-dialog-class" data-formattable data-expandable data-sizing-key="level_log_class_sizing_text" />
+          <input type="text" id="level-log-dialog-class" data-formattable />
         </div>
       </div>
-      <span id="level-log-dialog-details-display" class="field-display" style="white-space: pre-wrap; overflow-wrap: break-word;"></span>
-      <input type="hidden" id="level-log-dialog-details" data-formattable data-expandable />
+      <textarea id="level-log-dialog-details" data-formattable></textarea>
       <div id="level-log-dialog-btns">
         <div id="level-log-dialog-hints">
           <span id="level-log-dialog-hint"></span>

@@ -410,7 +410,8 @@ textarea:focus {
 
 /* Rendered links inside display spans and note entries share the same style. */
 .field-display a,
-.note-entry a {
+.note-entry a,
+#level-log-table td a {
   color: var(--secondary-font-color);
   font-family: var(--main-font);
   font-size: var(--main-font-size);
@@ -630,12 +631,23 @@ textarea:focus {
   flex-wrap: wrap;
 }
 
-/* Override inline-block so details display fills remaining vertical space. */
-#level-log-dialog-details-display {
+#level-log-dialog-box input[type="text"],
+#level-log-dialog-box textarea {
+  border-color: var(--secondary-font-color);
+}
+
+#level-log-dialog-level {
+  background: var(--card-bg);
+  border-color: var(--card-bg);
+  width: 3em;
+  text-align: center;
+  cursor: default;
+}
+
+#level-log-dialog-details {
   flex: 1;
-  display: block !important;
+  resize: none;
   min-height: 0;
-  overflow-y: auto;
 }
 
 #level-log-dialog-btns {
