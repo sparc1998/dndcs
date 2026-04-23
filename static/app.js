@@ -22,39 +22,8 @@ let _editDialogOriginalValue = null;  // value at open time, restored on Escape
 const _undoStack = [];
 
 
-// ── Property registry ────────────────────────────────────────────────────────
-// The following HTML data-attributes define self-contained behaviors. Each entry
-// lists what it does, where it is handled, and what to update when adding it to
-// a new element.
-//
-// data-field-key   — links the input to character.bio[key] for render/collect/autosave.
-//                    To add a bio field: add this attribute + a display span in index.html.
-//                    No JS changes needed.
-//
-// data-sizing-key  — links the input to a config.yaml sizing key for fitInput() width-fitting.
-//                    To add: add this attribute in index.html, add the key to config.yaml,
-//                    and add the same key to _DEFAULTS in dndcs.py. No JS changes needed.
-//
-// data-expandable  — clicking the paired display span opens the full-screen edit dialog.
-//                    Wired once at parse time by querySelectorAll (static elements only).
-//                    To add: put on the hidden <input>; ensure a <span id="X-display"> exists.
-//
-// data-formattable — enables markdown rendering (links, bold, italic, bullets) + Cmd+K shortcut.
-//                    To add: put on any <input> or <textarea>.
-//                    To change syntax: update buildSyntaxHint() and renderInline()/renderFormatted().
-//
-// data-formula     — display shows evaluated arithmetic result instead of raw text.
-//                    Mutually exclusive with data-formattable.
-//                    To add: put on the hidden <input>.
-//
-// data-2col        — display is split at the nearest "--" separator into two columns.
-//                    updateDisplay() auto-toggles .field-display-2col on the display span.
-//                    To add: put on the hidden <input>. No CSS class change needed in HTML.
-//
-// card-movable     — CSS class (not a data-attr) that enables drag-and-drop on note cards.
-//                    Behavior is wired imperatively in renderNotes(); class drives CSS only.
-//                    To change drag behavior: update renderNotes().
-// ────────────────────────────────────────────────────────────────────────────
+// HTML data-attributes and the .dialog-hint / .card-movable classes are documented
+// in AGENTS.md → "Data-attributes". Keep the two in sync.
 
 
 // ── Utilities ──────────────────────────────────────────────────────────────
@@ -152,9 +121,9 @@ function renderFormatted(raw) {
   return html;
 }
 
-const _isSeparator = line => /^-{2,}\s*$/.test(line);
+const _isSeparator = line => /^-{3,}\s*$/.test(line);
 
-// Splits raw text into two columns at the "--"-or-more line closest to the
+// Splits raw text into two columns at the "---"-or-more line closest to the
 // character midpoint. All separator lines are stripped from both halves.
 // Falls back to a single column if no separator is present.
 function render2Col(raw) {
@@ -192,35 +161,46 @@ function render2Col(raw) {
     `<div class="two-col-right">${renderHalf(lines.slice(splitIdx + 1))}</div>`;
 }
 
-// Returns the syntax hint string for a given input element based on its data-attributes.
-function buildSyntaxHint(inputEl) {
-  if (!inputEl) return "";
-  if (inputEl.hasAttribute("data-formula")) {
-    return "Formulas: 1 + 2 * 3 · Comments: {your note here}";
-  }
-  if (inputEl.hasAttribute("data-formattable")) {
-    let hint = `${_modKey}+K to insert link · [label](url) · **bold** · _italic_ · * bullet · 1) numbered`;
-    if (inputEl.hasAttribute("data-2col")) hint += " · --- to split entries";
-    return hint;
-  }
-  return "";
+// Render-mode registry: single source of truth for the three behaviors of a
+// data-render value — how the display renders, what syntax hint to show in the
+// edit dialog, and whether Cmd+K opens the link dialog while editing.
+// To add a render mode: add one entry here and add the value to the set
+// accepted by data-render in index.html. No other changes needed.
+const MD_HINT = `${_modKey}+K to insert link · [label](url) · **bold** · _italic_ · * bullet · 1) numbered`;
+const RENDER_MODES = {
+  formatted: {
+    render: (el, raw) => { el.innerHTML = renderFormatted(raw); },
+    hint: MD_HINT,
+    linkShortcut: true,
+  },
+  "2col": {
+    render: (el, raw) => { el.innerHTML = render2Col(raw); },
+    hint: MD_HINT + " · --- to split entries",
+    linkShortcut: true,
+  },
+  formula: {
+    render: (el, raw) => { el.textContent = renderFormula(raw); },
+    hint: "Formulas: 1 + 2 * 3 · Comments: {your note here}",
+    linkShortcut: false,
+  },
+};
+
+function renderMode(el) {
+  return el ? RENDER_MODES[el.dataset.render] : null;
 }
 
-// Renders raw text into a display element.
-// For data-formula fields the formula is evaluated and only the result is shown.
-// For data-2col fields the text is split into two columns at the nearest "--" line.
-// For all other fields markdown links and bullet points are rendered.
+// Returns the syntax hint string for a given input element based on its render mode.
+function buildSyntaxHint(inputEl) {
+  return renderMode(inputEl)?.hint ?? "";
+}
+
+// Renders raw text into a display element using the paired input's render mode.
 function updateDisplay(displayEl, rawText) {
   const inputId = displayEl.id.replace(/-display$/, "");
   const inputEl = document.getElementById(inputId);
-  displayEl.classList.toggle("field-display-2col", !!inputEl?.hasAttribute("data-2col"));
-  if (inputEl && inputEl.hasAttribute("data-formula")) {
-    displayEl.textContent = renderFormula(rawText);
-  } else if (inputEl && inputEl.hasAttribute("data-2col")) {
-    displayEl.innerHTML = render2Col(rawText);
-  } else {
-    displayEl.innerHTML = renderFormatted(rawText);
-  }
+  const mode = renderMode(inputEl);
+  displayEl.classList.toggle("field-display-2col", inputEl?.dataset.render === "2col");
+  (mode ?? RENDER_MODES.formatted).render(displayEl, rawText);
 }
 
 // ── Edit dialog ────────────────────────────────────────────────────────────
@@ -233,8 +213,8 @@ function openEditDialog(inputEl, displayEl) {
   _editDialogOriginalValue = inputEl.value;
   const ta = document.getElementById("edit-dialog-textarea");
   ta.value = inputEl.value;
-  const syntaxHint = document.getElementById("edit-dialog-syntax-hint");
-  syntaxHint.textContent = buildSyntaxHint(inputEl);
+  ta.dataset.render = inputEl.dataset.render ?? "formatted";
+  document.getElementById("edit-dialog-syntax-hint").textContent = buildSyntaxHint(inputEl);
   document.getElementById("edit-dialog").classList.remove("hidden");
   requestAnimationFrame(() => { ta.focus(); });
 }
@@ -414,15 +394,28 @@ async function load() {
   render();
 }
 
-// Populates all bio field inputs and display spans from the character object,
-// then re-renders the campaign notes list.
-function render() {
-  document.querySelectorAll("[data-field-key]").forEach(el => {
-    const raw = character.bio?.[el.dataset.fieldKey] ?? "";
+// Populates every data-field-key input inside container from obj[key]; also
+// refreshes any paired -display span.
+function populateFields(container, obj) {
+  container.querySelectorAll("[data-field-key]").forEach(el => {
+    const raw = obj?.[el.dataset.fieldKey] ?? "";
     el.value = raw;
     const display = document.getElementById(el.id + "-display");
     if (display) updateDisplay(display, raw);
   });
+}
+
+// Reads every data-field-key input inside container into a plain object.
+function collectFields(container) {
+  const obj = {};
+  container.querySelectorAll("[data-field-key]").forEach(el => {
+    obj[el.dataset.fieldKey] = el.value;
+  });
+  return obj;
+}
+
+function render() {
+  populateFields(document.getElementById("panel-bio"), character.bio);
   renderNotes();
   renderLevelLog();
 }
@@ -516,20 +509,21 @@ let _cfg = {};
 function openNoteDialog(index) {
   _noteDialogIndex = index;
   const note = index === null ? { tags: [], text: "" } : character.campaign_notes[index];
+  const dialog = document.getElementById("note-dialog");
+  populateFields(dialog, note);
   document.getElementById("note-dialog-tags").value = (note.tags ?? []).join(", ");
-  document.getElementById("note-dialog-text").value = note.text ?? "";
   document.getElementById("note-dialog-syntax-hint").textContent =
     buildSyntaxHint(document.getElementById("note-dialog-text"));
-  document.getElementById("note-dialog").classList.remove("hidden");
+  dialog.classList.remove("hidden");
   requestAnimationFrame(() => { document.getElementById("note-dialog-text").focus(); });
 }
 
 function closeNoteDialog() {
+  const dialog = document.getElementById("note-dialog");
   const rawTags = document.getElementById("note-dialog-tags").value;
-  const rawText = document.getElementById("note-dialog-text").value;
   const tags = rawTags.split(",").map((t) => t.trim()).filter(Boolean);
   if (tags.length === 0) tags.push("general");
-  const note = { tags, text: rawText };
+  const note = { ...collectFields(dialog), tags };
   character.campaign_notes = character.campaign_notes ?? [];
   const previousNotes = character.campaign_notes.map((n) => ({ ...n, tags: [...n.tags] }));
   if (_noteDialogIndex === null) {
@@ -578,18 +572,19 @@ function openLevelLogDialog(index) {
   const entry = index === null
     ? { class: "", details: "" }
     : character.level_log[index];
-  document.getElementById("level-log-dialog-class").value = entry.class ?? "";
-  document.getElementById("level-log-dialog-details").value = entry.details ?? "";
+  const dialog = document.getElementById("level-log-dialog");
+  populateFields(dialog, entry);
+  const level = (index ?? character.level_log.length) + 1;
+  document.getElementById("level-log-dialog-level").value = String(level);
   document.getElementById("level-log-dialog-syntax-hint").textContent =
     buildSyntaxHint(document.getElementById("level-log-dialog-class"));
-  document.getElementById("level-log-dialog").classList.remove("hidden");
+  dialog.classList.remove("hidden");
   requestAnimationFrame(() => { document.getElementById("level-log-dialog-class").focus(); });
 }
 
 function closeLevelLogDialog() {
-  const cls = document.getElementById("level-log-dialog-class").value;
-  const details = document.getElementById("level-log-dialog-details").value;
-  const entry = { class: cls, details };
+  const dialog = document.getElementById("level-log-dialog");
+  const entry = collectFields(dialog);
   character.level_log = character.level_log ?? [];
   const previousLog = character.level_log.map(e => ({ ...e }));
   if (_levelLogDialogIndex === null) {
@@ -614,11 +609,11 @@ function cancelLevelLogDialog() {
 // Assembles the current character object from live DOM field values.
 // campaign_notes and level_log are carried over from the last loaded/saved state unchanged.
 function collectCharacter() {
-  const bio = {};
-  document.querySelectorAll("[data-field-key]").forEach(el => {
-    bio[el.dataset.fieldKey] = el.value;
-  });
-  return { bio, campaign_notes: character.campaign_notes ?? [], level_log: character.level_log ?? [] };
+  return {
+    bio: collectFields(document.getElementById("panel-bio")),
+    campaign_notes: character.campaign_notes ?? [],
+    level_log: character.level_log ?? [],
+  };
 }
 
 // Saves the current character state to /api/character (the autosave .bak file).
@@ -644,22 +639,26 @@ function setStatus(msg, cls) {
 
 // ── Event wiring ───────────────────────────────────────────────────────────
 
-// Open the edit dialog when clicking a data-expandable field's display span.
+// Open the edit dialog when clicking a bio field's paired display span.
 // Clicks on rendered links inside the span are ignored so the link can be followed.
-document.querySelectorAll("[data-expandable]").forEach((input) => {
+document.querySelectorAll("#panel-bio [data-field-key]").forEach((input) => {
   const display = document.getElementById(input.id + "-display");
-  if (display) display.addEventListener("click", (e) => {
+  if (!display) return;
+  display.addEventListener("click", (e) => {
     if (e.target.closest("a")) return;
     openEditDialog(input, display);
   });
 });
 
 // Open the link dialog with cmd-k (Mac) or ctrl-k (Windows/Linux) on any
-// data-formattable element, provided text is selected.
-document.querySelectorAll("[data-formattable]").forEach((el) => {
-  el.addEventListener("keydown", (e) => {
-    if ((e.metaKey || e.ctrlKey) && e.key === "k") { e.preventDefault(); openLinkDialog(el); }
-  });
+// element whose render mode supports links. Uses a document-level listener so
+// the edit dialog textarea works too: its data-render is set dynamically on open.
+document.addEventListener("keydown", (e) => {
+  if (!(e.metaKey || e.ctrlKey) || e.key !== "k") return;
+  const el = e.target;
+  if (!el || !renderMode(el)?.linkShortcut) return;
+  e.preventDefault();
+  openLinkDialog(el);
 });
 
 // Edit dialog: Done button, Escape key, and textarea sync.
@@ -714,8 +713,9 @@ document.addEventListener("keydown", (e) => {
   document.getElementById("save-btn").click();
 });
 
-// Autosave bio fields on every keystroke.
-document.querySelectorAll("[data-field-key]").forEach(el => {
+// Autosave bio fields on every keystroke. Dialog fields persist on dialog close
+// so they are deliberately excluded here.
+document.querySelectorAll("#panel-bio [data-field-key]").forEach(el => {
   el.addEventListener("input", autosave);
 });
 

@@ -330,7 +330,7 @@ textarea:focus {
 /* ── Editable display (click-to-edit) ── */
 
 /* The read-only display span shown in place of the hidden input.
-   Clicking it (or the edit dialog for data-expandable fields) switches to edit mode.
+   Clicking it opens the edit dialog for any data-field-key input with a paired -display.
    inline-block is required so that fitInput's inline width style takes effect. */
 .field-display {
   display: inline-block;
