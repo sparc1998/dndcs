@@ -431,23 +431,56 @@ function normalizeNote(note) {
 // Rebuilds the #notes-list DOM from character.campaign_notes.
 // Each note becomes a clickable, draggable card with tag chips and rendered text.
 let _dragIndex = null;
+let _activeTagFilters = new Set();
+
+function renderTagFilter() {
+  const container = document.getElementById("note-tag-filter");
+  container.innerHTML = "";
+  const allTags = [...new Set(
+    (character.campaign_notes ?? []).flatMap(n => n.tags ?? [])
+  )].sort();
+  // Drop filters for tags that no longer exist in any note.
+  for (const t of _activeTagFilters) { if (!allTags.includes(t)) _activeTagFilters.delete(t); }
+  allTags.forEach(tag => {
+    const chip = document.createElement("span");
+    chip.className = "tag-filter-chip" + (_activeTagFilters.has(tag) ? " active" : "");
+    chip.textContent = tag;
+    chip.addEventListener("click", () => {
+      if (_activeTagFilters.has(tag)) { _activeTagFilters.delete(tag); } else { _activeTagFilters.add(tag); }
+      renderNotes();
+    });
+    container.appendChild(chip);
+  });
+  if (_activeTagFilters.size > 0) {
+    const clearBtn = document.createElement("button");
+    clearBtn.className = "btn-clear-filter";
+    clearBtn.textContent = "Show All";
+    clearBtn.addEventListener("click", () => { _activeTagFilters.clear(); renderNotes(); });
+    container.appendChild(clearBtn);
+  }
+}
 
 function renderNotes() {
   character.campaign_notes = (character.campaign_notes ?? []).map(normalizeNote);
   const list = document.getElementById("notes-list");
   list.innerHTML = "";
-  character.campaign_notes.forEach((note, i) => {
+  const visible = character.campaign_notes
+    .map((note, idx) => ({ note, idx }))
+    .filter(({ note }) =>
+      _activeTagFilters.size === 0 || (note.tags ?? []).some(t => _activeTagFilters.has(t))
+    );
+  visible.forEach(({ note, idx }) => {
     const card = document.createElement("div");
     card.className = "note-card card-movable";
 
     // Suppress click when the mouse-up was the end of a drag, not a tap.
     let _dragged = false;
-    card.addEventListener("click", () => { if (_dragged) { _dragged = false; return; } openNoteDialog(i); });
+    card.addEventListener("click", () => { if (_dragged) { _dragged = false; return; } openNoteDialog(idx); });
 
-    // Drag-and-drop reordering.
+    // Drag-and-drop reordering. idx is the actual index in character.campaign_notes.
     card.draggable = true;
     card.addEventListener("dragstart", (e) => {
-      _dragIndex = i;
+      _dragIndex = idx;
       _dragged = true;
       e.dataTransfer.effectAllowed = "move";
       requestAnimationFrame(() => card.classList.add("dragging"));
@@ -469,14 +502,14 @@ function renderNotes() {
     card.addEventListener("drop", (e) => {
       e.preventDefault();
       card.classList.remove("drag-above", "drag-below");
-      if (_dragIndex === null || _dragIndex === i) return;
+      if (_dragIndex === null || _dragIndex === idx) return;
       const mid = card.getBoundingClientRect().top + card.getBoundingClientRect().height / 2;
       const isAbove = e.clientY < mid;
       const notes = character.campaign_notes;
       const [moved] = notes.splice(_dragIndex, 1);
       const insertAt = isAbove
-        ? (_dragIndex < i ? i - 1 : i)
-        : (_dragIndex < i ? i : i + 1);
+        ? (_dragIndex < idx ? idx - 1 : idx)
+        : (_dragIndex < idx ? idx : idx + 1);
       notes.splice(insertAt, 0, moved);
       _dragIndex = null;
       renderNotes();
@@ -500,6 +533,7 @@ function renderNotes() {
 
     list.appendChild(card);
   });
+  renderTagFilter();
 }
 
 // ── Note dialog ────────────────────────────────────────────────────────────
@@ -530,7 +564,7 @@ function closeNoteDialog() {
   character.campaign_notes = character.campaign_notes ?? [];
   const previousNotes = character.campaign_notes.map((n) => ({ ...n, tags: [...n.tags] }));
   if (_noteDialogIndex === null) {
-    character.campaign_notes.unshift(note);
+    character.campaign_notes.push(note);
   } else {
     character.campaign_notes[_noteDialogIndex] = note;
   }
