@@ -162,10 +162,10 @@ function render2Col(raw) {
 }
 
 // Render-mode registry: single source of truth for the three behaviors of a
-// data-render value — how the display renders, what syntax hint to show in the
+// data-field-render value — how the display renders, what syntax hint to show in the
 // edit dialog, and whether Cmd+K opens the link dialog while editing.
 // To add a render mode: add one entry here and add the value to the set
-// accepted by data-render in index.html. No other changes needed.
+// accepted by data-field-render in index.html. No other changes needed.
 const MD_HINT = `${_modKey}+K to insert link · [label](url) · **bold** · _italic_ · * bullet · 1) numbered`;
 const RENDER_MODES = {
   formatted: {
@@ -173,7 +173,7 @@ const RENDER_MODES = {
     hint: MD_HINT,
     linkShortcut: true,
   },
-  "2col": {
+  "formatted-seps": {
     render: (el, raw) => { el.innerHTML = render2Col(raw); },
     hint: MD_HINT + " · --- to split entries",
     linkShortcut: true,
@@ -186,7 +186,7 @@ const RENDER_MODES = {
 };
 
 function renderMode(el) {
-  return el ? RENDER_MODES[el.dataset.render] : null;
+  return el ? RENDER_MODES[el.dataset.fieldRender] : null;
 }
 
 // Returns the syntax hint string for a given input element based on its render mode.
@@ -199,7 +199,7 @@ function updateDisplay(displayEl, rawText) {
   const inputId = displayEl.id.replace(/-display$/, "");
   const inputEl = document.getElementById(inputId);
   const mode = renderMode(inputEl);
-  displayEl.classList.toggle("field-display-2col", inputEl?.dataset.render === "2col");
+  displayEl.classList.toggle("field-display-2col", inputEl?.dataset.layout === "2col");
   (mode ?? RENDER_MODES.formatted).render(displayEl, rawText);
 }
 
@@ -213,7 +213,7 @@ function openEditDialog(inputEl, displayEl) {
   _editDialogOriginalValue = inputEl.value;
   const ta = document.getElementById("edit-dialog-textarea");
   ta.value = inputEl.value;
-  ta.dataset.render = inputEl.dataset.render ?? "formatted";
+  ta.dataset.fieldRender = inputEl.dataset.fieldRender ?? "formatted";
   document.getElementById("edit-dialog-syntax-hint").textContent = buildSyntaxHint(inputEl);
   document.getElementById("edit-dialog").classList.remove("hidden");
   requestAnimationFrame(() => { ta.focus(); });
@@ -528,7 +528,7 @@ function renderNotes() {
 
     const textDiv = document.createElement("div");
     textDiv.className = "note-entry";
-    textDiv.innerHTML = renderFormatted(note.text ?? "");
+    RENDER_MODES.formatted.render(textDiv, note.text ?? "");
     card.appendChild(textDiv);
 
     list.appendChild(card);
@@ -594,9 +594,9 @@ function renderLevelLog() {
     const tdLevel = document.createElement("td");
     tdLevel.textContent = i + 1;
     const tdClass = document.createElement("td");
-    tdClass.innerHTML = renderFormatted(entry.class ?? "");
+    RENDER_MODES.formatted.render(tdClass, entry.class ?? "");
     const tdDetails = document.createElement("td");
-    tdDetails.innerHTML = renderFormatted(entry.details ?? "");
+    RENDER_MODES.formatted.render(tdDetails, entry.details ?? "");
     tr.appendChild(tdLevel);
     tr.appendChild(tdClass);
     tr.appendChild(tdDetails);
@@ -665,7 +665,7 @@ function renderGear() {
         const tr = document.createElement("tr");
         tr.addEventListener("click", () => openGearDialog(i));
         const tdDesc = document.createElement("td");
-        tdDesc.innerHTML = renderFormatted(item.description ?? "");
+        RENDER_MODES.formatted.render(tdDesc, item.description ?? "");
         const tdLoc = document.createElement("td");
         tdLoc.textContent = item.location ?? "";
         const tdWeight = document.createElement("td");
@@ -781,7 +781,7 @@ document.querySelectorAll("#panel-bio [data-field-key]").forEach((input) => {
 
 // Open the link dialog with cmd-k (Mac) or ctrl-k (Windows/Linux) on any
 // element whose render mode supports links. Uses a document-level listener so
-// the edit dialog textarea works too: its data-render is set dynamically on open.
+// the edit dialog textarea works too: its data-field-render is set dynamically on open.
 document.addEventListener("keydown", (e) => {
   if (!(e.metaKey || e.ctrlKey) || e.key !== "k") return;
   const el = e.target;

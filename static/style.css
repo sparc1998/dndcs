@@ -629,6 +629,7 @@ textarea:focus {
   font-weight: bold;
   border-bottom: 2px solid var(--primary-font-color);
   white-space: nowrap;
+  background: var(--card-bg);
 }
 
 #level-log-table th:nth-child(1),
