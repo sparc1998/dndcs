@@ -836,6 +836,14 @@ document.querySelectorAll(".gear-section-toggle").forEach(btn => {
   });
 });
 
+// Collapse/expand all gear sections at once.
+document.getElementById("toggle-all-gear-btn").addEventListener("click", () => {
+  const sections = document.querySelectorAll(".gear-section");
+  const anyExpanded = Array.from(sections).some(s => !s.classList.contains("collapsed"));
+  sections.forEach(s => s.classList.toggle("collapsed", anyExpanded));
+  document.getElementById("toggle-all-gear-btn").textContent = anyExpanded ? "Expand All" : "Collapse All";
+});
+
 // Level log dialog: Done button, backdrop click, and keyboard shortcuts.
 document.getElementById("level-log-dialog-done-btn").addEventListener("click", closeLevelLogDialog);
 document.getElementById("level-log-dialog").addEventListener("click", (e) => {

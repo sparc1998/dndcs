@@ -163,36 +163,41 @@
     <!-- Gear panel: money row at top, then four collapsible gear-type sections -->
     <div id="panel-gear" class="panel">
 
-      <!-- Money row: PP, GP, EP, SP, CP as formula click-to-edit fields -->
-      <div id="money-row">
-        <div class="field" style="flex-direction: row; align-items: center;">
-          <label for="money-pp">PP</label>
-          <span id="money-pp-display" class="field-display"></span>
-          <input type="hidden" id="money-pp" class="hidden" placeholder="0" data-render="formula" data-field-key="pp" data-sizing-key="std_num_sizing_text" />
+      <!-- Toolbar: Money label + coin box + action buttons -->
+      <div id="gear-toolbar">
+        <span id="money-label">Money</span>
+        <div id="money-box">
+          <div id="money-row">
+            <div class="field" style="flex-direction: row; align-items: center;">
+              <label for="money-pp">PP</label>
+              <span id="money-pp-display" class="field-display"></span>
+              <input type="hidden" id="money-pp" class="hidden" placeholder="0" data-render="formula" data-field-key="pp" data-sizing-key="std_num_sizing_text" />
+            </div>
+            <div class="field" style="flex-direction: row; align-items: center;">
+              <label for="money-gp">GP</label>
+              <span id="money-gp-display" class="field-display"></span>
+              <input type="hidden" id="money-gp" class="hidden" placeholder="0" data-render="formula" data-field-key="gp" data-sizing-key="std_num_sizing_text" />
+            </div>
+            <div class="field" style="flex-direction: row; align-items: center;">
+              <label for="money-ep">EP</label>
+              <span id="money-ep-display" class="field-display"></span>
+              <input type="hidden" id="money-ep" class="hidden" placeholder="0" data-render="formula" data-field-key="ep" data-sizing-key="std_num_sizing_text" />
+            </div>
+            <div class="field" style="flex-direction: row; align-items: center;">
+              <label for="money-sp">SP</label>
+              <span id="money-sp-display" class="field-display"></span>
+              <input type="hidden" id="money-sp" class="hidden" placeholder="0" data-render="formula" data-field-key="sp" data-sizing-key="std_num_sizing_text" />
+            </div>
+            <div class="field" style="flex-direction: row; align-items: center;">
+              <label for="money-cp">CP</label>
+              <span id="money-cp-display" class="field-display"></span>
+              <input type="hidden" id="money-cp" class="hidden" placeholder="0" data-render="formula" data-field-key="cp" data-sizing-key="std_num_sizing_text" />
+            </div>
+          </div>
         </div>
-        <div class="field" style="flex-direction: row; align-items: center;">
-          <label for="money-gp">GP</label>
-          <span id="money-gp-display" class="field-display"></span>
-          <input type="hidden" id="money-gp" class="hidden" placeholder="0" data-render="formula" data-field-key="gp" data-sizing-key="std_num_sizing_text" />
-        </div>
-        <div class="field" style="flex-direction: row; align-items: center;">
-          <label for="money-ep">EP</label>
-          <span id="money-ep-display" class="field-display"></span>
-          <input type="hidden" id="money-ep" class="hidden" placeholder="0" data-render="formula" data-field-key="ep" data-sizing-key="std_num_sizing_text" />
-        </div>
-        <div class="field" style="flex-direction: row; align-items: center;">
-          <label for="money-sp">SP</label>
-          <span id="money-sp-display" class="field-display"></span>
-          <input type="hidden" id="money-sp" class="hidden" placeholder="0" data-render="formula" data-field-key="sp" data-sizing-key="std_num_sizing_text" />
-        </div>
-        <div class="field" style="flex-direction: row; align-items: center;">
-          <label for="money-cp">CP</label>
-          <span id="money-cp-display" class="field-display"></span>
-          <input type="hidden" id="money-cp" class="hidden" placeholder="0" data-render="formula" data-field-key="cp" data-sizing-key="std_num_sizing_text" />
-        </div>
+        <button class="btn" id="add-gear-btn">Add Gear</button>
+        <button class="btn" id="toggle-all-gear-btn">Collapse All</button>
       </div>
-
-      <button class="btn" id="add-gear-btn">Add Gear</button>
 
       <!-- Consumable -->
       <div class="gear-section" id="gear-section-consumable">
