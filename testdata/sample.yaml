@@ -17,7 +17,7 @@ bio:
   hair: Black, silver at the temples
   skin: Fair
   personality_traits: |-
-    I hold myself and [others](http://wikipedia.com) to an exacting standard. When given a choice between the honorable path and the easy one, I do not hesitate.
+    I hold myself and [others](https://en.wikipedia.org/wiki/Chivalry) to an exacting standard. When given a choice between the honorable path and the easy one, I do not hesitate.
 
     I have little patience for cowardice or cruelty, and I say so plainly.
   ideals: Honor. A knight's word is a bond that cannot be broken — I would sooner
@@ -27,25 +27,131 @@ bio:
   traits: I am slow to trust those who have not proven themselves in hardship. I find
     it nearly impossible to ask for help.
   background_history: |-
-    Born the eldest son of House Vane, a minor noble family in the borderlands, Aldric was trained as a knight from childhood. He served as a squire to Sir Brennan Coldforge of the King's Vanguard, earning his spurs at nineteen after holding a river crossing against a warband twice their number.
+    Born the eldest son of [House Vane](https://en.wikipedia.org/wiki/Noble_house), a minor noble family in the borderlands, Aldric was trained as a knight from childhood. His father was a stern man who believed weakness was a choice. By twelve Aldric could ride and shoot; by fifteen he was apprenticed as a squire to Sir Brennan Coldforge of the [King's Vanguard](https://en.wikipedia.org/wiki/Household_cavalry).
     ---
-    He left royal service after his sister's disappearance, convinced the Crimson Hand had agents within the court. Since then he has worked as a sword-for-hire, following every lead that points toward the cult.
+    At nineteen, Aldric earned his spurs at the **Battle of Greyford Crossing**, holding a river passage against a warband of eighty with only eleven other soldiers for six hours until reinforcements arrived. The King's Herald read his name at court. He took the oath of the Vanguard and served with distinction for eight years, campaigning across four provinces.
     ---
-    **House Vane** — Estranged; his father blames Aldric for abandoning his post at court.
+    Three years ago his sister Mira, visiting Crestfall to oversee a family estate matter, vanished without word. The town guard found only her horse. Aldric's investigation uncovered signs of the [Crimson Hand](https://en.wikipedia.org/wiki/Cult) — a cult he had encountered twice during his Vanguard years. He brought his suspicions to his commanding officer and was told, quietly, to drop it. He resigned his commission the next morning.
+    ---
+    **[House Vane](https://en.wikipedia.org/wiki/Noble_house)** — Estranged. His father considers the resignation a permanent disgrace to the family name and has not replied to Aldric's letters.
 
-    **Sir Brennan Coldforge** — Former mentor, now Knight-Commander of the Vanguard. Loyal, though wary of Aldric's obsession.
+    **Sir Brennan Coldforge** — Former mentor, now Knight-Commander of the Vanguard. Still loyal to Aldric personally, but bound by orders he will not discuss. They meet in secret twice a year.
 
-    **The Ember Compact** — A loose network of monster hunters who aided Aldric in Thornvale. He owes them a significant favor.
+    **The [Ember Compact](https://en.wikipedia.org/wiki/Monster_hunter)** — A loose network of monster hunters who aided Aldric during the Thornvale incident. He owes them a significant favor; they have not yet called it in.
+    ---
+    **Mira Vane** — Younger sister, whereabouts unknown. A torn fragment of her travelling cloak was found in the east tunnel of the Crestfall mill cellar. She was alive when they moved her.
 
-    **Mira Vane** — Younger sister, whereabouts unknown. Last seen near the village of Crestfall.
+    **The Crimson Hand** — A cult with an unclear purpose. Their agents have surfaced in three different regions. Someone with money and influence is backing them — the ledger suggests the scale of the operation exceeds anything a fringe group could sustain alone.
+money:
+  pp: '2'
+  gp: '47'
+  ep: '0'
+  sp: '14'
+  cp: '6'
+gear:
+- gear_type: Weapons & Armor
+  description: |-
+    **Longsword +1** — _Oathkeeper_
+
+    A well-balanced blade with a cross-guard of darkened iron. The pommel is engraved with the Vane family crest — a heron in flight. Aldric has carried it since earning his spurs. The [enchantment](https://en.wikipedia.org/wiki/Enchantment) is subtle: the blade holds an edge through conditions that would ruin mundane steel.
+  location: worn
+  weight: '3'
+- gear_type: Weapons & Armor
+  description: |-
+    **Plate Armor** — polished but road-worn, with a replaced left pauldron after the Thornvale skirmish. The Vanguard mark was etched on the breastplate; Aldric has filed most of it off. A few faint lines remain.
+  location: worn
+  weight: '65'
+- gear_type: Weapons & Armor
+  description: '**Shield** — Heavy steel, kite-style. A dent near the boss from Gruda''s
+    maul has been hammered out but not quite smoothed. Aldric considers this acceptable.'
+  location: worn
+  weight: '6'
+- gear_type: Weapons & Armor
+  description: '**Dagger** — plain, utilitarian. Used more often to cut rope than
+    as a weapon.'
+  location: right boot
+  weight: '1'
+- gear_type: Weapons & Armor
+  description: '**Handaxe ×2** — balanced for throwing. Nothing remarkable about
+    them.'
+  location: belt
+  weight: '4'
+- gear_type: Consumable
+  description: |-
+    **Potion of Healing ×3** — standard red-stoppered vials stamped with the alchemist's guild mark.
+
+    Restores **2d4+2 HP** each. Aldric keeps one on his belt and two in the backpack.
+  location: backpack
+  weight: '1.5'
+- gear_type: Consumable
+  description: '**Antitoxin** — a single vial. Grants advantage on [poison saving
+    throws](https://en.wikipedia.org/wiki/Saving_throw) for 1 hour.'
+  location: belt pouch
+  weight: '0.5'
+- gear_type: Consumable
+  description: '**Torch ×5** — bundled with twine. Burns 1 hour each, bright light
+    in a 20 ft radius.'
+  location: backpack
+  weight: '5'
+- gear_type: Consumable
+  description: '**Rations, 5 days** — hard bread, dried meat, salted nuts. Nothing
+    good.'
+  location: backpack
+  weight: '10'
+- gear_type: General
+  description: '**Backpack** — large leather pack with reinforced straps. Shows three
+    years of hard use.'
+  location: worn
+  weight: '5'
+- gear_type: General
+  description: '**Bedroll** — wool-lined with an oilskin outer. Compact when rolled.'
+  location: saddlebag
+  weight: '7'
+- gear_type: General
+  description: '**Rope, hempen (50 ft)** — well-maintained, no fraying.'
+  location: saddlebag
+  weight: '10'
+- gear_type: General
+  description: '**Tinderbox** — flint, steel, and tinder cloth in a brass case.'
+  location: backpack
+  weight: '1'
+- gear_type: General
+  description: '**Waterskin** — full.'
+  location: belt
+  weight: '5'
+- gear_type: General
+  description: '**Whetstone** — flat river stone. Used every evening.'
+  location: backpack
+  weight: '1'
+- gear_type: Campaign Specific
+  description: |-
+    **Crimson Hand Ledger** — recovered from the Crestfall mill cellar. Lists names, dates, and amounts paid to informants across four towns.
+
+    The name _the Archivist_ appears seven times, always associated with large sums and a [Duskport](https://en.wikipedia.org/wiki/Port_city) location marker. Pages 12–14 have been carefully cut out.
+  location: backpack
+  weight: '1'
+- gear_type: Campaign Specific
+  description: |-
+    **Mira's cloak fragment** — a torn piece of the grey travelling cloak Aldric gave his sister the winter before she disappeared. Identified by its distinctive **copper-thread border stitch**, a detail only family would know.
+
+    Found in the east tunnel of the mill cellar, partially under a loose flagstone.
+  location: chest pocket
+  weight: '0'
+- gear_type: Campaign Specific
+  description: |-
+    **Letter of Introduction (Ember Compact)** — sealed with black wax and the Compact mark. Signed by Warden Essa Nolt.
+
+    _"The bearer has rendered service to the Compact and is known to us. Extend reasonable trust and assistance where it does not compromise your work."_
+  location: saddlebag
+  weight: '0'
 campaign_notes:
 - tags:
   - session-1
   - setup
   text: |-
-    Met the party at the Silver Stag inn in Crestfall — Zira (tiefling rogue), Brother Ossian (cleric of Pelor), and Wren Ashwick (wizard).
+    Met the party at the **Silver Stag** inn in Crestfall — Zira (tiefling rogue), Brother Ossian (cleric of Pelor), and Wren Ashwick (wizard).
 
-    The innkeeper described disappearances near the old mill over the past month: three farmhands and a traveling merchant, all gone without a trace.
+    The innkeeper described disappearances near the old mill over the past month: three farmhands and a travelling merchant, all gone without a trace.
 
     Agreed to investigate at dawn.
 - tags:
@@ -56,27 +162,39 @@ campaign_notes:
     Explored the mill basement. A hidden trapdoor beneath the grinding wheel led to a network of cellars.
 
     * Defeated six Crimson Hand initiates and a half-orc enforcer named Gruda.
-    * Found a ledger with names — possible informants in town.
-    * Gruda surrendered and was handed over to the town constable pending questioning.
+    * Found the ledger — names, dates, payment amounts. Possible informants in town.
+    * Gruda surrendered and was handed over to Constable Dunn pending questioning.
 
-    No sign of Mira, but a torn piece of cloth matching her traveling cloak was near the eastern tunnel.
+    No sign of Mira, but a torn piece of cloth matching her travelling cloak was near the eastern tunnel.
 - tags:
   - npc
   - ally
   text: '**Constable Petra Dunn** (Crestfall) — Skeptical of outsiders but warmed
-    up after the mill raid. Will share what she learns from Gruda''s questioning.'
+    up after the mill raid. Will share what she learns from Gruda''s questioning.
+    Trustworthy within the limits of her jurisdiction.'
 - tags:
   - lead
   - crimson-hand
-  text: The ledger names a contact called "the Archivist," operating out of Duskport.
-    Likely the next destination.
+  text: |-
+    The ledger names a contact called _the Archivist_, operating out of [Duskport](https://en.wikipedia.org/wiki/Port_city). Likely our next destination.
+
+    Cross-referencing the payment dates with the disappearances: the timing matches almost exactly. The Archivist may be directing the abductions, not just funding them.
+- tags:
+  - session-3
+  - travel
+  text: |-
+    Set out for Duskport. Three days on the road.
+
+    * Day 1: uneventful. Wren identified a [glyph of warding](https://en.wikipedia.org/wiki/Magic_circle) scratched into a milestone — Crimson Hand marking. They know the road.
+    * Day 2: ambushed at dusk by four Hand agents and a cloaked figure who fled when the fight turned. Fast, light armour, [twin blades](https://en.wikipedia.org/wiki/Florentine_fighting). Professional.
+    * Day 3: arrived at Duskport. The city is larger than expected. Finding the Archivist will take time.
 level_log:
 - class: Fighter
   details: Starting class. Chose Defense fighting style and took the Alert feat.
 - class: Fighter
-  details: Gained Action Surge and picked up [Second Wind improvement](https://wikipedia.com).
+  details: Gained Action Surge and [Second Wind](https://en.wikipedia.org/wiki/Second_wind).
 - class: Fighter
-  details: Chose Champion archetype for improved critical hit range.
+  details: Chose Champion archetype for improved critical hit range (19–20).
 - class: Fighter
   details: ASI — increased Strength from 16 to 18.
 - class: Fighter
@@ -84,5 +202,7 @@ level_log:
 - class: Fighter
   details: ASI — increased Constitution from 14 to 16.
 - class: Fighter
-  details: Champion feature — Remarkable Athlete. Proficiency bonus added to unmodified
-    Strength/Dexterity/Constitution checks.
+  details: |-
+    Champion feature — **Remarkable Athlete**. Proficiency bonus added to any unmodified Strength, Dexterity, or Constitution check.
+
+    Also increased running long jump distance by 4 ft (Str modifier).

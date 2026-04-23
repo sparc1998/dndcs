@@ -64,11 +64,11 @@ function renderInline(raw) {
   while ((m = re.exec(raw)) !== null) {
     result += escHtml(raw.slice(last, m.index));
     if (m[1] !== undefined) {
-      result += `<a href="${escHtml(m[2])}" target="_blank" rel="noopener noreferrer">${escHtml(m[1])}</a>`;
+      result += `<a href="${escHtml(m[2])}" target="_blank" rel="noopener noreferrer">${renderInline(m[1])}</a>`;
     } else if (m[3] !== undefined) {
-      result += `<strong>${escHtml(m[3])}</strong>`;
+      result += `<strong>${renderInline(m[3])}</strong>`;
     } else {
-      result += `<em>${escHtml(m[4])}</em>`;
+      result += `<em>${renderInline(m[4])}</em>`;
     }
     last = m.index + m[0].length;
   }
@@ -416,6 +416,8 @@ function collectFields(container) {
 
 function render() {
   populateFields(document.getElementById("panel-bio"), character.bio);
+  populateFields(document.getElementById("money-row"), character.money);
+  renderGear();
   renderNotes();
   renderLevelLog();
 }
@@ -504,6 +506,7 @@ function renderNotes() {
 
 let _noteDialogIndex = null;
 let _levelLogDialogIndex = null;
+let _gearDialogIndex = null;
 let _cfg = {};
 
 function openNoteDialog(index) {
@@ -606,11 +609,103 @@ function cancelLevelLogDialog() {
   _levelLogDialogIndex = null;
 }
 
+// ── Gear ───────────────────────────────────────────────────────────────────
+
+const GEAR_TYPES = ["Consumable", "Weapons & Armor", "General", "Campaign Specific"];
+const GEAR_TYPE_IDS = ["consumable", "weapons-armor", "general", "campaign-specific"];
+
+// Rebuilds the gear section table bodies from character.gear.
+// Items are split roughly in half between left and right columns within each type section.
+function renderGear() {
+  character.gear = character.gear ?? [];
+  GEAR_TYPES.forEach((type, ti) => {
+    const id = GEAR_TYPE_IDS[ti];
+    const indexed = character.gear
+      .map((item, i) => ({ item, i }))
+      .filter(({ item }) => item.gear_type === type);
+    const half = Math.ceil(indexed.length / 2);
+    [indexed.slice(0, half), indexed.slice(half)].forEach((group, side) => {
+      const tbody = document.getElementById(`gear-${side === 0 ? "left" : "right"}-${id}`);
+      tbody.innerHTML = "";
+      group.forEach(({ item, i }) => {
+        const tr = document.createElement("tr");
+        tr.addEventListener("click", () => openGearDialog(i));
+        const tdDesc = document.createElement("td");
+        tdDesc.innerHTML = renderFormatted(item.description ?? "");
+        const tdLoc = document.createElement("td");
+        tdLoc.textContent = item.location ?? "";
+        const tdWeight = document.createElement("td");
+        tdWeight.textContent = renderFormula(item.weight ?? "");
+        tr.append(tdDesc, tdLoc, tdWeight);
+        tbody.appendChild(tr);
+      });
+    });
+  });
+}
+
+// ── Gear dialog ────────────────────────────────────────────────────────────
+
+function openGearDialog(index) {
+  _gearDialogIndex = index;
+  const item = index === null
+    ? { gear_type: "General", description: "", location: "", weight: "" }
+    : character.gear[index];
+  document.getElementById("gear-dialog-type").value = item.gear_type ?? "General";
+  document.getElementById("gear-dialog-location").value = item.location ?? "";
+  document.getElementById("gear-dialog-weight").value = item.weight ?? "";
+  document.getElementById("gear-dialog-description").value = item.description ?? "";
+  document.getElementById("gear-dialog-delete-btn").classList.toggle("hidden", index === null);
+  document.getElementById("gear-dialog-syntax-hint").textContent =
+    buildSyntaxHint(document.getElementById("gear-dialog-description"));
+  document.getElementById("gear-dialog").classList.remove("hidden");
+  requestAnimationFrame(() => { document.getElementById("gear-dialog-description").focus(); });
+}
+
+function closeGearDialog() {
+  const entry = {
+    gear_type: document.getElementById("gear-dialog-type").value,
+    description: document.getElementById("gear-dialog-description").value,
+    location: document.getElementById("gear-dialog-location").value,
+    weight: document.getElementById("gear-dialog-weight").value,
+  };
+  character.gear = character.gear ?? [];
+  const previousGear = character.gear.map(g => ({ ...g }));
+  if (_gearDialogIndex === null) {
+    character.gear.push(entry);
+  } else {
+    character.gear[_gearDialogIndex] = entry;
+  }
+  _undoStack.push({ undo: () => { character.gear = previousGear; renderGear(); autosave(); } });
+  document.getElementById("gear-dialog").classList.add("hidden");
+  document.getElementById("gear-dialog-syntax-hint").textContent = "";
+  _gearDialogIndex = null;
+  renderGear();
+  autosave();
+}
+
+function cancelGearDialog() {
+  document.getElementById("gear-dialog").classList.add("hidden");
+  document.getElementById("gear-dialog-syntax-hint").textContent = "";
+  _gearDialogIndex = null;
+}
+
+function deleteGearItem() {
+  if (_gearDialogIndex === null) return;
+  const previousGear = character.gear.map(g => ({ ...g }));
+  character.gear.splice(_gearDialogIndex, 1);
+  _undoStack.push({ undo: () => { character.gear = previousGear; renderGear(); autosave(); } });
+  cancelGearDialog();
+  renderGear();
+  autosave();
+}
+
 // Assembles the current character object from live DOM field values.
 // campaign_notes and level_log are carried over from the last loaded/saved state unchanged.
 function collectCharacter() {
   return {
     bio: collectFields(document.getElementById("panel-bio")),
+    money: collectFields(document.getElementById("money-row")),
+    gear: character.gear ?? [],
     campaign_notes: character.campaign_notes ?? [],
     level_log: character.level_log ?? [],
   };
@@ -702,6 +797,7 @@ document.addEventListener("keydown", (e) => {
   if (!document.getElementById("edit-dialog").classList.contains("hidden")) return;
   if (!document.getElementById("note-dialog").classList.contains("hidden")) return;
   if (!document.getElementById("level-log-dialog").classList.contains("hidden")) return;
+  if (!document.getElementById("gear-dialog").classList.contains("hidden")) return;
   if (!_undoStack.length) return;
   e.preventDefault();
   _undoStack.pop().undo();
@@ -721,6 +817,24 @@ document.querySelectorAll("#panel-bio [data-field-key]").forEach(el => {
 
 document.getElementById("add-note-btn").addEventListener("click", () => openNoteDialog(null));
 document.getElementById("add-level-log-btn").addEventListener("click", () => openLevelLogDialog(null));
+document.getElementById("add-gear-btn").addEventListener("click", () => openGearDialog(null));
+
+// Open the edit dialog when clicking a money field's paired display span.
+document.querySelectorAll("#money-row [data-field-key]").forEach((input) => {
+  const display = document.getElementById(input.id + "-display");
+  if (!display) return;
+  display.addEventListener("click", (e) => {
+    if (e.target.closest("a")) return;
+    openEditDialog(input, display);
+  });
+});
+
+// Collapse/expand gear type sections.
+document.querySelectorAll(".gear-section-toggle").forEach(btn => {
+  btn.addEventListener("click", () => {
+    btn.closest(".gear-section").classList.toggle("collapsed");
+  });
+});
 
 // Level log dialog: Done button, backdrop click, and keyboard shortcuts.
 document.getElementById("level-log-dialog-done-btn").addEventListener("click", closeLevelLogDialog);
@@ -736,6 +850,20 @@ document.addEventListener("keydown", (e) => {
   if (!document.getElementById("link-dialog").classList.contains("hidden")) return;
   if (e.key === "Escape") { e.preventDefault(); cancelLevelLogDialog(); }
   if ((e.metaKey || e.ctrlKey) && e.key === "Enter") { e.preventDefault(); closeLevelLogDialog(); }
+});
+
+// Gear dialog: Done button, Delete button, backdrop click, and keyboard shortcuts.
+document.getElementById("gear-dialog-done-btn").addEventListener("click", closeGearDialog);
+document.getElementById("gear-dialog-delete-btn").addEventListener("click", deleteGearItem);
+document.getElementById("gear-dialog").addEventListener("click", (e) => {
+  if (!document.getElementById("gear-dialog-box").contains(e.target)) cancelGearDialog();
+});
+document.addEventListener("keydown", (e) => {
+  if (document.getElementById("gear-dialog").classList.contains("hidden")) return;
+  if (!document.getElementById("edit-dialog").classList.contains("hidden")) return;
+  if (!document.getElementById("link-dialog").classList.contains("hidden")) return;
+  if (e.key === "Escape") { e.preventDefault(); cancelGearDialog(); }
+  if ((e.metaKey || e.ctrlKey) && e.key === "Enter") { e.preventDefault(); closeGearDialog(); }
 });
 
 // Note dialog: Done button, backdrop click, and keyboard shortcuts.
@@ -786,10 +914,17 @@ document.getElementById("edit-dialog-hint").textContent = `${_modKey}+↵ to sav
 document.getElementById("link-dialog-hint").textContent = `${_modKey}+↵ to save · Esc to cancel`;
 document.getElementById("note-dialog-hint").textContent = `${_modKey}+↵ to save · Esc to cancel`;
 document.getElementById("level-log-dialog-hint").textContent = `${_modKey}+↵ to save · Esc to cancel`;
+document.getElementById("gear-dialog-hint").textContent = `${_modKey}+↵ to save · Esc to cancel`;
 
 ["level-log-dialog-class", "level-log-dialog-details"].forEach(id => {
   document.getElementById(id).addEventListener("focus", () => {
     document.getElementById("level-log-dialog-syntax-hint").textContent = buildSyntaxHint(document.getElementById(id));
+  });
+});
+
+["gear-dialog-description", "gear-dialog-weight"].forEach(id => {
+  document.getElementById(id).addEventListener("focus", () => {
+    document.getElementById("gear-dialog-syntax-hint").textContent = buildSyntaxHint(document.getElementById(id));
   });
 });
 

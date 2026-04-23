@@ -13,6 +13,7 @@
   <section id="main">
     <nav id="tabs">
       <button class="tab-btn active" data-tab="bio">Bio</button>
+      <button class="tab-btn" data-tab="gear">Gear</button>
       <button class="tab-btn" data-tab="campaign">Campaign Notes</button>
       <button class="tab-btn" data-tab="level-log">Level Log</button>
     </nav>
@@ -159,6 +160,114 @@
       </div>
     </div>
 
+    <!-- Gear panel: money row at top, then four collapsible gear-type sections -->
+    <div id="panel-gear" class="panel">
+
+      <!-- Money row: PP, GP, EP, SP, CP as formula click-to-edit fields -->
+      <div id="money-row">
+        <div class="field" style="flex-direction: row; align-items: center;">
+          <label for="money-pp">PP</label>
+          <span id="money-pp-display" class="field-display"></span>
+          <input type="hidden" id="money-pp" class="hidden" placeholder="0" data-render="formula" data-field-key="pp" data-sizing-key="std_num_sizing_text" />
+        </div>
+        <div class="field" style="flex-direction: row; align-items: center;">
+          <label for="money-gp">GP</label>
+          <span id="money-gp-display" class="field-display"></span>
+          <input type="hidden" id="money-gp" class="hidden" placeholder="0" data-render="formula" data-field-key="gp" data-sizing-key="std_num_sizing_text" />
+        </div>
+        <div class="field" style="flex-direction: row; align-items: center;">
+          <label for="money-ep">EP</label>
+          <span id="money-ep-display" class="field-display"></span>
+          <input type="hidden" id="money-ep" class="hidden" placeholder="0" data-render="formula" data-field-key="ep" data-sizing-key="std_num_sizing_text" />
+        </div>
+        <div class="field" style="flex-direction: row; align-items: center;">
+          <label for="money-sp">SP</label>
+          <span id="money-sp-display" class="field-display"></span>
+          <input type="hidden" id="money-sp" class="hidden" placeholder="0" data-render="formula" data-field-key="sp" data-sizing-key="std_num_sizing_text" />
+        </div>
+        <div class="field" style="flex-direction: row; align-items: center;">
+          <label for="money-cp">CP</label>
+          <span id="money-cp-display" class="field-display"></span>
+          <input type="hidden" id="money-cp" class="hidden" placeholder="0" data-render="formula" data-field-key="cp" data-sizing-key="std_num_sizing_text" />
+        </div>
+      </div>
+
+      <button class="btn" id="add-gear-btn">Add Gear</button>
+
+      <!-- Consumable -->
+      <div class="gear-section" id="gear-section-consumable">
+        <button class="gear-section-toggle"><span class="toggle-icon"></span>Consumable</button>
+        <div class="gear-section-body">
+          <div class="gear-cols-container">
+            <table class="gear-table">
+              <thead><tr><th>Description</th><th data-sizing-key="location_sizing_text">Location</th><th data-sizing-key="std_num_sizing_text">Wgt</th></tr></thead>
+              <tbody id="gear-left-consumable"></tbody>
+            </table>
+            <div class="gear-cols-sep"></div>
+            <table class="gear-table">
+              <thead><tr><th>Description</th><th data-sizing-key="location_sizing_text">Location</th><th data-sizing-key="std_num_sizing_text">Wgt</th></tr></thead>
+              <tbody id="gear-right-consumable"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Weapons & Armor -->
+      <div class="gear-section" id="gear-section-weapons-armor">
+        <button class="gear-section-toggle"><span class="toggle-icon"></span>Weapons &amp; Armor</button>
+        <div class="gear-section-body">
+          <div class="gear-cols-container">
+            <table class="gear-table">
+              <thead><tr><th>Description</th><th data-sizing-key="location_sizing_text">Location</th><th data-sizing-key="std_num_sizing_text">Wgt</th></tr></thead>
+              <tbody id="gear-left-weapons-armor"></tbody>
+            </table>
+            <div class="gear-cols-sep"></div>
+            <table class="gear-table">
+              <thead><tr><th>Description</th><th data-sizing-key="location_sizing_text">Location</th><th data-sizing-key="std_num_sizing_text">Wgt</th></tr></thead>
+              <tbody id="gear-right-weapons-armor"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- General -->
+      <div class="gear-section" id="gear-section-general">
+        <button class="gear-section-toggle"><span class="toggle-icon"></span>General</button>
+        <div class="gear-section-body">
+          <div class="gear-cols-container">
+            <table class="gear-table">
+              <thead><tr><th>Description</th><th data-sizing-key="location_sizing_text">Location</th><th data-sizing-key="std_num_sizing_text">Wgt</th></tr></thead>
+              <tbody id="gear-left-general"></tbody>
+            </table>
+            <div class="gear-cols-sep"></div>
+            <table class="gear-table">
+              <thead><tr><th>Description</th><th data-sizing-key="location_sizing_text">Location</th><th data-sizing-key="std_num_sizing_text">Wgt</th></tr></thead>
+              <tbody id="gear-right-general"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Campaign Specific -->
+      <div class="gear-section" id="gear-section-campaign-specific">
+        <button class="gear-section-toggle"><span class="toggle-icon"></span>Campaign Specific</button>
+        <div class="gear-section-body">
+          <div class="gear-cols-container">
+            <table class="gear-table">
+              <thead><tr><th>Description</th><th data-sizing-key="location_sizing_text">Location</th><th data-sizing-key="std_num_sizing_text">Wgt</th></tr></thead>
+              <tbody id="gear-left-campaign-specific"></tbody>
+            </table>
+            <div class="gear-cols-sep"></div>
+            <table class="gear-table">
+              <thead><tr><th>Description</th><th data-sizing-key="location_sizing_text">Location</th><th data-sizing-key="std_num_sizing_text">Wgt</th></tr></thead>
+              <tbody id="gear-right-campaign-specific"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
     <!-- Campaign Notes panel: add button + scrollable list of note cards -->
     <div id="panel-campaign" class="panel">
       <button class="btn" id="add-note-btn">Add Note</button>
@@ -187,6 +296,40 @@
     <button id="save-btn">Save</button>
     <div id="status"></div>
   </aside>
+
+  <!-- Gear dialog: resizable dialog for adding and editing gear items. -->
+  <div id="gear-dialog" class="hidden" role="dialog" aria-modal="true">
+    <div id="gear-dialog-box">
+      <div id="gear-dialog-header">
+        <div class="field" style="flex-direction: row; align-items: center;">
+          <label for="gear-dialog-type">Type</label>
+          <select id="gear-dialog-type" data-sizing-key="gear_type_sizing_text">
+            <option value="Consumable">Consumable</option>
+            <option value="Weapons &amp; Armor">Weapons &amp; Armor</option>
+            <option value="General">General</option>
+            <option value="Campaign Specific">Campaign Specific</option>
+          </select>
+        </div>
+        <div class="field" style="flex-direction: row; align-items: center;">
+          <label for="gear-dialog-location">Location</label>
+          <input type="text" id="gear-dialog-location" data-sizing-key="location_sizing_text" />
+        </div>
+        <div class="field" style="flex-direction: row; align-items: center;">
+          <label for="gear-dialog-weight">Wgt</label>
+          <input type="text" id="gear-dialog-weight" data-render="formula" data-sizing-key="std_num_sizing_text" />
+        </div>
+      </div>
+      <textarea id="gear-dialog-description" data-render="formatted" placeholder="Description"></textarea>
+      <div id="gear-dialog-btns">
+        <div id="gear-dialog-hints">
+          <span id="gear-dialog-hint" class="dialog-hint"></span>
+          <span id="gear-dialog-syntax-hint" class="dialog-hint"></span>
+        </div>
+        <button id="gear-dialog-delete-btn" class="hidden">Delete</button>
+        <button id="gear-dialog-done-btn">Done</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Level log dialog: resizable dialog for adding and editing level log entries. -->
   <div id="level-log-dialog" class="hidden" role="dialog" aria-modal="true">

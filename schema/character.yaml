@@ -72,6 +72,44 @@ properties:
           type: string
         details:
           type: string
+  money:
+    type: object
+    additionalProperties: false
+    properties:
+      pp:
+        type: string
+      gp:
+        type: string
+      ep:
+        type: string
+      sp:
+        type: string
+      cp:
+        type: string
+  gear:
+    type: array
+    items:
+      type: object
+      required:
+        - gear_type
+        - description
+        - location
+        - weight
+      additionalProperties: false
+      properties:
+        gear_type:
+          type: string
+          enum:
+            - Consumable
+            - "Weapons & Armor"
+            - General
+            - Campaign Specific
+        description:
+          type: string
+        location:
+          type: string
+        weight:
+          type: string
   campaign_notes:
     type: array
     items:

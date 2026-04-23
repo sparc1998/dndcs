@@ -744,3 +744,209 @@ textarea:focus {
   font-weight: normal;
   padding: 0.4rem 0.9rem;
 }
+
+/* ── Gear tab ── */
+
+#money-row {
+  display: flex;
+  flex-direction: row;
+  gap: 1.5rem;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.gear-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.gear-section-toggle {
+  background: var(--card-bg);
+  border: none;
+  border-bottom: 1px solid var(--sep-color);
+  color: var(--primary-font-color);
+  cursor: pointer;
+  font-family: var(--header-font);
+  font-size: var(--header-font-size);
+  font-weight: bold;
+  padding: 0.4rem 0 0.4rem 0.5rem;
+  text-align: left;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.toggle-icon::before {
+  content: "▼";
+  display: inline-block;
+  font-size: 0.7em;
+}
+
+.gear-section.collapsed .toggle-icon::before {
+  content: "▶";
+}
+
+.gear-section-body {
+  padding: 0.25rem 0;
+}
+
+.gear-section.collapsed .gear-section-body {
+  display: none;
+}
+
+.gear-cols-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.gear-table {
+  flex: 1;
+  border-collapse: collapse;
+  min-width: 0;
+  table-layout: fixed;
+  width: 100%;
+}
+
+.gear-table th,
+.gear-table td {
+  padding: 0.4rem 0.6rem;
+  text-align: left;
+  border-bottom: 1px solid var(--sep-color);
+  overflow-wrap: break-word;
+  vertical-align: top;
+}
+
+.gear-table th {
+  font-family: var(--main-font);
+  font-size: var(--main-font-size);
+  font-weight: bold;
+  border-bottom: 2px solid var(--primary-font-color);
+  white-space: nowrap;
+  color: var(--primary-font-color);
+}
+
+.gear-table tbody tr {
+  cursor: pointer;
+}
+
+.gear-table tbody tr:hover {
+  background: var(--card-hover-bg);
+}
+
+.gear-table td a {
+  color: var(--secondary-font-color);
+  font-family: var(--main-font);
+  font-size: var(--main-font-size);
+  text-decoration: underline;
+}
+
+.gear-table ul,
+.gear-table ol {
+  padding-left: 1.25em;
+}
+
+.gear-cols-sep {
+  width: 1px;
+  background: var(--sep-color);
+  margin: 0 0.25rem;
+  flex-shrink: 0;
+}
+
+/* ── Gear dialog ── */
+
+#gear-dialog {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 40;
+}
+
+#gear-dialog-box {
+  background: var(--sidebar-bg);
+  border: 1px solid var(--sidebar-bg);
+  border-radius: 8px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 50%;
+  height: 24em;
+  min-width: 200px;
+  min-height: 10em;
+  resize: both;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+}
+
+#gear-dialog-header {
+  display: flex;
+  flex-direction: row;
+  gap: 1.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+#gear-dialog-box input[type="text"],
+#gear-dialog-box textarea,
+#gear-dialog-box select {
+  border-color: var(--secondary-font-color);
+}
+
+#gear-dialog-description {
+  flex: 1;
+  resize: none;
+  min-height: 0;
+}
+
+#gear-dialog-btns {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+#gear-dialog-hints {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  justify-content: center;
+  margin-right: auto;
+}
+
+#gear-dialog-btns button {
+  background: var(--button-bg);
+  border: none;
+  border-radius: 6px;
+  color: var(--button-font-color);
+  cursor: pointer;
+  font-family: var(--main-font);
+  font-size: var(--main-font-size);
+  font-weight: normal;
+  padding: 0.4rem 0.9rem;
+}
+
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: var(--dialog-bg);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1l4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 10px 6px;
+  border: 1px solid var(--dialog-bg);
+  border-radius: 6px;
+  color: var(--primary-font-color);
+  font-family: var(--main-font);
+  font-size: var(--main-font-size);
+  padding: 0.6rem 1.6rem 0.6rem 0.8rem;
+  transition: border-color 0.15s;
+}
+
+select:focus {
+  border-color: var(--secondary-font-color);
+  outline: none;
+}

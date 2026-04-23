@@ -59,6 +59,8 @@ _DEFAULTS: dict[str, Any] = {
     "experience_sizing_text": "000000",
     "level_log_class_sizing_text": "Fighter / Wizard",
     "std_num_sizing_text": "20",
+    "location_sizing_text": "backpack",
+    "gear_type_sizing_text": "Campaign Specific",
 }
 
 
