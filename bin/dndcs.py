@@ -2,6 +2,7 @@
 """D&D character sheet web application."""
 
 import argparse
+import os
 import shutil
 import sys
 from pathlib import Path
@@ -135,6 +136,8 @@ def _write_file(path: Path, data: dict[str, Any]) -> None:
     tmp = path.with_suffix(path.suffix + ".tmp")
     with open(tmp, "w") as f:
         yaml.dump(data, f, allow_unicode=True, sort_keys=False)
+        f.flush()
+        os.fsync(f.fileno())
     shutil.move(str(tmp), str(path))
 
 

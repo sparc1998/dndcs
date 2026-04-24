@@ -50,6 +50,13 @@ money:
   cp: '6'
 feats_features:
 - description: |-
+    **Second Wind** _(Fighter 1)_
+
+    As a **bonus action**, regain **1d10 + Fighter level** HP.
+
+    * Uses: **1 / Short or Long Rest**
+    * Current average recovery: ~11 HP
+- description: |-
     **Improved Critical** _(Champion 3)_
 
     Weapon attacks score a critical hit on a roll of **19 or 20** (instead of 20 only).
@@ -90,13 +97,6 @@ feats_features:
 
     * Running long jump distance increases by 4 ft (Strength modifier added)
     * Effectively covers most athletic and physical checks that would otherwise be unmodified
-- description: |-
-    **Second Wind** _(Fighter 1)_
-
-    As a **bonus action**, regain **1d10 + Fighter level** HP.
-
-    * Uses: **1 / Short or Long Rest**
-    * Current average recovery: ~11 HP
 gear:
 - description: |-
     **Longsword +1** — _Oathkeeper_
