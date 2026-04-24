@@ -85,7 +85,3 @@ uv run check-jsonschema --schemafile schema/character.yaml <file.yaml>
 - Undo uncommitted changes in a file: `git checkout -- <filename>`
 
 ## TODO
-
-* Add a way to delete items in feats and features, gear, campaign notes, and the level log.
-* Make Saved! appear after the file is successfully saved.
-* Fix up horizontal spacing around bullet points.

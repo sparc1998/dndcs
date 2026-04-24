@@ -397,6 +397,7 @@ function openFeatDialog(index) {
   const feat = index === null ? { description: "" } : character.feats_features[index];
   const ta = document.getElementById("feat-dialog-text");
   ta.value = feat.description ?? "";
+  document.getElementById("feat-dialog-delete-btn").classList.toggle("hidden", index === null);
   document.getElementById("feat-dialog-syntax-hint").textContent = buildSyntaxHint(ta);
   document.getElementById("feat-dialog").classList.remove("hidden");
   requestAnimationFrame(() => ta.focus());
@@ -423,6 +424,16 @@ function cancelFeatDialog() {
   document.getElementById("feat-dialog").classList.add("hidden");
   document.getElementById("feat-dialog-syntax-hint").textContent = "";
   _featDialogIndex = null;
+}
+
+function deleteFeatItem() {
+  if (_featDialogIndex === null) return;
+  const prev = character.feats_features.map(f => ({ ...f }));
+  character.feats_features.splice(_featDialogIndex, 1);
+  _undoStack.push({ undo: () => { character.feats_features = prev; renderFeats(); autosave(); } });
+  cancelFeatDialog();
+  renderFeats();
+  autosave();
 }
 
 function renderNotes() {
@@ -509,6 +520,7 @@ function openNoteDialog(index) {
   const dialog = document.getElementById("note-dialog");
   populateFields(dialog, note);
   document.getElementById("note-dialog-tags").value = (note.tags ?? []).join(", ");
+  document.getElementById("note-dialog-delete-btn").classList.toggle("hidden", index === null);
   document.getElementById("note-dialog-syntax-hint").textContent =
     buildSyntaxHint(document.getElementById("note-dialog-text"));
   dialog.classList.remove("hidden");
@@ -542,6 +554,16 @@ function cancelNoteDialog() {
   _noteDialogIndex = null;
 }
 
+function deleteNoteItem() {
+  if (_noteDialogIndex === null) return;
+  const previousNotes = character.campaign_notes.map((n) => ({ ...n, tags: [...n.tags] }));
+  character.campaign_notes.splice(_noteDialogIndex, 1);
+  _undoStack.push({ undo: () => { character.campaign_notes = previousNotes; renderNotes(); autosave(); } });
+  cancelNoteDialog();
+  renderNotes();
+  autosave();
+}
+
 // ── Level log ──────────────────────────────────────────────────────────────
 
 function renderLevelLog() {
@@ -573,6 +595,7 @@ function openLevelLogDialog(index) {
   populateFields(dialog, entry);
   const level = (index ?? character.level_log.length) + 1;
   document.getElementById("level-log-dialog-level").value = String(level);
+  document.getElementById("level-log-dialog-delete-btn").classList.toggle("hidden", index === null);
   document.getElementById("level-log-dialog-syntax-hint").textContent =
     buildSyntaxHint(document.getElementById("level-log-dialog-class"));
   dialog.classList.remove("hidden");
@@ -601,6 +624,16 @@ function cancelLevelLogDialog() {
   document.getElementById("level-log-dialog").classList.add("hidden");
   document.getElementById("level-log-dialog-syntax-hint").textContent = "";
   _levelLogDialogIndex = null;
+}
+
+function deleteLevelLogItem() {
+  if (_levelLogDialogIndex === null) return;
+  const previousLog = character.level_log.map(e => ({ ...e }));
+  character.level_log.splice(_levelLogDialogIndex, 1);
+  _undoStack.push({ undo: () => { character.level_log = previousLog; renderLevelLog(); autosave(); } });
+  cancelLevelLogDialog();
+  renderLevelLog();
+  autosave();
 }
 
 // ── Gear ───────────────────────────────────────────────────────────────────
@@ -846,6 +879,7 @@ document.getElementById("toggle-all-gear-btn").addEventListener("click", () => {
 
 // Level log dialog: Done button, backdrop click, and keyboard shortcuts.
 document.getElementById("level-log-dialog-done-btn").addEventListener("click", closeLevelLogDialog);
+document.getElementById("level-log-dialog-delete-btn").addEventListener("click", deleteLevelLogItem);
 document.getElementById("level-log-dialog").addEventListener("click", (e) => {
   if (!document.getElementById("level-log-dialog-box").contains(e.target)) cancelLevelLogDialog();
 });
@@ -876,6 +910,7 @@ document.addEventListener("keydown", (e) => {
 
 // Feat dialog: Done button, backdrop click, and keyboard shortcuts.
 document.getElementById("feat-dialog-done-btn").addEventListener("click", closeFeatDialog);
+document.getElementById("feat-dialog-delete-btn").addEventListener("click", deleteFeatItem);
 document.getElementById("feat-dialog").addEventListener("click", (e) => {
   if (!document.getElementById("feat-dialog-box").contains(e.target)) cancelFeatDialog();
 });
@@ -886,6 +921,7 @@ document.getElementById("feat-dialog").addEventListener("keydown", (e) => {
 
 // Note dialog: Done button, backdrop click, and keyboard shortcuts.
 document.getElementById("note-dialog-done-btn").addEventListener("click", closeNoteDialog);
+document.getElementById("note-dialog-delete-btn").addEventListener("click", deleteNoteItem);
 document.getElementById("note-dialog").addEventListener("click", (e) => {
   if (!document.getElementById("note-dialog-box").contains(e.target)) cancelNoteDialog();
 });

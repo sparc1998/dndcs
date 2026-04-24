@@ -216,12 +216,6 @@ campaign_notes:
 
     No sign of Mira, but a torn piece of cloth matching her travelling cloak was near the eastern tunnel.
 - tags:
-  - npc
-  - ally
-  text: '**Constable Petra Dunn** (Crestfall) — Skeptical of outsiders but warmed
-    up after the mill raid. Will share what she learns from Gruda''s questioning.
-    Trustworthy within the limits of her jurisdiction.'
-- tags:
   - lead
   - crimson-hand
   text: |-
@@ -244,8 +238,6 @@ level_log:
   details: Gained Action Surge and [Second Wind](https://en.wikipedia.org/wiki/Second_wind).
 - class: Fighter
   details: Chose Champion archetype for improved critical hit range (19–20).
-- class: Fighter
-  details: ASI — increased Strength from 16 to 18.
 - class: Fighter
   details: Extra Attack. Attacks per action increased to two.
 - class: Fighter

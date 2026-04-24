@@ -187,3 +187,33 @@ def test_gear_collapse_all(page: Page, base_url: str) -> None:
 
     page.locator("#toggle-all-gear-btn").click()
     expect(page.locator("#toggle-all-gear-btn")).to_have_text("Collapse All")
+
+
+def test_delete_feat(page: Page, base_url: str) -> None:
+    page.goto(base_url)
+    page.locator(".tab-btn", has_text="Feats & Features").click()
+    count_before = page.locator(".feat-card").count()
+    if count_before > 0:
+        page.locator(".feat-card").first.click()
+        page.locator("#feat-dialog-delete-btn").click()
+        expect(page.locator(".feat-card")).to_have_count(count_before - 1)
+
+
+def test_delete_note(page: Page, base_url: str) -> None:
+    page.goto(base_url)
+    page.locator(".tab-btn", has_text="Campaign Notes").click()
+    count_before = page.locator(".note-card").count()
+    if count_before > 0:
+        page.locator(".note-card").first.click()
+        page.locator("#note-dialog-delete-btn").click()
+        expect(page.locator(".note-card")).to_have_count(count_before - 1)
+
+
+def test_delete_level_log(page: Page, base_url: str) -> None:
+    page.goto(base_url)
+    page.locator(".tab-btn", has_text="Level Log").click()
+    count_before = page.locator("#level-log-tbody tr").count()
+    if count_before > 0:
+        page.locator("#level-log-tbody tr").first.click()
+        page.locator("#level-log-dialog-delete-btn").click()
+        expect(page.locator("#level-log-tbody tr")).to_have_count(count_before - 1)
