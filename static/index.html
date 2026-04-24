@@ -13,6 +13,7 @@
   <section id="main">
     <nav id="tabs">
       <button class="tab-btn active" data-tab="bio">Bio</button>
+      <button class="tab-btn" data-tab="feats">Feats &amp; Features</button>
       <button class="tab-btn" data-tab="gear">Gear</button>
       <button class="tab-btn" data-tab="campaign">Campaign Notes</button>
       <button class="tab-btn" data-tab="level-log">Level Log</button>
@@ -157,6 +158,15 @@
         <input type="hidden" id="background-history" class="hidden" data-field-render="formatted-seps" data-layout="2col" data-field-key="background_history" />
       </div>
 
+      </div>
+    </div>
+
+    <!-- Feats & Features panel: add button + two-column card layout -->
+    <div id="panel-feats" class="panel">
+      <button class="btn" id="add-feat-btn">Add Feat / Feature</button>
+      <div id="feats-cols">
+        <div id="feats-left"></div>
+        <div id="feats-right"></div>
       </div>
     </div>
 
@@ -359,6 +369,20 @@
           <span id="level-log-dialog-syntax-hint" class="dialog-hint"></span>
         </div>
         <button id="level-log-dialog-done-btn">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Feat dialog: resizable dialog for adding and editing feats & features. -->
+  <div id="feat-dialog" class="hidden" role="dialog" aria-modal="true">
+    <div id="feat-dialog-box">
+      <textarea id="feat-dialog-text" data-field-render="formatted"></textarea>
+      <div id="feat-dialog-btns">
+        <div id="feat-dialog-hints">
+          <span id="feat-dialog-hint" class="dialog-hint"></span>
+          <span id="feat-dialog-syntax-hint" class="dialog-hint"></span>
+        </div>
+        <button id="feat-dialog-done-btn">Done</button>
       </div>
     </div>
   </div>

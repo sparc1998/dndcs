@@ -144,6 +144,55 @@ gear:
     _"The bearer has rendered service to the Compact and is known to us. Extend reasonable trust and assistance where it does not compromise your work."_
   location: saddlebag
   weight: '0'
+feats_features:
+- description: |-
+    **Alert** _(Feat — Human Variant bonus)_
+
+    * +5 bonus to Initiative
+    * Cannot be surprised while conscious
+    * Creatures you can't see do not gain advantage on attack rolls against you from being hidden
+
+    Aldric's years in the Vanguard left him attuned to the shape of danger before it fully arrives. He sleeps lightly and wakes fast.
+- description: |-
+    **Defense** _(Fighting Style — Fighter 1)_
+
+    +1 bonus to AC while wearing armor.
+
+    Current AC with plate + shield: **21**
+- description: |-
+    **Second Wind** _(Fighter 1)_
+
+    As a **bonus action**, regain **1d10 + Fighter level** HP.
+
+    * Uses: **1 / Short or Long Rest**
+    * Current average recovery: ~11 HP
+- description: |-
+    **Action Surge** _(Fighter 2)_
+
+    On your turn, take **one additional action** beyond your normal action and possible bonus action.
+
+    * Uses: **1 / Short or Long Rest**
+
+    Used sparingly — Aldric prefers to hold it until the balance of a fight shifts against the party.
+- description: |-
+    **Improved Critical** _(Champion 3)_
+
+    Weapon attacks score a critical hit on a roll of **19 or 20** (instead of 20 only).
+
+    Pairs well with the Extra Attack feature — two swings per action meaningfully increases the frequency of critical hits over a combat encounter.
+- description: |-
+    **Extra Attack** _(Fighter 5)_
+
+    When you take the Attack action, you can attack **twice** instead of once.
+
+    Standard action economy: 2 attacks + potential Action Surge for 4 in a single turn.
+- description: |-
+    **Remarkable Athlete** _(Champion 7)_
+
+    Add half your Proficiency bonus (+2) to any Strength, Dexterity, or Constitution check that doesn't already use your proficiency bonus.
+
+    * Running long jump distance increases by 4 ft (Strength modifier added)
+    * Effectively covers most athletic and physical checks that would otherwise be unmodified
 campaign_notes:
 - tags:
   - session-1

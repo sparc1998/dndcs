@@ -178,11 +178,108 @@ textarea:focus {
   outline: none;
 }
 
-/* Always show a visible border on inputs inside the edit and note dialogs. */
+/* Always show a visible border on inputs inside the edit, feat, and note dialogs. */
 #edit-dialog-box textarea,
+#feat-dialog-box textarea,
 #note-dialog-box input,
 #note-dialog-box textarea {
   border-color: var(--secondary-font-color);
+}
+
+/* ── Feats & Features ── */
+
+#add-feat-btn {
+  width: auto;
+  align-self: flex-start;
+}
+
+#feats-cols {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+#feats-left,
+#feats-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.feat-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-bg);
+  border-radius: 8px;
+  padding: 1rem;
+  cursor: pointer;
+}
+
+.feat-card:hover {
+  background: var(--card-hover-bg);
+  border-color: var(--card-hover-bg);
+}
+
+#feat-dialog {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+#feat-dialog-box {
+  background: var(--sidebar-bg);
+  border: 1px solid var(--sidebar-bg);
+  border-radius: 8px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 50%;
+  height: 28em;
+  min-width: 200px;
+  min-height: 10em;
+  resize: both;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+}
+
+#feat-dialog-text {
+  flex: 1;
+  min-height: 0;
+  resize: none;
+  width: 100%;
+}
+
+#feat-dialog-btns {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+#feat-dialog-hints {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  justify-content: center;
+  margin-right: auto;
+}
+
+#feat-dialog-btns button {
+  background: var(--button-bg);
+  border: none;
+  border-radius: 6px;
+  color: var(--button-font-color);
+  cursor: pointer;
+  font-family: var(--main-font);
+  font-size: var(--main-font-size);
+  font-weight: normal;
+  padding: 0.4rem 0.9rem;
 }
 
 /* ── Campaign notes ── */
@@ -461,7 +558,9 @@ textarea:focus {
 .field-display ul,
 .field-display ol,
 .note-entry ul,
-.note-entry ol {
+.note-entry ol,
+.feat-card ul,
+.feat-card ol {
   padding-left: 1.25em;
 }
 

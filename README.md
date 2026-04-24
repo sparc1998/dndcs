@@ -86,6 +86,5 @@ uv run check-jsonschema --schemafile schema/character.yaml <file.yaml>
 
 ## TODO
 
-* Add ctrl/cmd+f functionality for search.
+* Add a way to delete items in feats and features, gear, campaign notes, and the level log.
 * Fix up horizontal spacing around bullet points.
-* Rework campaign notes

@@ -417,6 +417,7 @@ function collectFields(container) {
 function render() {
   populateFields(document.getElementById("panel-bio"), character.bio);
   populateFields(document.getElementById("money-row"), character.money);
+  renderFeats();
   renderGear();
   renderNotes();
   renderLevelLog();
@@ -458,6 +459,64 @@ function renderTagFilter() {
     clearBtn.addEventListener("click", () => { _activeTagFilters.clear(); renderNotes(); });
     container.appendChild(clearBtn);
   }
+}
+
+// ── Feats & Features ───────────────────────────────────────────────────────
+
+let _featDialogIndex = null;
+
+function renderFeats() {
+  character.feats_features = character.feats_features ?? [];
+  const left = document.getElementById("feats-left");
+  const right = document.getElementById("feats-right");
+  left.innerHTML = "";
+  right.innerHTML = "";
+  const feats = character.feats_features;
+  const half = Math.ceil(feats.length / 2);
+  [feats.slice(0, half), feats.slice(half)].forEach((group, side) => {
+    const col = side === 0 ? left : right;
+    const baseIdx = side === 0 ? 0 : half;
+    group.forEach((feat, j) => {
+      const card = document.createElement("div");
+      card.className = "feat-card";
+      card.addEventListener("click", () => openFeatDialog(baseIdx + j));
+      RENDER_MODES.formatted.render(card, feat.description ?? "");
+      col.appendChild(card);
+    });
+  });
+}
+
+function openFeatDialog(index) {
+  _featDialogIndex = index;
+  const feat = index === null ? { description: "" } : character.feats_features[index];
+  const ta = document.getElementById("feat-dialog-text");
+  ta.value = feat.description ?? "";
+  document.getElementById("feat-dialog-syntax-hint").textContent = buildSyntaxHint(ta);
+  document.getElementById("feat-dialog").classList.remove("hidden");
+  requestAnimationFrame(() => ta.focus());
+}
+
+function closeFeatDialog() {
+  const description = document.getElementById("feat-dialog-text").value;
+  character.feats_features = character.feats_features ?? [];
+  const prev = character.feats_features.map(f => ({ ...f }));
+  if (_featDialogIndex === null) {
+    character.feats_features.push({ description });
+  } else {
+    character.feats_features[_featDialogIndex] = { description };
+  }
+  _undoStack.push({ undo: () => { character.feats_features = prev; renderFeats(); autosave(); } });
+  document.getElementById("feat-dialog").classList.add("hidden");
+  document.getElementById("feat-dialog-syntax-hint").textContent = "";
+  _featDialogIndex = null;
+  renderFeats();
+  autosave();
+}
+
+function cancelFeatDialog() {
+  document.getElementById("feat-dialog").classList.add("hidden");
+  document.getElementById("feat-dialog-syntax-hint").textContent = "";
+  _featDialogIndex = null;
 }
 
 function renderNotes() {
@@ -849,6 +908,7 @@ document.querySelectorAll("#panel-bio [data-field-key]").forEach(el => {
   el.addEventListener("input", autosave);
 });
 
+document.getElementById("add-feat-btn").addEventListener("click", () => openFeatDialog(null));
 document.getElementById("add-note-btn").addEventListener("click", () => openNoteDialog(null));
 document.getElementById("add-level-log-btn").addEventListener("click", () => openLevelLogDialog(null));
 document.getElementById("add-gear-btn").addEventListener("click", () => openGearDialog(null));
@@ -906,6 +966,16 @@ document.addEventListener("keydown", (e) => {
   if (!document.getElementById("link-dialog").classList.contains("hidden")) return;
   if (e.key === "Escape") { e.preventDefault(); cancelGearDialog(); }
   if ((e.metaKey || e.ctrlKey) && e.key === "Enter") { e.preventDefault(); closeGearDialog(); }
+});
+
+// Feat dialog: Done button, backdrop click, and keyboard shortcuts.
+document.getElementById("feat-dialog-done-btn").addEventListener("click", closeFeatDialog);
+document.getElementById("feat-dialog").addEventListener("click", (e) => {
+  if (!document.getElementById("feat-dialog-box").contains(e.target)) cancelFeatDialog();
+});
+document.getElementById("feat-dialog").addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && !_linkDialogOpen) cancelFeatDialog();
+  if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) closeFeatDialog();
 });
 
 // Note dialog: Done button, backdrop click, and keyboard shortcuts.

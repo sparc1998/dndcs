@@ -110,6 +110,16 @@ properties:
           type: string
         weight:
           type: string
+  feats_features:
+    type: array
+    items:
+      type: object
+      required:
+        - description
+      additionalProperties: false
+      properties:
+        description:
+          type: string
   campaign_notes:
     type: array
     items:
