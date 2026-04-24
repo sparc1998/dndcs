@@ -139,7 +139,7 @@ def _write_file(path: Path, data: dict[str, Any]) -> None:
 
 
 def main() -> None:
-    global _char_file, _out_file, _config
+    global _char_file, _out_file, _config, _character
 
     parser = argparse.ArgumentParser(description="D&D character sheet web app")
     parser.add_argument("sheet", type=Path, help="Path to the character YAML file")

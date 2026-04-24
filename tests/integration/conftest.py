@@ -81,3 +81,38 @@ def reset_character(server: dict) -> None:
         json=sample,
         timeout=5,
     )
+
+
+@pytest.fixture(scope="session")
+def cold_base_url(tmp_path_factory: pytest.TempPathFactory) -> str:
+    """A second server with no prior PUT — tests cold-start behaviour."""
+    tmp = tmp_path_factory.mktemp("cold_server")
+    char_file = tmp / "character.yaml"
+    shutil.copy(SAMPLE_YAML, char_file)
+
+    port = _free_port()
+    proc = subprocess.Popen(
+        [
+            "uv", "run", "python", "bin/dndcs.py",
+            str(char_file), "--port", str(port),
+        ],
+        cwd=str(PROJECT_ROOT),
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+
+    base_url = f"http://127.0.0.1:{port}"
+    for _ in range(50):
+        try:
+            requests.get(f"{base_url}/", timeout=1)
+            break
+        except Exception:
+            time.sleep(0.1)
+    else:
+        proc.terminate()
+        raise RuntimeError("Cold server failed to start within 5 seconds")
+
+    yield base_url
+
+    proc.terminate()
+    proc.wait(timeout=5)

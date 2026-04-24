@@ -50,21 +50,6 @@ money:
   cp: '6'
 feats_features:
 - description: |-
-    **Second Wind** _(Fighter 1)_
-
-    As a **bonus action**, regain **1d10 + Fighter level** HP.
-
-    * Uses: **1 / Short or Long Rest**
-    * Current average recovery: ~11 HP
-- description: |-
-    **Action Surge** _(Fighter 2)_
-
-    On your turn, take **one additional action** beyond your normal action and possible bonus action.
-
-    * Uses: **1 / Short or Long Rest**
-
-    Used sparingly — Aldric prefers to hold it until the balance of a fight shifts against the party.
-- description: |-
     **Improved Critical** _(Champion 3)_
 
     Weapon attacks score a critical hit on a roll of **19 or 20** (instead of 20 only).
@@ -85,6 +70,14 @@ feats_features:
 
     Current AC with plate + shield: **21**
 - description: |-
+    **Action Surge** _(Fighter 2)_
+
+    On your turn, take **one additional action** beyond your normal action and possible bonus action.
+
+    * Uses: **1 / Short or Long Rest**
+
+    Used sparingly — Aldric prefers to hold it until the balance of a fight shifts against the party.
+- description: |-
     **Extra Attack** _(Fighter 5)_
 
     When you take the Attack action, you can attack **twice** instead of once.
@@ -97,6 +90,13 @@ feats_features:
 
     * Running long jump distance increases by 4 ft (Strength modifier added)
     * Effectively covers most athletic and physical checks that would otherwise be unmodified
+- description: |-
+    **Second Wind** _(Fighter 1)_
+
+    As a **bonus action**, regain **1d10 + Fighter level** HP.
+
+    * Uses: **1 / Short or Long Rest**
+    * Current average recovery: ~11 HP
 gear:
 - description: |-
     **Longsword +1** — _Oathkeeper_
@@ -126,7 +126,7 @@ gear:
   location: belt
   weight: '4'
 - description: |-
-    **Potion of Healing ×3** — standard red-stoppered vials stamped with the alchemist's guild mark.
+    xxxxx **Potion of Healing ×3** — standard red-stoppered vials stamped with the alchemist's guild mark.
 
     Restores **2d4+2 HP** each. Aldric keeps one on his belt and two in the backpack.
   gear_type: Consumable

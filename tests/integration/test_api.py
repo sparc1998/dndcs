@@ -4,6 +4,14 @@ import yaml
 import requests
 
 
+def test_get_character_on_cold_start(cold_base_url: str) -> None:
+    """GET /api/character must work on first request with no prior PUT."""
+    r = requests.get(f"{cold_base_url}/api/character", timeout=5)
+    assert r.status_code == 200
+    data = r.json()
+    assert data["bio"]["character_name"] == "Ser Aldric Vane"
+
+
 def test_get_character_returns_sample(base_url: str) -> None:
     r = requests.get(f"{base_url}/api/character", timeout=5)
     assert r.status_code == 200
