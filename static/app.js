@@ -1,3 +1,5 @@
+import { escHtml, renderFormula, renderFormatted, render2Col, reorderItem } from './logic.js';
+
 // ── State ──────────────────────────────────────────────────────────────────
 
 let character = null;
@@ -26,140 +28,6 @@ const _undoStack = [];
 // in AGENTS.md → "Data-attributes". Keep the two in sync.
 
 
-// ── Utilities ──────────────────────────────────────────────────────────────
-
-// Escapes <, >, &, and " so raw user text can be safely injected as innerHTML.
-function escHtml(s) {
-  return s.replace(/[<>&"]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;" }[c]));
-}
-
-// Strips {comment} blocks from a formula string before evaluation.
-function stripFormulaComments(raw) {
-  return raw.replace(/\{[^}]*\}/g, "");
-}
-
-// Evaluates a numeric formula (supports + - * / and parentheses).
-// Returns the numeric result as a string, or the raw escaped text on error.
-function renderFormula(raw) {
-  const expr = stripFormulaComments(raw).trim();
-  if (!expr) return "";
-  if (!/^[\d\s+\-*/().]+$/.test(expr)) return escHtml(raw);
-  try {
-    // eslint-disable-next-line no-new-func
-    const result = new Function("return (" + expr + ")")();
-    if (typeof result !== "number" || !isFinite(result)) return escHtml(raw);
-    return String(result % 1 === 0 ? result : parseFloat(result.toFixed(10)));
-  } catch {
-    return escHtml(raw);
-  }
-}
-
-// Renders inline markup: [label](url) links, **bold**, and _italic_.
-// Text outside any markup is HTML-escaped.
-function renderInline(raw) {
-  const re = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|\*\*([^*]+)\*\*|_([^_]+)_/g;
-  let result = "";
-  let last = 0;
-  let m;
-  while ((m = re.exec(raw)) !== null) {
-    result += escHtml(raw.slice(last, m.index));
-    if (m[1] !== undefined) {
-      result += `<a href="${escHtml(m[2])}" target="_blank" rel="noopener noreferrer">${renderInline(m[1])}</a>`;
-    } else if (m[3] !== undefined) {
-      result += `<strong>${renderInline(m[3])}</strong>`;
-    } else {
-      result += `<em>${renderInline(m[4])}</em>`;
-    }
-    last = m.index + m[0].length;
-  }
-  result += escHtml(raw.slice(last));
-  return result;
-}
-
-// Renders raw text with link, bullet-point, and numbered-list formatting.
-// Lines starting with "* " become <ul><li> elements.
-// Lines starting with "<digits>) " become <ol><li> elements (any number works).
-// Consecutive lines of the same list type are grouped together.
-// <br> is only inserted between two non-block parts so lists don't add extra
-// whitespace; use a blank line in the source to get intentional extra spacing.
-function renderFormatted(raw) {
-  const lines = raw.split('\n');
-  const parts = [];
-  let listItems = [];
-  let listType = null;
-
-  const flushList = () => {
-    if (listItems.length) {
-      parts.push(`<${listType}>` + listItems.map(t => `<li>${t}</li>`).join('') + `</${listType}>`);
-      listItems = [];
-      listType = null;
-    }
-  };
-
-  for (const line of lines) {
-    if (line.startsWith('* ')) {
-      if (listType !== 'ul') flushList();
-      listType = 'ul';
-      listItems.push(renderInline(line.slice(2)));
-    } else if (/^\d+\) /.test(line)) {
-      if (listType !== 'ol') flushList();
-      listType = 'ol';
-      listItems.push(renderInline(line.replace(/^\d+\) /, '')));
-    } else {
-      flushList();
-      parts.push(renderInline(line));
-    }
-  }
-  flushList();
-
-  const isBlock = s => s.startsWith('<ul>') || s.startsWith('<ol>');
-  let html = '';
-  for (let i = 0; i < parts.length; i++) {
-    if (i > 0 && !isBlock(parts[i - 1]) && !isBlock(parts[i])) html += '<br>';
-    html += parts[i];
-  }
-  return html;
-}
-
-const _isSeparator = line => /^-{3,}\s*$/.test(line);
-
-// Splits raw text into two columns at the "---"-or-more line closest to the
-// character midpoint. All separator lines are stripped from both halves.
-// Falls back to a single column if no separator is present.
-function render2Col(raw) {
-  if (!raw.trim()) return '';
-  const lines = raw.split('\n');
-  const mid = raw.length / 2;
-  let splitIdx = -1;
-  let bestDist = Infinity;
-  let charOffset = 0;
-  for (let i = 0; i < lines.length; i++) {
-    if (_isSeparator(lines[i])) {
-      const dist = Math.abs(charOffset + lines[i].length / 2 - mid);
-      if (dist < bestDist) { bestDist = dist; splitIdx = i; }
-    }
-    charOffset += lines[i].length + 1;
-  }
-  // Render a half-column: trim trailing separators/blanks, split remaining
-  // --- lines into segments, render each with renderFormatted, join with <hr>.
-  const renderHalf = arr => {
-    const lines = [...arr];
-    while (lines.length && (lines[lines.length - 1] === '' || _isSeparator(lines[lines.length - 1]))) lines.pop();
-    const segments = [];
-    let cur = [];
-    for (const line of lines) {
-      if (_isSeparator(line)) { segments.push(cur); cur = []; }
-      else cur.push(line);
-    }
-    segments.push(cur);
-    return segments.map(s => renderFormatted(s.join('\n'))).join('<hr class="col-rule">');
-  };
-  if (splitIdx === -1) {
-    return `<div class="two-col-single">${renderHalf(lines)}</div>`;
-  }
-  return `<div class="two-col-left">${renderHalf(lines.slice(0, splitIdx))}</div>` +
-    `<div class="two-col-right">${renderHalf(lines.slice(splitIdx + 1))}</div>`;
-}
 
 // Render-mode registry: single source of truth for the three behaviors of a
 // data-field-render value — how the display renders, what syntax hint to show in the
@@ -464,6 +332,7 @@ function renderTagFilter() {
 // ── Feats & Features ───────────────────────────────────────────────────────
 
 let _featDialogIndex = null;
+let _featDragIndex = null;
 
 function renderFeats() {
   character.feats_features = character.feats_features ?? [];
@@ -477,9 +346,46 @@ function renderFeats() {
     const col = side === 0 ? left : right;
     const baseIdx = side === 0 ? 0 : half;
     group.forEach((feat, j) => {
+      const idx = baseIdx + j;
       const card = document.createElement("div");
-      card.className = "feat-card";
-      card.addEventListener("click", () => openFeatDialog(baseIdx + j));
+      card.className = "feat-card card-movable";
+
+      let _dragged = false;
+      card.addEventListener("click", () => { if (_dragged) { _dragged = false; return; } openFeatDialog(idx); });
+
+      card.draggable = true;
+      card.addEventListener("dragstart", (e) => {
+        _featDragIndex = idx;
+        _dragged = true;
+        e.dataTransfer.effectAllowed = "move";
+        requestAnimationFrame(() => card.classList.add("dragging"));
+      });
+      card.addEventListener("dragend", () => {
+        card.classList.remove("dragging");
+        document.querySelectorAll(".feat-card").forEach(c => c.classList.remove("drag-above", "drag-below"));
+      });
+      card.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "move";
+        document.querySelectorAll(".feat-card").forEach(c => c.classList.remove("drag-above", "drag-below"));
+        const mid = card.getBoundingClientRect().top + card.getBoundingClientRect().height / 2;
+        card.classList.add(e.clientY < mid ? "drag-above" : "drag-below");
+      });
+      card.addEventListener("dragleave", () => {
+        card.classList.remove("drag-above", "drag-below");
+      });
+      card.addEventListener("drop", (e) => {
+        e.preventDefault();
+        card.classList.remove("drag-above", "drag-below");
+        if (_featDragIndex === null || _featDragIndex === idx) return;
+        const mid = card.getBoundingClientRect().top + card.getBoundingClientRect().height / 2;
+        const isAbove = e.clientY < mid;
+        character.feats_features = reorderItem(character.feats_features, _featDragIndex, idx, isAbove);
+        _featDragIndex = null;
+        renderFeats();
+        autosave();
+      });
+
       RENDER_MODES.formatted.render(card, feat.description ?? "");
       col.appendChild(card);
     });
@@ -564,12 +470,7 @@ function renderNotes() {
       if (_dragIndex === null || _dragIndex === idx) return;
       const mid = card.getBoundingClientRect().top + card.getBoundingClientRect().height / 2;
       const isAbove = e.clientY < mid;
-      const notes = character.campaign_notes;
-      const [moved] = notes.splice(_dragIndex, 1);
-      const insertAt = isAbove
-        ? (_dragIndex < idx ? idx - 1 : idx)
-        : (_dragIndex < idx ? idx : idx + 1);
-      notes.splice(insertAt, 0, moved);
+      character.campaign_notes = reorderItem(character.campaign_notes, _dragIndex, idx, isAbove);
       _dragIndex = null;
       renderNotes();
       autosave();
@@ -793,11 +694,12 @@ function deleteGearItem() {
 }
 
 // Assembles the current character object from live DOM field values.
-// campaign_notes and level_log are carried over from the last loaded/saved state unchanged.
+// Array fields are carried over from character unchanged; only bio/money are re-collected from the DOM.
 function collectCharacter() {
   return {
     bio: collectFields(document.getElementById("panel-bio")),
     money: collectFields(document.getElementById("money-row")),
+    feats_features: character.feats_features ?? [],
     gear: character.gear ?? [],
     campaign_notes: character.campaign_notes ?? [],
     level_log: character.level_log ?? [],
@@ -930,6 +832,10 @@ document.querySelectorAll(".gear-section-toggle").forEach(btn => {
   });
 });
 
+// Keep drags alive over the gaps between feat cards (column gap + inter-card gap).
+// Without this, releasing over a gap fires dragend with no drop, cancelling the reorder.
+document.getElementById("panel-feats").addEventListener("dragover", (e) => e.preventDefault());
+
 // Collapse/expand all gear sections at once.
 document.getElementById("toggle-all-gear-btn").addEventListener("click", () => {
   const sections = document.querySelectorAll(".gear-section");
@@ -1024,6 +930,7 @@ document.querySelectorAll(".tab-btn").forEach((btn) => {
 
 document.getElementById("edit-dialog-hint").textContent = `${_modKey}+↵ to save · Esc to cancel`;
 document.getElementById("link-dialog-hint").textContent = `${_modKey}+↵ to save · Esc to cancel`;
+document.getElementById("feat-dialog-hint").textContent = `${_modKey}+↵ to save · Esc to cancel`;
 document.getElementById("note-dialog-hint").textContent = `${_modKey}+↵ to save · Esc to cancel`;
 document.getElementById("level-log-dialog-hint").textContent = `${_modKey}+↵ to save · Esc to cancel`;
 document.getElementById("gear-dialog-hint").textContent = `${_modKey}+↵ to save · Esc to cancel`;

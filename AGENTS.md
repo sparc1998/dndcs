@@ -26,6 +26,23 @@ make fix     # auto-format and auto-fix lint issues
 make test    # run tests
 ```
 
+**Every time you modify the app**, think through all related files that may need updating before declaring the task done. Common ripple points:
+- `static/index.html` — data-attributes, element IDs, dialog structure
+- `schema/character.yaml` — any new or removed data fields
+- `config.yaml` and `_DEFAULTS` in `bin/dndcs.py` — new sizing keys or config values
+- `AGENTS.md` — conventions, rules, or checklists that describe the change
+- Tests — new behavior needs new tests; changed behavior needs updated tests
+
+**Every time you modify the app**, add or update tests to cover the change, then ensure all three of the following pass before considering the task complete:
+
+```bash
+make test    # all integration tests green
+make check   # no lint, type, or format errors
+make fix     # auto-fix; then re-run check to confirm clean
+```
+
+If `make check` fails after `make fix`, fix the remaining issues manually. Do not skip or suppress errors.
+
 ## Code Style
 
 - Python 3.11+, strict mypy typing

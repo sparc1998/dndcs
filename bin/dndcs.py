@@ -9,6 +9,7 @@ from typing import Any
 
 import yaml
 from flask import Flask, Response, jsonify, render_template_string, request
+from werkzeug.exceptions import HTTPException
 
 
 def _str_representer(dumper: yaml.Dumper, data: str) -> yaml.ScalarNode:
@@ -28,6 +29,7 @@ app = Flask(__name__, static_folder=str(_PROJECT_ROOT / "static"))
 _char_file: Path
 _out_file: Path
 _config: dict[str, Any]
+_character: dict[str, Any]
 
 TEMPLATE = (_PROJECT_ROOT / "static" / "index.html").read_text()
 
@@ -86,33 +88,39 @@ def get_config() -> Response:
 @app.route("/api/character", methods=["GET"])
 def get_character() -> tuple[Response, int] | Response:
     try:
-        with open(_char_file) as f:
-            data = yaml.safe_load(f)
-        return jsonify(data)
+        return jsonify(_character)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
 
 @app.route("/api/character", methods=["PUT"])
 def update_character() -> tuple[Response, int] | Response:
+    global _character
     try:
-        data = request.get_json()
+        data = request.get_json(silent=True)
         if data is None:
             return jsonify({"error": "Invalid JSON"}), 400
+        _character = data
         _write_bak(data)
         return jsonify({"ok": True})
+    except HTTPException:
+        raise
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
 
 @app.route("/api/save", methods=["POST"])
 def save_character() -> tuple[Response, int] | Response:
+    global _character
     try:
-        data = request.get_json()
+        data = request.get_json(silent=True)
         if data is None:
             return jsonify({"error": "Invalid JSON"}), 400
+        _character = data
         _write_file(_out_file, data)
         return jsonify({"ok": True})
+    except HTTPException:
+        raise
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -156,6 +164,8 @@ def main() -> None:
 
     _out_file = args.out.resolve() if args.out else _char_file
     _config = _load_config()
+    with open(_char_file) as f:
+        _character = yaml.safe_load(f)
 
     print(f"Character sheet: {_char_file}")
     print(f"Output file:     {_out_file}")
