@@ -11,10 +11,151 @@ export function stripFormulaComments(raw) {
   return raw.replace(/\{[^}]*\}/g, "");
 }
 
+// Parses $section.field references from a formula string.
+// Returns an array of { section, field } objects.
+export function parseFormulaRefs(raw) {
+  const refs = [];
+  const re = /\$([a-z_]+)\.([a-z_]+)/g;
+  let m;
+  while ((m = re.exec(raw)) !== null) {
+    refs.push({ section: m[1], field: m[2] });
+  }
+  return refs;
+}
+
+// Validates a formula string. Returns null if valid, or an error message string.
+// knownFieldIds: Set<string> of valid "section.field" reference targets.
+// formulaNodeId: optional node ID being validated (for cycle detection).
+// graph: optional DependencyGraph instance (for cycle detection).
+export function validateFormula(raw, knownFieldIds, formulaNodeId = null, graph = null) {
+  if (!raw.trim()) return null;
+
+  const refs = parseFormulaRefs(raw);
+  const stripped = stripFormulaComments(raw)
+    .replace(/\$[a-z_]+\.[a-z_]+/g, "1")
+    .trim();
+
+  if (stripped) {
+    if (!/^[\d\s+\-*/().]+$/.test(stripped)) {
+      return "Invalid formula syntax.";
+    }
+    try {
+      // eslint-disable-next-line no-new-func
+      const result = new Function("return (" + stripped + ")")();
+      if (typeof result !== "number" || !isFinite(result)) {
+        return "Formula evaluates to a non-numeric or infinite value.";
+      }
+    } catch {
+      return "Invalid formula syntax.";
+    }
+  }
+
+  for (const { section, field } of refs) {
+    const id = `${section}.${field}`;
+    if (!knownFieldIds.has(id)) {
+      return `Unknown field reference: $${section}.${field}`;
+    }
+  }
+
+  if (graph && formulaNodeId) {
+    for (const { section, field } of refs) {
+      const depId = `${section}.${field}`;
+      if (depId === formulaNodeId) {
+        return `A formula cannot reference itself ($${section}.${field}).`;
+      }
+      if (graph.pathExists(depId, formulaNodeId)) {
+        return `Dependency cycle: $${section}.${field} already (directly or indirectly) depends on ${formulaNodeId}.`;
+      }
+    }
+  }
+
+  return null;
+}
+
+// Dependency graph for formula fields.
+// Edge u -> v means: u depends on v (u's formula references v's computed value).
+export class DependencyGraph {
+  constructor() {
+    this.dependsOn = new Map();    // nodeId -> Set<nodeId>
+    this.dependedOnBy = new Map(); // nodeId -> Set<nodeId>
+  }
+
+  _ensure(n) {
+    if (!this.dependsOn.has(n)) this.dependsOn.set(n, new Set());
+    if (!this.dependedOnBy.has(n)) this.dependedOnBy.set(n, new Set());
+  }
+
+  // Returns true if target is reachable from start by following dependsOn edges.
+  pathExists(start, target) {
+    const visited = new Set();
+    const stack = [start];
+    while (stack.length) {
+      const curr = stack.pop();
+      if (visited.has(curr)) continue;
+      visited.add(curr);
+      for (const n of (this.dependsOn.get(curr) ?? [])) {
+        if (n === target) return true;
+        stack.push(n);
+      }
+    }
+    return false;
+  }
+
+  // Remove all outgoing edges from u.
+  clearDependencies(u) {
+    for (const v of (this.dependsOn.get(u) ?? [])) {
+      this.dependedOnBy.get(v)?.delete(u);
+    }
+    this.dependsOn.set(u, new Set());
+    this._ensure(u);
+  }
+
+  // Add edge u -> v. Caller must have already validated no cycle.
+  addEdge(u, v) {
+    this._ensure(u);
+    this._ensure(v);
+    this.dependsOn.get(u).add(v);
+    this.dependedOnBy.get(v).add(u);
+  }
+
+  // Topological sort of the given node set (dependencies before dependents).
+  topoSort(nodeSet) {
+    const indeg = new Map();
+    for (const n of nodeSet) {
+      let cnt = 0;
+      for (const dep of (this.dependsOn.get(n) ?? [])) {
+        if (nodeSet.has(dep)) cnt++;
+      }
+      indeg.set(n, cnt);
+    }
+    const queue = [...nodeSet].filter(n => indeg.get(n) === 0);
+    const order = [];
+    while (queue.length) {
+      const curr = queue.shift();
+      order.push(curr);
+      for (const dep of (this.dependedOnBy.get(curr) ?? [])) {
+        if (nodeSet.has(dep)) {
+          const c = indeg.get(dep) - 1;
+          indeg.set(dep, c);
+          if (c === 0) queue.push(dep);
+        }
+      }
+    }
+    return order;
+  }
+}
+
 // Evaluates a numeric formula (supports + - * / and parentheses).
+// fieldValues: optional { "section.field": string } map for resolving $section.field refs.
 // Returns the numeric result as a string, or the raw escaped text on error.
-export function renderFormula(raw) {
-  const expr = stripFormulaComments(raw).trim();
+export function renderFormula(raw, fieldValues = {}) {
+  let expr = stripFormulaComments(raw);
+  expr = expr.replace(/\$([a-z_]+)\.([a-z_]+)/g, (_, section, field) => {
+    const val = fieldValues[`${section}.${field}`];
+    if (val === undefined || val === "") return "0";
+    const n = parseFloat(val);
+    return isNaN(n) ? "0" : String(n);
+  }).trim();
   if (!expr) return "";
   if (!/^[\d\s+\-*/().]+$/.test(expr)) return escHtml(raw);
   try {

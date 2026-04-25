@@ -217,3 +217,103 @@ def test_delete_level_log(page: Page, base_url: str) -> None:
         page.locator("#level-log-tbody tr").first.click()
         page.locator("#level-log-dialog-delete-btn").click()
         expect(page.locator("#level-log-tbody tr")).to_have_count(count_before - 1)
+
+
+# ── Formula cross-reference and validation ────────────────────────────────
+
+
+def test_formula_invalid_syntax_blocks_edit_dialog_close(page: Page, base_url: str) -> None:
+    page.goto(base_url)
+    page.locator("#experience-display").click()
+    expect(page.locator("#edit-dialog")).to_be_visible()
+    page.locator("#edit-dialog-textarea").fill("abc def bad syntax !!")
+    page.locator("#edit-dialog-done-btn").click()
+    expect(page.locator("#edit-dialog")).to_be_visible()
+    expect(page.locator("#edit-dialog-error")).not_to_be_empty()
+
+
+def test_formula_invalid_syntax_escape_still_cancels(page: Page, base_url: str) -> None:
+    page.goto(base_url)
+    page.locator("#experience-display").click()
+    page.locator("#edit-dialog-textarea").fill("bad !!")
+    page.locator("#edit-dialog-done-btn").click()
+    expect(page.locator("#edit-dialog")).to_be_visible()
+    page.keyboard.press("Escape")
+    expect(page.locator("#edit-dialog")).not_to_be_visible()
+    expect(page.locator("#experience-display")).to_contain_text("23000")
+
+
+def test_formula_unknown_reference_blocks_close(page: Page, base_url: str) -> None:
+    page.goto(base_url)
+    page.locator("#experience-display").click()
+    page.locator("#edit-dialog-textarea").fill("$bio.field_that_does_not_exist + 1")
+    page.locator("#edit-dialog-done-btn").click()
+    expect(page.locator("#edit-dialog")).to_be_visible()
+    expect(page.locator("#edit-dialog-error")).not_to_be_empty()
+    page.keyboard.press("Escape")
+
+
+def test_formula_valid_cross_reference_updates_display(page: Page, base_url: str) -> None:
+    page.goto(base_url)
+    # Set experience to reference level (level = 7 in test data)
+    page.locator("#experience-display").click()
+    page.locator("#edit-dialog-textarea").fill("$bio.level * 1000")
+    page.keyboard.press("Control+Enter")
+    expect(page.locator("#edit-dialog")).not_to_be_visible()
+    expect(page.locator("#experience-display")).to_contain_text("7000")
+
+
+def test_formula_cascade_on_referenced_field_change(page: Page, base_url: str) -> None:
+    page.goto(base_url)
+    # Set experience to reference level
+    page.locator("#experience-display").click()
+    page.locator("#edit-dialog-textarea").fill("$bio.level * 1000")
+    page.keyboard.press("Control+Enter")
+    expect(page.locator("#experience-display")).to_contain_text("7000")
+
+    # Now change level — experience display should update
+    page.locator("#level-display").click()
+    page.locator("#edit-dialog-textarea").fill("10")
+    page.keyboard.press("Control+Enter")
+    expect(page.locator("#experience-display")).to_contain_text("10000")
+
+
+def test_formula_cycle_blocks_close(page: Page, base_url: str) -> None:
+    page.goto(base_url)
+    page.locator(".tab-btn", has_text="Gear").click()
+    # Set gp to reference ep (both are money formula fields)
+    page.locator("#money-gp-display").click()
+    page.locator("#edit-dialog-textarea").fill("$money.ep + 1")
+    page.keyboard.press("Control+Enter")
+    expect(page.locator("#edit-dialog")).not_to_be_visible()
+
+    # Now try to set ep to reference gp — this would be a cycle
+    page.locator("#money-ep-display").click()
+    page.locator("#edit-dialog-textarea").fill("$money.gp + 1")
+    page.locator("#edit-dialog-done-btn").click()
+    expect(page.locator("#edit-dialog")).to_be_visible()
+    expect(page.locator("#edit-dialog-error")).not_to_be_empty()
+    page.keyboard.press("Escape")
+
+
+def test_gear_weight_invalid_formula_blocks_done(page: Page, base_url: str) -> None:
+    page.goto(base_url)
+    page.locator(".tab-btn", has_text="Gear").click()
+    page.locator("#add-gear-btn").click()
+    page.locator("#gear-dialog-weight").fill("bad formula !!")
+    page.locator("#gear-dialog-done-btn").click()
+    expect(page.locator("#gear-dialog")).to_be_visible()
+    expect(page.locator("#gear-dialog-error")).not_to_be_empty()
+    page.keyboard.press("Escape")
+
+
+def test_formula_error_clears_on_valid_input(page: Page, base_url: str) -> None:
+    page.goto(base_url)
+    page.locator("#experience-display").click()
+    page.locator("#edit-dialog-textarea").fill("bad !!")
+    page.locator("#edit-dialog-done-btn").click()
+    expect(page.locator("#edit-dialog-error")).not_to_be_empty()
+    page.locator("#edit-dialog-textarea").fill("12345")
+    page.keyboard.press("Control+Enter")
+    expect(page.locator("#edit-dialog")).not_to_be_visible()
+    expect(page.locator("#experience-display")).to_contain_text("12345")

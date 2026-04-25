@@ -1,4 +1,4 @@
-import { escHtml, renderFormula, renderFormatted, render2Col, reorderItem } from './logic.js';
+import { escHtml, renderFormula, renderFormatted, render2Col, reorderItem, parseFormulaRefs, validateFormula, DependencyGraph } from './logic.js';
 
 // ── State ──────────────────────────────────────────────────────────────────
 
@@ -22,6 +22,16 @@ let _editDialogOriginalValue = null;  // value at open time, restored on Escape
 // Undo stack for dialog saves: each entry is { field, display, value } representing
 // the state before that save, so Cmd/Ctrl+Z can restore it.
 const _undoStack = [];
+
+// ── Formula dependency system ──────────────────────────────────────────────
+// All valid reference targets built from the HTML at init time ("section.field").
+const _allFieldIds = new Set();
+// Formula-render fields that have data-field-key in bio/money panels.
+const _formulaNodeIds = new Set();
+// Dependency graph: u -> v means u's formula references v's computed value.
+const _formulaGraph = new DependencyGraph();
+// Cached computed display value for each formula node ("section.field" -> string).
+const _computedValues = {};
 
 
 // HTML data-attributes and the .dialog-hint / .card-movable classes are documented
@@ -47,8 +57,8 @@ const RENDER_MODES = {
     linkShortcut: true,
   },
   formula: {
-    render: (el, raw) => { el.textContent = renderFormula(raw); },
-    hint: "Formulas: 1 + 2 * 3 · Comments: {your note here}",
+    render: (el, raw) => { el.textContent = renderFormula(raw, _buildFieldValues()); },
+    hint: "Formulas: 1 + 2 * 3 · Refs: $bio.level · Comments: {your note here}",
     linkShortcut: false,
   },
 };
@@ -71,6 +81,113 @@ function updateDisplay(displayEl, rawText) {
   (mode ?? RENDER_MODES.formatted).render(displayEl, rawText);
 }
 
+// ── Formula system helpers ─────────────────────────────────────────────────
+
+// Returns the section.field node ID for an input element, or null if not a bio/money field.
+function _getNodeId(inputEl) {
+  const key = inputEl?.dataset?.fieldKey;
+  if (!key) return null;
+  if (document.getElementById("panel-bio").contains(inputEl)) return `bio.${key}`;
+  if (document.getElementById("money-row").contains(inputEl)) return `money.${key}`;
+  return null;
+}
+
+// Returns the raw formula string stored in the DOM input for a nodeId.
+function _getRawFieldValue(section, field) {
+  if (section === "bio") {
+    return document.querySelector(`#panel-bio [data-field-key="${field}"]`)?.value ?? "";
+  }
+  if (section === "money") {
+    return document.querySelector(`#money-row [data-field-key="${field}"]`)?.value ?? "";
+  }
+  return "";
+}
+
+// Returns a snapshot of current field values for formula reference resolution.
+// Formula nodes use their cached computed value; all others use raw DOM value.
+function _buildFieldValues() {
+  const values = {};
+  for (const nodeId of _allFieldIds) {
+    const [section, field] = nodeId.split(".");
+    values[nodeId] = _formulaNodeIds.has(nodeId)
+      ? (_computedValues[nodeId] ?? "0")
+      : _getRawFieldValue(section, field);
+  }
+  return values;
+}
+
+// Returns the display element for a formula node, or null.
+function _getFormulaNodeDisplay(nodeId) {
+  const [section, field] = nodeId.split(".");
+  const container = section === "bio" ? "#panel-bio" : "#money-row";
+  const inputEl = document.querySelector(`${container} [data-field-key="${field}"]`);
+  return inputEl ? document.getElementById(inputEl.id + "-display") : null;
+}
+
+// Recomputes one formula node's value and updates its display element.
+function _recomputeFormulaNode(nodeId) {
+  const [section, field] = nodeId.split(".");
+  const raw = _getRawFieldValue(section, field);
+  const computed = renderFormula(raw, _buildFieldValues());
+  _computedValues[nodeId] = computed;
+  const displayEl = _getFormulaNodeDisplay(nodeId);
+  if (displayEl) displayEl.textContent = computed;
+}
+
+// Recomputes all formula nodes in dependency order (dependencies before dependents).
+function _recomputeAllFormulaNodes() {
+  const order = _formulaGraph.topoSort(_formulaNodeIds);
+  for (const nodeId of order) {
+    _recomputeFormulaNode(nodeId);
+  }
+  // Any nodes not reached by topoSort (isolated nodes) are still recomputed.
+  for (const nodeId of _formulaNodeIds) {
+    if (!order.includes(nodeId)) _recomputeFormulaNode(nodeId);
+  }
+}
+
+// Updates the formula graph edges for nodeId based on its new raw formula,
+// then recomputes all formula nodes in topological order.
+function _applyFormulaChange(nodeId, newRaw) {
+  _formulaGraph.clearDependencies(nodeId);
+  for (const { section, field } of parseFormulaRefs(newRaw)) {
+    const depId = `${section}.${field}`;
+    if (_formulaNodeIds.has(depId)) _formulaGraph.addEdge(nodeId, depId);
+  }
+  _recomputeAllFormulaNodes();
+}
+
+// Initialises the formula system: builds field-id sets, graph edges, and computed values.
+// Called once from render() after populateFields has set all DOM input values.
+function _initFormulaSystem() {
+  _allFieldIds.clear();
+  _formulaNodeIds.clear();
+
+  document.querySelectorAll("#panel-bio [data-field-key]").forEach(el => {
+    const id = `bio.${el.dataset.fieldKey}`;
+    _allFieldIds.add(id);
+    if (el.dataset.fieldRender === "formula") _formulaNodeIds.add(id);
+  });
+  document.querySelectorAll("#money-row [data-field-key]").forEach(el => {
+    const id = `money.${el.dataset.fieldKey}`;
+    _allFieldIds.add(id);
+    if (el.dataset.fieldRender === "formula") _formulaNodeIds.add(id);
+  });
+
+  // Build graph edges from current formula values.
+  for (const nodeId of _formulaNodeIds) {
+    const [section, field] = nodeId.split(".");
+    const raw = _getRawFieldValue(section, field);
+    _formulaGraph.clearDependencies(nodeId);
+    for (const { section: s, field: f } of parseFormulaRefs(raw)) {
+      const depId = `${s}.${f}`;
+      if (_formulaNodeIds.has(depId)) _formulaGraph.addEdge(nodeId, depId);
+    }
+  }
+
+  _recomputeAllFormulaNodes();
+}
+
 // ── Edit dialog ────────────────────────────────────────────────────────────
 
 // Opens the centered edit dialog for a given field input and its display span.
@@ -88,18 +205,55 @@ function openEditDialog(inputEl, displayEl) {
 }
 
 // Closes the edit dialog saving the current textarea value (Done button / backdrop / Cmd+Enter).
+// For formula fields: validates first and blocks close on error.
 function closeEditDialog() {
   if (_editDialogField) {
     const ta = document.getElementById("edit-dialog-textarea");
-    if (ta.value !== _editDialogOriginalValue) {
-      const f = _editDialogField, d = _editDialogDisplay, v = _editDialogOriginalValue;
-      _undoStack.push({ undo: () => { f.value = v; updateDisplay(d, v); autosave(); } });
+    const newValue = ta.value;
+
+    if (_editDialogField.dataset.fieldRender === "formula") {
+      const nodeId = _getNodeId(_editDialogField);
+      if (nodeId) {
+        const err = validateFormula(newValue, _allFieldIds, nodeId, _formulaGraph);
+        if (err) {
+          document.getElementById("edit-dialog-error").textContent = err;
+          return;
+        }
+        document.getElementById("edit-dialog-error").textContent = "";
+      }
     }
-    _editDialogField.value = ta.value;
-    updateDisplay(_editDialogDisplay, ta.value);
+
+    if (newValue !== _editDialogOriginalValue) {
+      const f = _editDialogField, d = _editDialogDisplay, v = _editDialogOriginalValue;
+      _undoStack.push({
+        undo: () => {
+          f.value = v;
+          if (f.dataset.fieldRender === "formula") {
+            const nid = _getNodeId(f);
+            if (nid) _applyFormulaChange(nid, v);
+            else _recomputeAllFormulaNodes();
+          } else {
+            updateDisplay(d, v);
+            _recomputeAllFormulaNodes();
+          }
+          autosave();
+        },
+      });
+    }
+
+    _editDialogField.value = newValue;
+    if (_editDialogField.dataset.fieldRender === "formula") {
+      const nodeId = _getNodeId(_editDialogField);
+      if (nodeId) _applyFormulaChange(nodeId, newValue);
+      else _recomputeAllFormulaNodes();
+    } else {
+      updateDisplay(_editDialogDisplay, newValue);
+      _recomputeAllFormulaNodes();
+    }
     autosave();
   }
   document.getElementById("edit-dialog").classList.add("hidden");
+  document.getElementById("edit-dialog-error").textContent = "";
   document.getElementById("edit-dialog-syntax-hint").textContent = "";
   _editDialogField = null;
   _editDialogDisplay = null;
@@ -110,10 +264,18 @@ function closeEditDialog() {
 function cancelEditDialog() {
   if (_editDialogField && _editDialogOriginalValue !== null) {
     _editDialogField.value = _editDialogOriginalValue;
-    updateDisplay(_editDialogDisplay, _editDialogOriginalValue);
+    if (_editDialogField.dataset.fieldRender === "formula") {
+      const nodeId = _getNodeId(_editDialogField);
+      if (nodeId) _applyFormulaChange(nodeId, _editDialogOriginalValue);
+      else _recomputeAllFormulaNodes();
+    } else {
+      updateDisplay(_editDialogDisplay, _editDialogOriginalValue);
+      _recomputeAllFormulaNodes();
+    }
     autosave();
   }
   document.getElementById("edit-dialog").classList.add("hidden");
+  document.getElementById("edit-dialog-error").textContent = "";
   document.getElementById("edit-dialog-syntax-hint").textContent = "";
   _editDialogField = null;
   _editDialogDisplay = null;
@@ -231,6 +393,7 @@ async function applyConfig() {
     ["main_font", "--main-font"],
     ["primary_font_color", "--primary-font-color"],
     ["sep_color", "--sep-color"],
+    ["dialog_error_color", "--dialog-error-color"],
   ];
   const px = [
     ["header_font_size", "--header-font-size"],
@@ -285,6 +448,7 @@ function collectFields(container) {
 function render() {
   populateFields(document.getElementById("panel-bio"), character.bio);
   populateFields(document.getElementById("money-row"), character.money);
+  _initFormulaSystem();
   renderFeats();
   renderGear();
   renderNotes();
@@ -662,7 +826,7 @@ function renderGear() {
         const tdLoc = document.createElement("td");
         tdLoc.textContent = item.location ?? "";
         const tdWeight = document.createElement("td");
-        tdWeight.textContent = renderFormula(item.weight ?? "");
+        tdWeight.textContent = renderFormula(item.weight ?? "", _buildFieldValues());
         tr.append(tdDesc, tdLoc, tdWeight);
         tbody.appendChild(tr);
       });
@@ -689,11 +853,19 @@ function openGearDialog(index) {
 }
 
 function closeGearDialog() {
+  const weightRaw = document.getElementById("gear-dialog-weight").value;
+  const weightErr = validateFormula(weightRaw, _allFieldIds);
+  if (weightErr) {
+    document.getElementById("gear-dialog-error").textContent = weightErr;
+    return;
+  }
+  document.getElementById("gear-dialog-error").textContent = "";
+
   const entry = {
     gear_type: document.getElementById("gear-dialog-type").value,
     description: document.getElementById("gear-dialog-description").value,
     location: document.getElementById("gear-dialog-location").value,
-    weight: document.getElementById("gear-dialog-weight").value,
+    weight: weightRaw,
   };
   character.gear = character.gear ?? [];
   const previousGear = character.gear.map(g => ({ ...g }));
@@ -713,6 +885,7 @@ function closeGearDialog() {
 function cancelGearDialog() {
   document.getElementById("gear-dialog").classList.add("hidden");
   document.getElementById("gear-dialog-syntax-hint").textContent = "";
+  document.getElementById("gear-dialog-error").textContent = "";
   _gearDialogIndex = null;
 }
 
@@ -799,6 +972,13 @@ document.getElementById("edit-dialog-textarea").addEventListener("input", () => 
   if (_editDialogField) {
     _editDialogField.value = document.getElementById("edit-dialog-textarea").value;
     autosave();
+    // For non-formula fields: cascade to formula fields that may reference this one.
+    // Skip formula fields — their displays are only updated on validated Done.
+    if (_editDialogField.dataset.fieldRender !== "formula") {
+      _recomputeAllFormulaNodes();
+    }
+    // Clear any stale formula error as user types.
+    document.getElementById("edit-dialog-error").textContent = "";
   }
 });
 

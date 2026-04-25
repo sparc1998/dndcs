@@ -155,7 +155,8 @@ def test_edit_dialog_structure() -> None:
     c = _parse()
     for eid in (
         "edit-dialog", "edit-dialog-box", "edit-dialog-hint",
-        "edit-dialog-syntax-hint", "edit-dialog-done-btn", "edit-dialog-textarea",
+        "edit-dialog-syntax-hint", "edit-dialog-error", "edit-dialog-done-btn",
+        "edit-dialog-textarea",
     ):
         assert eid in c.by_id, f"Missing #{eid}"
 
@@ -196,8 +197,8 @@ def test_gear_dialog_structure() -> None:
     c = _parse()
     for eid in (
         "gear-dialog", "gear-dialog-box", "gear-dialog-hint",
-        "gear-dialog-syntax-hint", "gear-dialog-done-btn", "gear-dialog-delete-btn",
-        "gear-dialog-type", "gear-dialog-location",
+        "gear-dialog-syntax-hint", "gear-dialog-error", "gear-dialog-done-btn",
+        "gear-dialog-delete-btn", "gear-dialog-type", "gear-dialog-location",
         "gear-dialog-weight", "gear-dialog-description",
     ):
         assert eid in c.by_id, f"Missing #{eid}"

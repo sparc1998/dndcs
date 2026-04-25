@@ -4,6 +4,7 @@
    Do not derive variants (lighter, darker, opacity) from these — add a new
    explicit variable to config.yaml and _DEFAULTS in dndcs.py instead.      */
 :root {
+  --dialog-error-color: #e74c3c;
   --main-bg: #f2f2f2;
   --sidebar-bg: #e4e6e8;
   --dialog-bg: #ffffff;
@@ -892,6 +893,13 @@ textarea:focus {
   font-family: var(--main-font);
   font-size: var(--main-font-size);
   opacity: 0.75;
+  user-select: none;
+}
+
+.dialog-error {
+  color: var(--dialog-error-color);
+  font-family: var(--main-font);
+  font-size: var(--main-font-size);
   user-select: none;
 }
 

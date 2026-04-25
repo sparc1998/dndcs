@@ -22,6 +22,9 @@ button_font_color: "white"
 # sep_color is used for row separators in the level log table, --- separators in the 2-col display, gear table row separators, gear section borders, and the gear column divider.
 sep_color: "#35803E"
 
+# dialog_error_color is used for formula validation error messages in dialogs.
+dialog_error_color: "#e74c3c"
+
 # ── Fonts ──────────────────────────────────────────────────────────────────
 # Fonts can be set to any web-safe font or Google Fonts name. Examples:
 #   "Helvetica Neue, Arial, sans-serif", "Cinzel", "Georgia"

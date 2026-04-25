@@ -12,6 +12,8 @@ import yaml
 from flask import Flask, Response, jsonify, render_template_string, request
 from werkzeug.exceptions import HTTPException
 
+from lib.formula import validate_all_formulas
+
 
 def _str_representer(dumper: yaml.Dumper, data: str) -> yaml.ScalarNode:
     if "\n" in data:
@@ -20,8 +22,6 @@ def _str_representer(dumper: yaml.Dumper, data: str) -> yaml.ScalarNode:
 
 
 yaml.add_representer(str, _str_representer)
-
-sys.path.insert(0, str(Path(__file__).parent.parent))
 
 _PROJECT_ROOT = Path(__file__).parent.parent
 
@@ -50,6 +50,7 @@ _DEFAULTS: dict[str, Any] = {
     "main_font_size": 15,
     "primary_font_color": "#e0d7c6",
     "sep_color": "#16213e",
+    "dialog_error_color": "#e74c3c",
     "backup_extension": ".bak",
     # Sizing keys — must mirror config.yaml; wired to fields via data-sizing-key in index.html.
     "name_sizing_text": "Firstname Lastname",
@@ -169,6 +170,13 @@ def main() -> None:
     _config = _load_config()
     with open(_char_file) as f:
         _character = yaml.safe_load(f)
+
+    formula_errors = validate_all_formulas(_character)
+    if formula_errors:
+        print("Error: character file contains invalid formulas:", file=sys.stderr)
+        for err in formula_errors:
+            print(f"  {err}", file=sys.stderr)
+        sys.exit(1)
 
     print(f"Character sheet: {_char_file}")
     print(f"Output file:     {_out_file}")

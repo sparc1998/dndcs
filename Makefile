@@ -5,17 +5,15 @@ PYTHON := uv run python
 
 SRC_DIRS := bin lib
 
-.PHONY: help setup setup-tests clean check fix lint type-check format format-check test test-e2e
+.PHONY: help setup clean check fix lint type-check format format-check test test-unit test-e2e
 
 help:
 	@echo "Available commands:"
-	@echo "  setup        - Create venv and install dependencies"
-	@echo "  setup-tests  - Install Python dev deps + Playwright browsers"
+	@echo "  setup        - Create venv, install dependencies, and install Playwright browsers"
 	@echo "  clean        - Remove the virtual environment"
 	@echo "  check        - Run all checks (lint, type, format)"
 	@echo "  fix          - Run formatting and lint auto-fixes"
-	@echo "  test         - Run all tests (integration)"
-	@echo "  test-e2e     - Run integration tests (pytest + Playwright)"
+	@echo "  test         - Run all tests (unit + integration)"
 
 ifndef UV
 $(error "uv is not installed. Please install it: brew install uv")
@@ -24,12 +22,9 @@ endif
 setup:
 	@echo "Setting up project environment with uv..."
 	uv sync --group dev
-	@echo "Environment setup complete in .venv/"
-
-setup-tests: setup
 	@echo "Installing Playwright browsers..."
 	uv run playwright install chromium
-	@echo "Test dependencies ready."
+	@echo "Setup complete."
 
 clean:
 	@echo "Removing .venv..."
@@ -60,8 +55,12 @@ lint-fix:
 
 fix: format lint-fix
 
+test-unit:
+	@echo "Running JS unit tests..."
+	node --test tests/unit/test_logic.mjs
+
 test-e2e:
 	@echo "Running integration tests..."
 	uv run pytest tests/integration/
 
-test: test-e2e
+test: test-unit test-e2e

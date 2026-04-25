@@ -15,7 +15,7 @@ This is a Python web application for a D&D character sheet. It serves a local we
 ## Development Setup
 
 ```bash
-make setup   # install dependencies into .venv via uv
+make setup   # install dependencies into .venv via uv and install Playwright browsers
 ```
 
 ## Common Tasks
@@ -74,6 +74,15 @@ When adding a new bio field, update all of the following:
 1. **`static/index.html`** — add the `<label>`, `<span class="field-display" id="X-display">`, and `<input type="hidden">` with the appropriate data-attributes (see **Data-attributes** below). No JS changes needed for render, save, autosave, or edit-dialog wiring.
 2. **`schema/character.yaml`** — add the field as an optional `type: string` property under `bio`.
 3. **`config.yaml`** and **`bin/dndcs.py`** — only if the field needs a new sizing key (see **Text box sizing** below).
+4. **`lib/formula.py` `_BIO_FIELDS`** — always add the new field name here so it is a valid `$bio.<field>` reference target in formulas.
+
+### Adding a new formula field
+
+A formula field is any field with `data-field-render="formula"` in `index.html`. The JS side discovers formula nodes from the DOM automatically, but **`lib/formula.py` hardcodes the list** because it runs offline at startup with no DOM access. When adding a new formula field, update all of the following in addition to the normal bio-field steps above:
+
+1. **`lib/formula.py` `FORMULA_NODE_IDS`** — add `"section.fieldname"` to this frozenset.
+2. **`lib/formula.py` `validate_all_formulas()`** — add the field to the `node_candidates` list so it is validated at startup.
+3. **Tests** — add or update tests in `tests/integration/test_formula.py` to cover the new formula field.
 
 ### Data-attributes
 
