@@ -1111,10 +1111,42 @@ textarea:focus {
   background: transparent;
 }
 
+input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 1em;
+  height: 1em;
+  border: 1.5px solid var(--primary-font-color);
+  border-radius: 3px;
+  background: transparent;
+  cursor: pointer;
+  vertical-align: middle;
+  position: relative;
+  flex-shrink: 0;
+}
+
+input[type="checkbox"]:checked {
+  background: var(--button-bg);
+  border-color: var(--button-bg);
+}
+
+input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0.35em;
+  height: 0.6em;
+  border: 2px solid var(--button-font-color);
+  border-top: none;
+  border-left: none;
+  transform: translate(-50%, -60%) rotate(45deg);
+}
+
 /* Clipboard copy toast: small popup that appears above a clicked calc field. */
 .copy-toast {
   position: fixed;
-  background: var(--card-bg);
+  background: var(--sidebar-bg);
   border: 1px solid var(--primary-font-color);
   border-radius: 4px;
   padding: 0.2rem 0.5rem;

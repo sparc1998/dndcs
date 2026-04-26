@@ -86,8 +86,6 @@ uv run check-jsonschema --schemafile schema/character.yaml <file.yaml>
 
 ## TODO
 
-* Change checkbox true background color to button color.
-* The copied box should be the color of dialog boxes.
 * Make experience and money sizing text use the same sizing key: long_num_sizing_text.
 * Add temporary values for abilities.
 * Add potion use to bonus actions.
