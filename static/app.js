@@ -39,26 +39,21 @@ const _computedValues = {};
 
 
 
-// Render-mode registry: single source of truth for the three behaviors of a
-// data-field-render value — how the display renders, what syntax hint to show in the
-// edit dialog, and whether Cmd+K opens the link dialog while editing.
+// Render-mode registry: single source of truth for how a data-field-render value
+// renders its display and whether Cmd+K opens the link dialog while editing.
 // To add a render mode: add one entry here and add the value to the set
 // accepted by data-field-render in index.html. No other changes needed.
-const MD_HINT = `${_modKey}+K to insert link · [label](url) · **bold** · _italic_ · * bullet · 1) numbered`;
 const RENDER_MODES = {
   formatted: {
     render: (el, raw) => { el.innerHTML = renderFormatted(raw); },
-    hint: MD_HINT,
     linkShortcut: true,
   },
-  "formatted-seps": {
+  "formatted-multi-value": {
     render: (el, raw) => { el.innerHTML = render2Col(raw); },
-    hint: MD_HINT + " · --- to split entries",
     linkShortcut: true,
   },
   formula: {
     render: (el, raw) => { el.textContent = renderFormula(raw, _buildFieldValues()); },
-    hint: "Formulas: 1 + 2 * 3 · Refs: $bio.level · Comments: {your note here}",
     linkShortcut: false,
   },
 };
@@ -67,9 +62,11 @@ function renderMode(el) {
   return el ? RENDER_MODES[el.dataset.fieldRender] : null;
 }
 
-// Returns the syntax hint string for a given input element based on its render mode.
-function buildSyntaxHint(inputEl) {
-  return renderMode(inputEl)?.hint ?? "";
+function fieldTypeLabel(el) {
+  const mode = el?.dataset?.fieldRender;
+  if (mode === "formatted-multi-value") return "Type: formatted multi-value";
+  if (mode === "formula") return "Type: formula";
+  return "Type: formatted";
 }
 
 // Renders raw text into a display element using the paired input's render mode.
@@ -259,7 +256,7 @@ function openEditDialog(inputEl, displayEl) {
   const ta = document.getElementById("edit-dialog-textarea");
   ta.value = inputEl.value;
   ta.dataset.fieldRender = inputEl.dataset.fieldRender ?? "formatted";
-  document.getElementById("edit-dialog-syntax-hint").textContent = buildSyntaxHint(inputEl);
+  document.getElementById("edit-dialog-field-type").textContent = fieldTypeLabel(inputEl);
   document.getElementById("edit-dialog").classList.remove("hidden");
   requestAnimationFrame(() => { ta.focus(); });
 }
@@ -313,8 +310,8 @@ function closeEditDialog() {
     autosave();
   }
   document.getElementById("edit-dialog").classList.add("hidden");
+  document.getElementById("edit-dialog-field-type").textContent = "";
   document.getElementById("edit-dialog-error").textContent = "";
-  document.getElementById("edit-dialog-syntax-hint").textContent = "";
   _editDialogField = null;
   _editDialogDisplay = null;
   _editDialogOriginalValue = null;
@@ -335,8 +332,8 @@ function cancelEditDialog() {
     autosave();
   }
   document.getElementById("edit-dialog").classList.add("hidden");
+  document.getElementById("edit-dialog-field-type").textContent = "";
   document.getElementById("edit-dialog-error").textContent = "";
-  document.getElementById("edit-dialog-syntax-hint").textContent = "";
   _editDialogField = null;
   _editDialogDisplay = null;
   _editDialogOriginalValue = null;
@@ -631,7 +628,6 @@ function openFeatDialog(index) {
   const ta = document.getElementById("feat-dialog-text");
   ta.value = feat.description ?? "";
   document.getElementById("feat-dialog-delete-btn").classList.toggle("hidden", index === null);
-  document.getElementById("feat-dialog-syntax-hint").textContent = buildSyntaxHint(ta);
   document.getElementById("feat-dialog").classList.remove("hidden");
   requestAnimationFrame(() => ta.focus());
 }
@@ -647,7 +643,6 @@ function closeFeatDialog() {
   }
   _undoStack.push({ undo: () => { character.feats_features = prev; renderFeats(); autosave(); } });
   document.getElementById("feat-dialog").classList.add("hidden");
-  document.getElementById("feat-dialog-syntax-hint").textContent = "";
   _featDialogIndex = null;
   renderFeats();
   autosave();
@@ -655,7 +650,6 @@ function closeFeatDialog() {
 
 function cancelFeatDialog() {
   document.getElementById("feat-dialog").classList.add("hidden");
-  document.getElementById("feat-dialog-syntax-hint").textContent = "";
   _featDialogIndex = null;
 }
 
@@ -754,8 +748,6 @@ function openNoteDialog(index) {
   populateFields(dialog, note);
   document.getElementById("note-dialog-tags").value = (note.tags ?? []).join(", ");
   document.getElementById("note-dialog-delete-btn").classList.toggle("hidden", index === null);
-  document.getElementById("note-dialog-syntax-hint").textContent =
-    buildSyntaxHint(document.getElementById("note-dialog-text"));
   dialog.classList.remove("hidden");
   requestAnimationFrame(() => { document.getElementById("note-dialog-text").focus(); });
 }
@@ -775,7 +767,6 @@ function closeNoteDialog() {
   }
   _undoStack.push({ undo: () => { character.campaign_notes = previousNotes; renderNotes(); autosave(); } });
   document.getElementById("note-dialog").classList.add("hidden");
-  document.getElementById("note-dialog-syntax-hint").textContent = "";
   _noteDialogIndex = null;
   renderNotes();
   autosave();
@@ -783,7 +774,6 @@ function closeNoteDialog() {
 
 function cancelNoteDialog() {
   document.getElementById("note-dialog").classList.add("hidden");
-  document.getElementById("note-dialog-syntax-hint").textContent = "";
   _noteDialogIndex = null;
 }
 
@@ -829,8 +819,6 @@ function openLevelLogDialog(index) {
   const level = (index ?? character.level_log.length) + 1;
   document.getElementById("level-log-dialog-level").value = String(level);
   document.getElementById("level-log-dialog-delete-btn").classList.toggle("hidden", index === null);
-  document.getElementById("level-log-dialog-syntax-hint").textContent =
-    buildSyntaxHint(document.getElementById("level-log-dialog-class"));
   dialog.classList.remove("hidden");
   requestAnimationFrame(() => { document.getElementById("level-log-dialog-class").focus(); });
 }
@@ -847,7 +835,6 @@ function closeLevelLogDialog() {
   }
   _undoStack.push({ undo: () => { character.level_log = previousLog; renderLevelLog(); autosave(); } });
   document.getElementById("level-log-dialog").classList.add("hidden");
-  document.getElementById("level-log-dialog-syntax-hint").textContent = "";
   _levelLogDialogIndex = null;
   renderLevelLog();
   autosave();
@@ -855,7 +842,6 @@ function closeLevelLogDialog() {
 
 function cancelLevelLogDialog() {
   document.getElementById("level-log-dialog").classList.add("hidden");
-  document.getElementById("level-log-dialog-syntax-hint").textContent = "";
   _levelLogDialogIndex = null;
 }
 
@@ -915,8 +901,7 @@ function openGearDialog(index) {
   document.getElementById("gear-dialog-weight").value = item.weight ?? "";
   document.getElementById("gear-dialog-description").value = item.description ?? "";
   document.getElementById("gear-dialog-delete-btn").classList.toggle("hidden", index === null);
-  document.getElementById("gear-dialog-syntax-hint").textContent =
-    buildSyntaxHint(document.getElementById("gear-dialog-description"));
+  document.getElementById("gear-dialog-field-type").textContent = "Type: formatted";
   document.getElementById("gear-dialog").classList.remove("hidden");
   requestAnimationFrame(() => { document.getElementById("gear-dialog-description").focus(); });
 }
@@ -945,7 +930,7 @@ function closeGearDialog() {
   }
   _undoStack.push({ undo: () => { character.gear = previousGear; renderGear(); autosave(); } });
   document.getElementById("gear-dialog").classList.add("hidden");
-  document.getElementById("gear-dialog-syntax-hint").textContent = "";
+  document.getElementById("gear-dialog-field-type").textContent = "";
   _gearDialogIndex = null;
   renderGear();
   autosave();
@@ -953,7 +938,7 @@ function closeGearDialog() {
 
 function cancelGearDialog() {
   document.getElementById("gear-dialog").classList.add("hidden");
-  document.getElementById("gear-dialog-syntax-hint").textContent = "";
+  document.getElementById("gear-dialog-field-type").textContent = "";
   document.getElementById("gear-dialog-error").textContent = "";
   _gearDialogIndex = null;
 }
@@ -1264,15 +1249,9 @@ document.getElementById("note-dialog-hint").textContent = `${_modKey}+↵ to sav
 document.getElementById("level-log-dialog-hint").textContent = `${_modKey}+↵ to save · Esc to cancel`;
 document.getElementById("gear-dialog-hint").textContent = `${_modKey}+↵ to save · Esc to cancel`;
 
-["level-log-dialog-class", "level-log-dialog-details"].forEach(id => {
-  document.getElementById(id).addEventListener("focus", () => {
-    document.getElementById("level-log-dialog-syntax-hint").textContent = buildSyntaxHint(document.getElementById(id));
-  });
-});
-
 ["gear-dialog-description", "gear-dialog-weight"].forEach(id => {
   document.getElementById(id).addEventListener("focus", () => {
-    document.getElementById("gear-dialog-syntax-hint").textContent = buildSyntaxHint(document.getElementById(id));
+    document.getElementById("gear-dialog-field-type").textContent = fieldTypeLabel(document.getElementById(id));
   });
 });
 

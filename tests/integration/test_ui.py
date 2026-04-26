@@ -136,7 +136,13 @@ def test_edit_dialog_shows_hints(page: Page, base_url: str) -> None:
     page.locator("#character-name-display").click()
     expect(page.locator("#edit-dialog-hint")).to_contain_text("↵ to save")
     expect(page.locator("#edit-dialog-hint")).to_contain_text("Esc to cancel")
-    expect(page.locator("#edit-dialog-syntax-hint")).to_contain_text("**bold**")
+    expect(page.locator("#edit-dialog-field-type")).to_have_text("Type: formatted")
+
+
+def test_edit_dialog_formula_field_type(page: Page, base_url: str) -> None:
+    page.goto(base_url)
+    page.locator("#experience-display").click()
+    expect(page.locator("#edit-dialog-field-type")).to_have_text("Type: formula")
 
 
 def test_feat_dialog_shows_hints(page: Page, base_url: str) -> None:
@@ -145,7 +151,7 @@ def test_feat_dialog_shows_hints(page: Page, base_url: str) -> None:
     page.locator("#add-feat-btn").click()
     expect(page.locator("#feat-dialog-hint")).to_contain_text("↵ to save")
     expect(page.locator("#feat-dialog-hint")).to_contain_text("Esc to cancel")
-    expect(page.locator("#feat-dialog-syntax-hint")).to_contain_text("**bold**")
+    expect(page.locator("#feat-dialog-hints .dialog-hint").nth(1)).to_have_text("Type: formatted")
 
 
 def test_note_dialog_shows_hints(page: Page, base_url: str) -> None:
@@ -154,7 +160,7 @@ def test_note_dialog_shows_hints(page: Page, base_url: str) -> None:
     page.locator("#add-note-btn").click()
     expect(page.locator("#note-dialog-hint")).to_contain_text("↵ to save")
     expect(page.locator("#note-dialog-hint")).to_contain_text("Esc to cancel")
-    expect(page.locator("#note-dialog-syntax-hint")).to_contain_text("**bold**")
+    expect(page.locator("#note-dialog-hints .dialog-hint").nth(1)).to_have_text("Type: formatted")
 
 
 def test_gear_dialog_shows_hints(page: Page, base_url: str) -> None:
@@ -163,7 +169,9 @@ def test_gear_dialog_shows_hints(page: Page, base_url: str) -> None:
     page.locator("#add-gear-btn").click()
     expect(page.locator("#gear-dialog-hint")).to_contain_text("↵ to save")
     expect(page.locator("#gear-dialog-hint")).to_contain_text("Esc to cancel")
-    expect(page.locator("#gear-dialog-syntax-hint")).to_contain_text("**bold**")
+    expect(page.locator("#gear-dialog-field-type")).to_have_text("Type: formatted")
+    page.locator("#gear-dialog-weight").click()
+    expect(page.locator("#gear-dialog-field-type")).to_have_text("Type: formula")
 
 
 def test_level_log_dialog_shows_hints(page: Page, base_url: str) -> None:
@@ -172,7 +180,16 @@ def test_level_log_dialog_shows_hints(page: Page, base_url: str) -> None:
     page.locator("#add-level-log-btn").click()
     expect(page.locator("#level-log-dialog-hint")).to_contain_text("↵ to save")
     expect(page.locator("#level-log-dialog-hint")).to_contain_text("Esc to cancel")
-    expect(page.locator("#level-log-dialog-syntax-hint")).to_contain_text("**bold**")
+    expect(page.locator("#level-log-dialog-hints .dialog-hint").nth(1)).to_have_text("Type: formatted")
+
+
+def test_help_tab(page: Page, base_url: str) -> None:
+    page.goto(base_url)
+    page.locator(".tab-btn", has_text="Help").click()
+    expect(page.locator("#panel-help")).to_be_visible()
+    expect(page.locator("#panel-help")).to_contain_text("Keyboard Shortcuts")
+    expect(page.locator("#panel-help")).to_contain_text("Formula Fields")
+    expect(page.locator("#panel-help")).to_contain_text("Calculated Fields")
 
 
 def test_gear_collapse_all(page: Page, base_url: str) -> None:

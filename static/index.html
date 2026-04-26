@@ -18,6 +18,7 @@
       <button class="tab-btn" data-tab="gear">Gear</button>
       <button class="tab-btn" data-tab="campaign">Campaign Notes</button>
       <button class="tab-btn" data-tab="level-log">Level Log</button>
+      <button class="tab-btn" data-tab="help">Help</button>
     </nav>
 
     <!-- Bio panel: character identity fields displayed as click-to-edit spans -->
@@ -156,7 +157,7 @@
       <div class="bha-section">
         <div class="bha-header">Background, History, Allies, &amp; Affiliations</div>
         <div id="background-history-display" class="field-display"></div>
-        <input type="hidden" id="background-history" class="hidden" data-field-render="formatted-seps" data-layout="2col" data-field-key="background_history" />
+        <input type="hidden" id="background-history" class="hidden" data-field-render="formatted-multi-value" data-layout="2col" data-field-key="background_history" />
       </div>
 
       </div>
@@ -420,6 +421,62 @@
         <tbody id="level-log-tbody"></tbody>
       </table>
     </div>
+    <!-- Help panel: syntax reference and keyboard shortcuts -->
+    <div id="panel-help" class="panel">
+      <div class="help-content">
+
+        <div class="help-section">
+          <div class="help-section-title">Keyboard Shortcuts</div>
+          <table class="help-table">
+            <tr><td class="help-key">⌘S / Ctrl+S</td><td>Save to file</td></tr>
+            <tr><td class="help-key">⌘Z / Ctrl+Z</td><td>Undo last dialog save (when no dialog is open)</td></tr>
+            <tr><td class="help-key">⌘↵ / Ctrl+↵</td><td>Save and close dialog</td></tr>
+            <tr><td class="help-key">Esc</td><td>Cancel and close dialog</td></tr>
+            <tr><td class="help-key">⌘K / Ctrl+K</td><td>Insert or edit a link (in formatted fields, with text selected)</td></tr>
+          </table>
+        </div>
+
+        <div class="help-section">
+          <div class="help-section-title">Formatted Fields</div>
+          <p>Used in most text fields. Supports Markdown-style syntax:</p>
+          <table class="help-table">
+            <tr><td class="help-key">**bold**</td><td>Bold text</td></tr>
+            <tr><td class="help-key">_italic_</td><td>Italic text</td></tr>
+            <tr><td class="help-key">* item</td><td>Bullet list item</td></tr>
+            <tr><td class="help-key">1) item</td><td>Numbered list item</td></tr>
+            <tr><td class="help-key">[label](url)</td><td>Link — or select text and press ⌘K / Ctrl+K</td></tr>
+          </table>
+        </div>
+
+        <div class="help-section">
+          <div class="help-section-title">Formatted Multi-Value Fields</div>
+          <p>Used in Background, History, Allies &amp; Affiliations. Supports all formatted syntax, plus:</p>
+          <table class="help-table">
+            <tr><td class="help-key">---</td><td>Three or more dashes on their own line — splits content into two columns</td></tr>
+          </table>
+        </div>
+
+        <div class="help-section">
+          <div class="help-section-title">Formula Fields</div>
+          <p>Used in numeric fields like Experience, Level, and coin amounts. Supports math and references to other fields:</p>
+          <table class="help-table">
+            <tr><td class="help-key">1 + 2 * 3</td><td>Arithmetic: +, −, *, /, and parentheses</td></tr>
+            <tr><td class="help-key">$bio.level</td><td>Reference a bio field by its formula name</td></tr>
+            <tr><td class="help-key">$stats.str_val</td><td>Reference a stats field</td></tr>
+            <tr><td class="help-key">$money.gp</td><td>Reference a money field</td></tr>
+            <tr><td class="help-key">{note here}</td><td>Inline comment — ignored during calculation</td></tr>
+          </table>
+          <p>To find a field's formula name, hover over its display. A tooltip shows the full reference (e.g. <code>$bio.level</code>).</p>
+        </div>
+
+        <div class="help-section">
+          <div class="help-section-title">Calculated Fields</div>
+          <p>Fields like stat modifiers, ability checks, and save rolls are derived automatically and cannot be edited directly. Click one to copy its value to the clipboard.</p>
+        </div>
+
+      </div>
+    </div>
+
   </section>
 
   <!-- Sidebar: save action and status feedback -->
@@ -455,7 +512,7 @@
       <div id="gear-dialog-btns">
         <div id="gear-dialog-hints">
           <span id="gear-dialog-hint" class="dialog-hint"></span>
-          <span id="gear-dialog-syntax-hint" class="dialog-hint"></span>
+          <span id="gear-dialog-field-type" class="dialog-hint"></span>
           <span id="gear-dialog-error" class="dialog-error"></span>
         </div>
         <button id="gear-dialog-delete-btn" class="hidden">Delete</button>
@@ -481,7 +538,7 @@
       <div id="level-log-dialog-btns">
         <div id="level-log-dialog-hints">
           <span id="level-log-dialog-hint" class="dialog-hint"></span>
-          <span id="level-log-dialog-syntax-hint" class="dialog-hint"></span>
+          <span class="dialog-hint">Type: formatted</span>
         </div>
         <button id="level-log-dialog-delete-btn" class="hidden">Delete</button>
         <button id="level-log-dialog-done-btn">Done</button>
@@ -496,7 +553,7 @@
       <div id="feat-dialog-btns">
         <div id="feat-dialog-hints">
           <span id="feat-dialog-hint" class="dialog-hint"></span>
-          <span id="feat-dialog-syntax-hint" class="dialog-hint"></span>
+          <span class="dialog-hint">Type: formatted</span>
         </div>
         <button id="feat-dialog-delete-btn" class="hidden">Delete</button>
         <button id="feat-dialog-done-btn">Done</button>
@@ -512,7 +569,7 @@
       <div id="note-dialog-btns">
         <div id="note-dialog-hints">
           <span id="note-dialog-hint" class="dialog-hint"></span>
-          <span id="note-dialog-syntax-hint" class="dialog-hint"></span>
+          <span class="dialog-hint">Type: formatted</span>
         </div>
         <button id="note-dialog-delete-btn" class="hidden">Delete</button>
         <button id="note-dialog-done-btn">Done</button>
@@ -528,7 +585,7 @@
       <div id="edit-dialog-btns">
         <div id="edit-dialog-hints">
           <span id="edit-dialog-hint" class="dialog-hint"></span>
-          <span id="edit-dialog-syntax-hint" class="dialog-hint"></span>
+          <span id="edit-dialog-field-type" class="dialog-hint"></span>
           <span id="edit-dialog-error" class="dialog-error"></span>
         </div>
         <button id="edit-dialog-done-btn">Done</button>

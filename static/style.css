@@ -1226,3 +1226,60 @@ select:focus {
   border-color: var(--secondary-font-color);
   outline: none;
 }
+
+/* ── Help tab ── */
+
+.help-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 680px;
+}
+
+.help-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.help-section-title {
+  font-family: var(--header-font);
+  font-size: var(--header-font-size);
+  font-weight: bold;
+  color: var(--primary-font-color);
+  border-bottom: 1px solid var(--sep-color);
+  padding-bottom: 0.25rem;
+}
+
+.help-section p {
+  color: var(--primary-font-color);
+  font-family: var(--main-font);
+  font-size: var(--main-font-size);
+  line-height: 1.5;
+}
+
+.help-section code {
+  font-family: monospace;
+  background: var(--card-bg);
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
+}
+
+.help-table {
+  border-collapse: collapse;
+}
+
+.help-table td {
+  padding: 0.25rem 0.75rem 0.25rem 0;
+  vertical-align: top;
+  font-family: var(--main-font);
+  font-size: var(--main-font-size);
+  color: var(--primary-font-color);
+}
+
+.help-key {
+  font-family: monospace;
+  white-space: nowrap;
+  color: var(--secondary-font-color);
+  font-weight: bold;
+}

@@ -6,7 +6,7 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).parent.parent.parent
 HTML_PATH = PROJECT_ROOT / "static" / "index.html"
 
-VALID_RENDER_MODES = {"formatted", "formula", "formatted-seps", "calculated"}
+VALID_RENDER_MODES = {"formatted", "formula", "formatted-multi-value", "calculated"}
 
 KNOWN_SIZING_KEYS = {
     "name_sizing_text",
@@ -94,7 +94,7 @@ _BIO_FIELDS: list[tuple[str, str, str, str | None]] = [
     ("ideals",             "ideals",             "formatted",      None),
     ("bonds",              "bonds",              "formatted",      None),
     ("traits",             "traits",             "formatted",      None),
-    ("background-history", "background_history", "formatted-seps", None),
+    ("background-history", "background_history", "formatted-multi-value", None),
 ]
 
 
@@ -157,7 +157,7 @@ def test_edit_dialog_structure() -> None:
     c = _parse()
     for eid in (
         "edit-dialog", "edit-dialog-box", "edit-dialog-hint",
-        "edit-dialog-syntax-hint", "edit-dialog-error", "edit-dialog-done-btn",
+        "edit-dialog-field-type", "edit-dialog-error", "edit-dialog-done-btn",
         "edit-dialog-textarea",
     ):
         assert eid in c.by_id, f"Missing #{eid}"
@@ -176,7 +176,7 @@ def test_feat_dialog_structure() -> None:
     c = _parse()
     for eid in (
         "feat-dialog", "feat-dialog-box", "feat-dialog-hint",
-        "feat-dialog-syntax-hint", "feat-dialog-done-btn", "feat-dialog-text",
+        "feat-dialog-done-btn", "feat-dialog-text",
     ):
         assert eid in c.by_id, f"Missing #{eid}"
     assert c.by_id["feat-dialog-text"].get("data-field-render") == "formatted"
@@ -186,7 +186,7 @@ def test_note_dialog_structure() -> None:
     c = _parse()
     for eid in (
         "note-dialog", "note-dialog-box", "note-dialog-hint",
-        "note-dialog-syntax-hint", "note-dialog-done-btn",
+        "note-dialog-done-btn",
         "note-dialog-tags", "note-dialog-text",
     ):
         assert eid in c.by_id, f"Missing #{eid}"
@@ -199,7 +199,7 @@ def test_gear_dialog_structure() -> None:
     c = _parse()
     for eid in (
         "gear-dialog", "gear-dialog-box", "gear-dialog-hint",
-        "gear-dialog-syntax-hint", "gear-dialog-error", "gear-dialog-done-btn",
+        "gear-dialog-field-type", "gear-dialog-error", "gear-dialog-done-btn",
         "gear-dialog-delete-btn", "gear-dialog-type", "gear-dialog-location",
         "gear-dialog-weight", "gear-dialog-description",
     ):
@@ -212,7 +212,7 @@ def test_level_log_dialog_structure() -> None:
     c = _parse()
     for eid in (
         "level-log-dialog", "level-log-dialog-box", "level-log-dialog-hint",
-        "level-log-dialog-syntax-hint", "level-log-dialog-done-btn",
+        "level-log-dialog-done-btn",
         "level-log-dialog-level", "level-log-dialog-class", "level-log-dialog-details",
     ):
         assert eid in c.by_id, f"Missing #{eid}"
@@ -313,3 +313,24 @@ def test_attrs_table_calc_fields() -> None:
             assert el.get("data-field-render") == "calculated", (
                 f"#{fid} should have data-field-render='calculated'"
             )
+
+
+# ── Help panel ────────────────────────────────────────────────────────────────
+
+def test_help_panel_exists() -> None:
+    c = _parse()
+    assert "panel-help" in c.by_id, "Missing #panel-help"
+
+
+def test_help_tab_button_exists() -> None:
+    c = _parse()
+    tab_btns = [el for el in c.elements if el.get("class") == "tab-btn" and el.get("data-tab") == "help"]
+    assert tab_btns, "Missing Help tab button (data-tab='help')"
+
+
+def test_no_syntax_hint_spans_in_dialogs() -> None:
+    c = _parse()
+    for did in ("edit", "feat", "note", "gear", "level-log"):
+        assert f"{did}-dialog-syntax-hint" not in c.by_id, (
+            f"Unexpected syntax-hint span #{did}-dialog-syntax-hint — syntax hints belong in the Help tab"
+        )
