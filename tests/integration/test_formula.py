@@ -57,11 +57,36 @@ def test_valid_gear_weight_cross_reference():
     assert validate_all_formulas(char) == []
 
 
+def test_valid_bio_level_formula():
+    assert validate_all_formulas(_char(bio={"level": "5 + 2"})) == []
+
+
+def test_valid_experience_references_level_formula_node():
+    char = _char(bio={"level": "7", "experience": "$bio.level * 1000"})
+    assert validate_all_formulas(char) == []
+
+
+def test_bio_level_self_reference_cycle():
+    errors = validate_all_formulas(_char(bio={"level": "$bio.level + 1"}))
+    assert any("cycle" in e.lower() for e in errors)
+
+
+def test_bio_level_and_experience_cycle():
+    char = _char(bio={"level": "$bio.experience + 1", "experience": "$bio.level * 1000"})
+    errors = validate_all_formulas(char)
+    assert any("cycle" in e.lower() for e in errors)
+
+
 # ── Syntax errors ──────────────────────────────────────────────────────────
 
 
 def test_invalid_syntax_letters():
     errors = validate_all_formulas(_char(bio={"experience": "abc"}))
+    assert any("syntax" in e for e in errors)
+
+
+def test_invalid_syntax_bio_level():
+    errors = validate_all_formulas(_char(bio={"level": "abc"}))
     assert any("syntax" in e for e in errors)
 
 
@@ -82,6 +107,17 @@ def test_invalid_syntax_gear_weight():
 def test_unknown_bio_reference():
     errors = validate_all_formulas(_char(bio={"experience": "$bio.nonexistent + 1"}))
     assert any("nonexistent" in e for e in errors)
+
+
+def test_non_formula_field_reference_in_bio():
+    errors = validate_all_formulas(_char(bio={"experience": "$bio.race + 1"}))
+    assert any("formula fields" in e for e in errors)
+
+
+def test_non_formula_field_reference_in_gear_weight():
+    gear = [{"gear_type": "General", "description": "X", "location": "bag", "weight": "$bio.race + 1"}]
+    errors = validate_all_formulas(_char(gear=gear))
+    assert any("formula fields" in e for e in errors)
 
 
 def test_unknown_section_reference():

@@ -186,6 +186,12 @@ function _initFormulaSystem() {
   }
 
   _recomputeAllFormulaNodes();
+
+  // Annotate formula node display spans so the CSS hover tooltip can show the reference.
+  for (const nodeId of _formulaNodeIds) {
+    const displayEl = _getFormulaNodeDisplay(nodeId);
+    if (displayEl) displayEl.dataset.formulaRef = nodeId;
+  }
 }
 
 // ── Edit dialog ────────────────────────────────────────────────────────────
@@ -214,7 +220,7 @@ function closeEditDialog() {
     if (_editDialogField.dataset.fieldRender === "formula") {
       const nodeId = _getNodeId(_editDialogField);
       if (nodeId) {
-        const err = validateFormula(newValue, _allFieldIds, nodeId, _formulaGraph);
+        const err = validateFormula(newValue, _formulaNodeIds, nodeId, _formulaGraph);
         if (err) {
           document.getElementById("edit-dialog-error").textContent = err;
           return;
@@ -854,7 +860,7 @@ function openGearDialog(index) {
 
 function closeGearDialog() {
   const weightRaw = document.getElementById("gear-dialog-weight").value;
-  const weightErr = validateFormula(weightRaw, _allFieldIds);
+  const weightErr = validateFormula(weightRaw, _formulaNodeIds);
   if (weightErr) {
     document.getElementById("gear-dialog-error").textContent = weightErr;
     return;

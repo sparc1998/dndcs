@@ -19,6 +19,7 @@ KNOWN_SIZING_KEYS = {
     "experience_sizing_text",
     "level_log_class_sizing_text",
     "std_num_sizing_text",
+    "money_sizing_text",
     "location_sizing_text",
     "gear_type_sizing_text",
 }
@@ -76,7 +77,7 @@ _BIO_FIELDS: list[tuple[str, str, str, str | None]] = [
     ("class",              "class",              "formatted",      "class_sizing_text"),
     ("subclass",           "subclass",           "formatted",      "subclass_sizing_text"),
     ("experience",         "experience",         "formula",        "experience_sizing_text"),
-    ("level",              "level",              "formatted",      "std_num_sizing_text"),
+    ("level",              "level",              "formula",        "std_num_sizing_text"),
     ("hd",                 "hd",                 "formatted",      "hd_sizing_text"),
     ("race",               "race",               "formatted",      "race_line_sizing_text"),
     ("background",         "background",         "formatted",      "race_line_sizing_text"),
@@ -143,8 +144,8 @@ def test_money_fields_have_correct_attributes() -> None:
         assert el is not None, f"Missing element #{fid}"
         assert el.get("data-field-key") == key, f"#{fid}: data-field-key should be {key!r}"
         assert el.get("data-field-render") == "formula", f"#{fid}: data-field-render should be 'formula'"
-        assert el.get("data-sizing-key") == "std_num_sizing_text", (
-            f"#{fid}: data-sizing-key should be 'std_num_sizing_text'"
+        assert el.get("data-sizing-key") == "money_sizing_text", (
+            f"#{fid}: data-sizing-key should be 'money_sizing_text'"
         )
         assert f"{fid}-display" in c.by_id, f"Missing display span #{fid}-display"
 

@@ -45,7 +45,7 @@ ALL_FIELD_IDS: frozenset[str] = frozenset(
 # KEEP IN SYNC: add any new field that has data-field-render="formula" in index.html here,
 # and also add it to the node_candidates list in validate_all_formulas() below.
 FORMULA_NODE_IDS: frozenset[str] = frozenset(
-    {"bio.experience"} | {f"money.{f}" for f in _MONEY_FIELDS}
+    {"bio.experience", "bio.level"} | {f"money.{f}" for f in _MONEY_FIELDS}
 )
 
 _REF_RE = re.compile(r"\$([a-z_]+)\.([a-z_]+)")
@@ -118,8 +118,9 @@ def validate_all_formulas(character: dict[str, Any]) -> list[str]:
     bio = character.get("bio") or {}
     money = character.get("money") or {}
 
-    # Validate formula nodes (bio.experience and money.*)
+    # Validate formula nodes (bio.level, bio.experience, and money.*)
     node_candidates: list[tuple[str, str, str]] = [
+        ("bio", "level", bio.get("level", "")),
         ("bio", "experience", bio.get("experience", "")),
     ] + [("money", f, money.get(f, "")) for f in ("pp", "gp", "ep", "sp", "cp")]
 
@@ -134,7 +135,9 @@ def validate_all_formulas(character: dict[str, Any]) -> list[str]:
             ref_id = f"{s}.{f2}"
             if ref_id not in ALL_FIELD_IDS:
                 errors.append(f"{node_id}: unknown field reference: ${s}.{f2}")
-            elif ref_id in FORMULA_NODE_IDS:
+            elif ref_id not in FORMULA_NODE_IDS:
+                errors.append(f"{node_id}: formulas can only reference formula fields: ${s}.{f2}")
+            else:
                 edges.append((node_id, ref_id))
 
     # Validate gear item weights (syntax and reference existence only; no cycle check)
@@ -149,6 +152,10 @@ def validate_all_formulas(character: dict[str, Any]) -> list[str]:
             ref_id = f"{s}.{f2}"
             if ref_id not in ALL_FIELD_IDS:
                 errors.append(f"gear[{i}].weight: unknown field reference: ${s}.{f2}")
+            elif ref_id not in FORMULA_NODE_IDS:
+                errors.append(
+                    f"gear[{i}].weight: formulas can only reference formula fields: ${s}.{f2}"
+                )
 
     if errors:
         return errors

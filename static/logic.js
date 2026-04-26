@@ -24,10 +24,11 @@ export function parseFormulaRefs(raw) {
 }
 
 // Validates a formula string. Returns null if valid, or an error message string.
-// knownFieldIds: Set<string> of valid "section.field" reference targets.
+// formulaNodeIds: Set<string> of valid formula-field reference targets ("section.field").
+//   Only formula fields may be referenced; plain text fields are not valid targets.
 // formulaNodeId: optional node ID being validated (for cycle detection).
 // graph: optional DependencyGraph instance (for cycle detection).
-export function validateFormula(raw, knownFieldIds, formulaNodeId = null, graph = null) {
+export function validateFormula(raw, formulaNodeIds, formulaNodeId = null, graph = null) {
   if (!raw.trim()) return null;
 
   const refs = parseFormulaRefs(raw);
@@ -52,8 +53,8 @@ export function validateFormula(raw, knownFieldIds, formulaNodeId = null, graph 
 
   for (const { section, field } of refs) {
     const id = `${section}.${field}`;
-    if (!knownFieldIds.has(id)) {
-      return `Unknown field reference: $${section}.${field}`;
+    if (!formulaNodeIds.has(id)) {
+      return `Only formula fields can be referenced: $${section}.${field}`;
     }
   }
 

@@ -510,6 +510,29 @@ textarea:focus {
   color: var(--primary-font-color);
 }
 
+/* Formula reference tooltip: shown on hover for formula-backed display spans.
+   data-formula-ref is set by _initFormulaSystem() in app.js. */
+.field-display[data-formula-ref] {
+  position: relative;
+}
+
+.field-display[data-formula-ref]:hover::after {
+  content: "Formula reference: $" attr(data-formula-ref);
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  background: var(--card-bg);
+  color: var(--primary-font-color);
+  border: 1px solid var(--primary-font-color);
+  border-radius: 4px;
+  padding: 0.2rem 0.5rem;
+  font-family: var(--main-font);
+  font-size: var(--main-font-size);
+  white-space: nowrap;
+  z-index: 10;
+  pointer-events: none;
+}
+
 /* ── Background / History / Allies & Affiliations ── */
 
 .bha-section {

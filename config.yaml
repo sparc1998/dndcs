@@ -6,7 +6,7 @@
 # Background colors
 main_bg: "#d5f0d9"
 sidebar_bg: "white"
-# card_bg is used for note cards, field display spans, and gear section headers.
+# card_bg is used for note cards, field display spans, gear section headers, and formula reference tooltips.
 card_bg: "#BBE4C0"
 card_hover_bg: "#A6D2AB"
 tag_bg: "#CAEACE"
@@ -60,8 +60,10 @@ physical_measureable_sizing_text: "monstrosity"
 physical_description_sizing_text: "Auburn with streaks and bangs"
 # Used for class field in the level log dialog and the Class column header in the level log table.
 level_log_class_sizing_text: "FighterFighter"
-# Used for the bio header Level field, numeric level display in the level log dialog and table, money fields (PP/GP/EP/SP/CP), and gear weight fields.
+# Used for the bio header Level field, numeric level display in the level log dialog and table, and gear weight fields.
 std_num_sizing_text: "999"
+# Used for money fields (PP/GP/EP/SP/CP).
+money_sizing_text: "9999999"
 # Used for gear item location fields and the gear table Location column.
 location_sizing_text: "backpack    "
 # Used for the gear dialog type selector. Should match the longest option.

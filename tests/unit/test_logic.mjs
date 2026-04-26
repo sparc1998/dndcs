@@ -119,6 +119,7 @@ test("renderFormula with multiple references", () => {
 
 // ── validateFormula ───────────────────────────────────────────────────────
 
+// Only formula fields — mirrors _formulaNodeIds in app.js.
 const KNOWN = new Set([
   "bio.level", "bio.experience", "money.gp", "money.ep", "money.pp",
 ]);
@@ -142,6 +143,12 @@ test("validateFormula returns error for bad syntax", () => {
 test("validateFormula returns error for unknown ref", () => {
   const err = validateFormula("$bio.nonexistent + 1", KNOWN);
   assert.ok(err?.includes("nonexistent"), `Expected ref name in error, got: ${err}`);
+});
+
+test("validateFormula returns error for non-formula field reference", () => {
+  const err = validateFormula("$bio.race + 1", KNOWN);
+  assert.ok(err !== null, "Expected error for non-formula field reference");
+  assert.ok(err?.includes("bio.race"), `Expected field name in error, got: ${err}`);
 });
 
 test("validateFormula returns error for self-reference", () => {
