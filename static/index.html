@@ -190,6 +190,86 @@
               <input type="hidden" id="stats-save-bonus" class="hidden" placeholder="0" data-field-render="formula" data-field-key="save_bonus" data-sizing-key="std_num_sizing_text" />
             </div>
           </div>
+          <table class="gear-table attrs-table">
+            <thead>
+              <tr>
+                <th>Attribute</th>
+                <th>Val</th>
+                <th data-sizing-key="std_num_sizing_text">Mod</th>
+                <th>Save Prof</th>
+                <th data-sizing-key="roll_formula_sizing_text">Ability Check</th>
+                <th data-sizing-key="roll_formula_sizing_text">Save</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>str</td>
+                <td>
+                  <span id="stats-str-val-display" class="field-display"></span>
+                  <input type="hidden" id="stats-str-val" class="hidden" placeholder="10" data-field-render="formula" data-field-key="str_val" data-sizing-key="std_num_sizing_text" />
+                </td>
+                <td><span id="stats-str-mod" class="field-display" data-field-render="calculated" data-sizing-key="std_num_sizing_text"></span></td>
+                <td><input type="checkbox" id="stats-str-save-prof" data-field-key="str_save_prof" /></td>
+                <td><span id="stats-str-ability-check" class="field-display" data-field-render="calculated" data-sizing-key="roll_formula_sizing_text"></span></td>
+                <td><span id="stats-str-save" class="field-display" data-field-render="calculated" data-sizing-key="roll_formula_sizing_text"></span></td>
+              </tr>
+              <tr>
+                <td>dex</td>
+                <td>
+                  <span id="stats-dex-val-display" class="field-display"></span>
+                  <input type="hidden" id="stats-dex-val" class="hidden" placeholder="10" data-field-render="formula" data-field-key="dex_val" data-sizing-key="std_num_sizing_text" />
+                </td>
+                <td><span id="stats-dex-mod" class="field-display" data-field-render="calculated" data-sizing-key="std_num_sizing_text"></span></td>
+                <td><input type="checkbox" id="stats-dex-save-prof" data-field-key="dex_save_prof" /></td>
+                <td><span id="stats-dex-ability-check" class="field-display" data-field-render="calculated" data-sizing-key="roll_formula_sizing_text"></span></td>
+                <td><span id="stats-dex-save" class="field-display" data-field-render="calculated" data-sizing-key="roll_formula_sizing_text"></span></td>
+              </tr>
+              <tr>
+                <td>con</td>
+                <td>
+                  <span id="stats-con-val-display" class="field-display"></span>
+                  <input type="hidden" id="stats-con-val" class="hidden" placeholder="10" data-field-render="formula" data-field-key="con_val" data-sizing-key="std_num_sizing_text" />
+                </td>
+                <td><span id="stats-con-mod" class="field-display" data-field-render="calculated" data-sizing-key="std_num_sizing_text"></span></td>
+                <td><input type="checkbox" id="stats-con-save-prof" data-field-key="con_save_prof" /></td>
+                <td><span id="stats-con-ability-check" class="field-display" data-field-render="calculated" data-sizing-key="roll_formula_sizing_text"></span></td>
+                <td><span id="stats-con-save" class="field-display" data-field-render="calculated" data-sizing-key="roll_formula_sizing_text"></span></td>
+              </tr>
+              <tr>
+                <td>int</td>
+                <td>
+                  <span id="stats-int-val-display" class="field-display"></span>
+                  <input type="hidden" id="stats-int-val" class="hidden" placeholder="10" data-field-render="formula" data-field-key="int_val" data-sizing-key="std_num_sizing_text" />
+                </td>
+                <td><span id="stats-int-mod" class="field-display" data-field-render="calculated" data-sizing-key="std_num_sizing_text"></span></td>
+                <td><input type="checkbox" id="stats-int-save-prof" data-field-key="int_save_prof" /></td>
+                <td><span id="stats-int-ability-check" class="field-display" data-field-render="calculated" data-sizing-key="roll_formula_sizing_text"></span></td>
+                <td><span id="stats-int-save" class="field-display" data-field-render="calculated" data-sizing-key="roll_formula_sizing_text"></span></td>
+              </tr>
+              <tr>
+                <td>wis</td>
+                <td>
+                  <span id="stats-wis-val-display" class="field-display"></span>
+                  <input type="hidden" id="stats-wis-val" class="hidden" placeholder="10" data-field-render="formula" data-field-key="wis_val" data-sizing-key="std_num_sizing_text" />
+                </td>
+                <td><span id="stats-wis-mod" class="field-display" data-field-render="calculated" data-sizing-key="std_num_sizing_text"></span></td>
+                <td><input type="checkbox" id="stats-wis-save-prof" data-field-key="wis_save_prof" /></td>
+                <td><span id="stats-wis-ability-check" class="field-display" data-field-render="calculated" data-sizing-key="roll_formula_sizing_text"></span></td>
+                <td><span id="stats-wis-save" class="field-display" data-field-render="calculated" data-sizing-key="roll_formula_sizing_text"></span></td>
+              </tr>
+              <tr>
+                <td>cha</td>
+                <td>
+                  <span id="stats-cha-val-display" class="field-display"></span>
+                  <input type="hidden" id="stats-cha-val" class="hidden" placeholder="10" data-field-render="formula" data-field-key="cha_val" data-sizing-key="std_num_sizing_text" />
+                </td>
+                <td><span id="stats-cha-mod" class="field-display" data-field-render="calculated" data-sizing-key="std_num_sizing_text"></span></td>
+                <td><input type="checkbox" id="stats-cha-save-prof" data-field-key="cha_save_prof" /></td>
+                <td><span id="stats-cha-ability-check" class="field-display" data-field-render="calculated" data-sizing-key="roll_formula_sizing_text"></span></td>
+                <td><span id="stats-cha-save" class="field-display" data-field-render="calculated" data-sizing-key="roll_formula_sizing_text"></span></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 

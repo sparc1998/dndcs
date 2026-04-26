@@ -1094,6 +1094,42 @@ textarea:focus {
   flex-shrink: 0;
 }
 
+/* ── Attributes table (in Stats & Actions tab) ── */
+
+.attrs-table {
+  table-layout: auto;
+  margin-top: 0.5rem;
+  width: auto;
+  flex: none;
+}
+
+.attrs-table tbody tr {
+  cursor: default;
+}
+
+.attrs-table tbody tr:hover {
+  background: transparent;
+}
+
+/* Clipboard copy toast: small popup that appears above a clicked calc field. */
+.copy-toast {
+  position: fixed;
+  background: var(--card-bg);
+  border: 1px solid var(--primary-font-color);
+  border-radius: 4px;
+  padding: 0.2rem 0.5rem;
+  font-family: var(--main-font);
+  font-size: var(--main-font-size);
+  color: var(--secondary-font-color);
+  pointer-events: none;
+  z-index: 200;
+  transition: opacity 0.4s ease;
+}
+
+.copy-toast.fade-out {
+  opacity: 0;
+}
+
 /* ── Gear dialog ── */
 
 #gear-dialog {

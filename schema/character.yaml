@@ -130,6 +130,30 @@ properties:
         type: boolean
       save_bonus:
         type: string
+      str_val:
+        type: string
+      dex_val:
+        type: string
+      con_val:
+        type: string
+      int_val:
+        type: string
+      wis_val:
+        type: string
+      cha_val:
+        type: string
+      str_save_prof:
+        type: boolean
+      dex_save_prof:
+        type: boolean
+      con_save_prof:
+        type: boolean
+      int_save_prof:
+        type: boolean
+      wis_save_prof:
+        type: boolean
+      cha_save_prof:
+        type: boolean
   campaign_notes:
     type: array
     items:

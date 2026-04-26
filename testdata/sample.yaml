@@ -52,6 +52,18 @@ stats:
   proficiency_bonus: '3'
   jack_of_all_trades: true
   save_bonus: $stats.proficiency_bonus + 2
+  str_val: '18'
+  str_save_prof: true
+  dex_val: '12'
+  dex_save_prof: false
+  con_val: 18 + {giant bonus} 3
+  con_save_prof: true
+  int_val: '10'
+  int_save_prof: false
+  wis_val: '12'
+  wis_save_prof: false
+  cha_val: '10'
+  cha_save_prof: false
 feats_features:
 - description: |-
     **Second Wind** _(Fighter 1)_

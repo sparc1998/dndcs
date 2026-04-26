@@ -37,7 +37,18 @@ _BIO_FIELDS: frozenset[str] = frozenset(
 _MONEY_FIELDS: frozenset[str] = frozenset({"pp", "gp", "ep", "sp", "cp"})
 
 # Stats fields that are formula fields ($stats.<field>).
-_STATS_FORMULA_FIELDS: frozenset[str] = frozenset({"proficiency_bonus", "save_bonus"})
+_STATS_FORMULA_FIELDS: frozenset[str] = frozenset(
+    {
+        "proficiency_bonus",
+        "save_bonus",
+        "str_val",
+        "dex_val",
+        "con_val",
+        "int_val",
+        "wis_val",
+        "cha_val",
+    }
+)
 
 # Full set of valid reference targets ("section.field").
 ALL_FIELD_IDS: frozenset[str] = frozenset(

@@ -6,7 +6,7 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).parent.parent.parent
 HTML_PATH = PROJECT_ROOT / "static" / "index.html"
 
-VALID_RENDER_MODES = {"formatted", "formula", "formatted-seps"}
+VALID_RENDER_MODES = {"formatted", "formula", "formatted-seps", "calculated"}
 
 KNOWN_SIZING_KEYS = {
     "name_sizing_text",
@@ -22,6 +22,7 @@ KNOWN_SIZING_KEYS = {
     "money_sizing_text",
     "location_sizing_text",
     "gear_type_sizing_text",
+    "roll_formula_sizing_text",
 }
 
 
@@ -273,3 +274,42 @@ def test_level_log_table_headers_have_sizing_keys() -> None:
     class_th = c.by_id.get("level-log-class-th")
     assert class_th is not None, "Missing #level-log-class-th"
     assert class_th.get("data-sizing-key") == "level_log_class_sizing_text"
+
+
+# ── Attribute table ────────────────────────────────────────────────────────
+
+_ATTR_NAMES = ["str", "dex", "con", "int", "wis", "cha"]
+
+
+def test_attrs_table_val_fields() -> None:
+    c = _parse()
+    for attr in _ATTR_NAMES:
+        fid = f"stats-{attr}-val"
+        el = c.by_id.get(fid)
+        assert el is not None, f"Missing #{fid}"
+        assert el.get("data-field-render") == "formula", f"#{fid} should have data-field-render='formula'"
+        assert el.get("data-field-key") == f"{attr}_val", f"#{fid} bad data-field-key"
+        assert el.get("data-sizing-key") == "std_num_sizing_text", f"#{fid} bad data-sizing-key"
+        assert f"{fid}-display" in c.by_id, f"Missing #{fid}-display"
+
+
+def test_attrs_table_save_prof_checkboxes() -> None:
+    c = _parse()
+    for attr in _ATTR_NAMES:
+        fid = f"stats-{attr}-save-prof"
+        el = c.by_id.get(fid)
+        assert el is not None, f"Missing #{fid}"
+        assert el.get("type") == "checkbox", f"#{fid} should be type='checkbox'"
+        assert el.get("data-field-key") == f"{attr}_save_prof", f"#{fid} bad data-field-key"
+
+
+def test_attrs_table_calc_fields() -> None:
+    c = _parse()
+    for attr in _ATTR_NAMES:
+        for suffix in ["mod", "ability-check", "save"]:
+            fid = f"stats-{attr}-{suffix}"
+            el = c.by_id.get(fid)
+            assert el is not None, f"Missing #{fid}"
+            assert el.get("data-field-render") == "calculated", (
+                f"#{fid} should have data-field-render='calculated'"
+            )

@@ -85,3 +85,7 @@ uv run check-jsonschema --schemafile schema/character.yaml <file.yaml>
 - Undo uncommitted changes in a file: `git checkout -- <filename>`
 
 ## TODO
+
+* Make experience and money sizing text use the same sizing key: long_num_sizing_text.
+* Move hints to help page.
+* Add temporary values for attributes.

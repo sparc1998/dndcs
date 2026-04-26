@@ -148,6 +148,51 @@ function _recomputeAllFormulaNodes() {
   for (const nodeId of _formulaNodeIds) {
     if (!order.includes(nodeId)) _recomputeFormulaNode(nodeId);
   }
+  _recomputeCalcFields();
+}
+
+// ── Calculated attribute fields ────────────────────────────────────────────
+
+const _ATTR_KEYS = ["str", "dex", "con", "int", "wis", "cha"];
+
+// Builds a roll formula string for use in virtual tabletop dice rollers.
+// extraDice: string[] of additional dice (e.g. ["1d6", "1d8"])
+// bonuses: number[] summed into a single signed modifier
+// advStatus: "adv" → 2d20kh1, "dis" → 2d20kl1, "none" → 1d20
+function D20Roll(extraDice, bonuses, advStatus) {
+  const d20 = advStatus === "adv" ? "2d20kh1" : advStatus === "dis" ? "2d20kl1" : "1d20";
+  const total = bonuses.reduce((a, b) => a + b, 0);
+  const parts = [d20, ...extraDice.map(d => `+ ${d}`)];
+  parts.push(total >= 0 ? `+ ${total}` : `- ${Math.abs(total)}`);
+  return `/r ${parts.join(" ")}`;
+}
+
+// Recomputes the derived Mod, Ability Check, and Save display spans for each attribute.
+// Called after every formula recomputation and on save-prof checkbox change.
+function _recomputeCalcFields() {
+  const profBonus = parseFloat(_computedValues["stats.proficiency_bonus"] ?? "") || 0;
+
+  for (const attr of _ATTR_KEYS) {
+    const valStr = _computedValues[`stats.${attr}_val`] ?? "";
+    const modEl = document.getElementById(`stats-${attr}-mod`);
+    const acEl = document.getElementById(`stats-${attr}-ability-check`);
+    const saveEl = document.getElementById(`stats-${attr}-save`);
+
+    if (!valStr) {
+      if (modEl) modEl.textContent = "";
+      if (acEl) acEl.textContent = "";
+      if (saveEl) saveEl.textContent = "";
+      continue;
+    }
+
+    const mod = Math.floor((parseFloat(valStr) - 10) / 2);
+    const saveProfCb = document.getElementById(`stats-${attr}-save-prof`);
+    const saveBonus = saveProfCb?.checked ? profBonus : 0;
+
+    if (modEl) modEl.textContent = String(mod);
+    if (acEl) acEl.textContent = D20Roll([], [mod], "none");
+    if (saveEl) saveEl.textContent = D20Roll([], [mod, saveBonus], "none");
+  }
 }
 
 // Updates the formula graph edges for nodeId based on its new raw formula,
@@ -1073,9 +1118,29 @@ document.querySelectorAll("#panel-stats [data-field-render='formula'][data-field
   });
 });
 
-// Autosave stats checkboxes on change.
+// Autosave stats checkboxes on change; also recompute calc fields for save-prof changes.
 document.querySelectorAll("#panel-stats input[type='checkbox'][data-field-key]").forEach(cb => {
   cb.addEventListener("change", autosave);
+  cb.addEventListener("change", _recomputeCalcFields);
+});
+
+// Copy calculated field text to clipboard on click; show a brief "Copied!" toast.
+document.querySelectorAll("#panel-stats [data-field-render='calculated']").forEach(span => {
+  span.addEventListener("click", () => {
+    const text = span.textContent.trim();
+    if (!text) return;
+    navigator.clipboard.writeText(text).then(() => {
+      const rect = span.getBoundingClientRect();
+      const toast = document.createElement("div");
+      toast.className = "copy-toast";
+      toast.textContent = "Copied!";
+      toast.style.left = `${rect.left}px`;
+      toast.style.top = `${rect.top > 40 ? rect.top - 28 : rect.bottom + 4}px`;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.classList.add("fade-out"), 800);
+      setTimeout(() => toast.remove(), 1300);
+    });
+  });
 });
 
 // Collapse/expand gear type sections.

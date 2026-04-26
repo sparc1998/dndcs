@@ -66,6 +66,7 @@ _DEFAULTS: dict[str, Any] = {
     "money_sizing_text": "999",
     "location_sizing_text": "backpack",
     "gear_type_sizing_text": "Campaign Specific",
+    "roll_formula_sizing_text": "/r 2d20kh1 + 10",
 }
 
 
