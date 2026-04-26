@@ -168,6 +168,7 @@ function D20Roll(extraDice, bonuses, advStatus) {
 // Called after every formula recomputation and on save-prof checkbox change.
 function _recomputeCalcFields() {
   const profBonus = parseFloat(_computedValues["stats.proficiency_bonus"] ?? "") || 0;
+  const saveBonus = parseFloat(_computedValues["stats.save_bonus"] ?? "") || 0;
 
   for (const attr of _ATTR_KEYS) {
     const valStr = _computedValues[`stats.${attr}`] ?? "";
@@ -184,11 +185,11 @@ function _recomputeCalcFields() {
 
     const mod = Math.floor((parseFloat(valStr) - 10) / 2);
     const saveProfCb = document.getElementById(`stats-${attr}-save-prof`);
-    const saveBonus = saveProfCb?.checked ? profBonus : 0;
+    const profBonusSave = saveProfCb?.checked ? profBonus : 0;
 
     if (modEl) modEl.textContent = String(mod);
     if (acEl) acEl.textContent = D20Roll([], [mod], "none");
-    if (saveEl) saveEl.textContent = D20Roll([], [mod, saveBonus], "none");
+    if (saveEl) saveEl.textContent = D20Roll([], [mod, profBonusSave, saveBonus], "none");
   }
 }
 
