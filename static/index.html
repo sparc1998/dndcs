@@ -13,6 +13,7 @@
   <section id="main">
     <nav id="tabs">
       <button class="tab-btn active" data-tab="bio">Bio</button>
+      <button class="tab-btn" data-tab="stats">Stats &amp; Actions</button>
       <button class="tab-btn" data-tab="feats">Feats &amp; Features</button>
       <button class="tab-btn" data-tab="gear">Gear</button>
       <button class="tab-btn" data-tab="campaign">Campaign Notes</button>
@@ -159,6 +160,39 @@
       </div>
 
       </div>
+    </div>
+
+    <!-- Stats & Actions panel: collapsible stat sections -->
+    <div id="panel-stats" class="panel">
+
+      <!-- Toolbar: Collapse All button -->
+      <div id="stats-toolbar">
+        <button class="btn" id="toggle-all-stats-btn">Collapse All</button>
+      </div>
+
+      <!-- Stats -->
+      <div class="gear-section" id="stats-section-stats">
+        <button class="gear-section-toggle"><span class="toggle-icon"></span>Stats</button>
+        <div class="gear-section-body">
+          <div class="stats-row">
+            <div class="field" style="flex-direction: row; align-items: center;">
+              <label for="stats-proficiency-bonus">Proficiency Bonus</label>
+              <span id="stats-proficiency-bonus-display" class="field-display"></span>
+              <input type="hidden" id="stats-proficiency-bonus" class="hidden" placeholder="0" data-field-render="formula" data-field-key="proficiency_bonus" data-sizing-key="std_num_sizing_text" />
+            </div>
+            <div class="field" style="flex-direction: row; align-items: center;">
+              <label for="stats-jack-of-all-trades">Jack of All Trades</label>
+              <input type="checkbox" id="stats-jack-of-all-trades" data-field-key="jack_of_all_trades" />
+            </div>
+            <div class="field" style="flex-direction: row; align-items: center;">
+              <label for="stats-save-bonus">Save Bonus</label>
+              <span id="stats-save-bonus-display" class="field-display"></span>
+              <input type="hidden" id="stats-save-bonus" class="hidden" placeholder="0" data-field-render="formula" data-field-key="save_bonus" data-sizing-key="std_num_sizing_text" />
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <!-- Feats & Features panel: add button + two-column card layout -->

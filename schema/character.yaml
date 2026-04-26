@@ -120,6 +120,16 @@ properties:
       properties:
         description:
           type: string
+  stats:
+    type: object
+    additionalProperties: false
+    properties:
+      proficiency_bonus:
+        type: string
+      jack_of_all_trades:
+        type: boolean
+      save_bonus:
+        type: string
   campaign_notes:
     type: array
     items:

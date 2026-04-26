@@ -18,7 +18,7 @@ def test_bio_tab_is_active_on_load(page: Page, base_url: str) -> None:
 
 def test_all_tabs_present(page: Page, base_url: str) -> None:
     page.goto(base_url)
-    for label in ("Bio", "Feats & Features", "Gear", "Campaign Notes", "Level Log"):
+    for label in ("Bio", "Stats & Actions", "Feats & Features", "Gear", "Campaign Notes", "Level Log"):
         expect(page.locator(f".tab-btn", has_text=label)).to_be_visible()
 
 
@@ -181,8 +181,8 @@ def test_gear_collapse_all(page: Page, base_url: str) -> None:
 
     page.locator("#toggle-all-gear-btn").click()
     expect(page.locator("#toggle-all-gear-btn")).to_have_text("Expand All")
-    # All sections should be collapsed
-    for section in page.locator(".gear-section").all():
+    # All gear sections should be collapsed
+    for section in page.locator("#panel-gear .gear-section").all():
         expect(section).to_have_class(re.compile(r"\bcollapsed\b"))
 
     page.locator("#toggle-all-gear-btn").click()

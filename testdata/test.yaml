@@ -193,6 +193,10 @@ gear:
   gear_type: Campaign Specific
   location: saddlebag
   weight: '0'
+stats:
+  proficiency_bonus: '3'
+  jack_of_all_trades: false
+  save_bonus: $stats.proficiency_bonus + 2
 campaign_notes:
 - tags:
   - session-1

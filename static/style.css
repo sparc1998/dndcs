@@ -938,6 +938,29 @@ textarea:focus {
   padding: 0.4rem 0.9rem;
 }
 
+/* ── Stats & Actions tab ── */
+
+#stats-toolbar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+#stats-toolbar .btn {
+  width: auto;
+}
+
+.stats-row {
+  display: flex;
+  flex-direction: row;
+  gap: 1.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 0.5rem 0.5rem;
+}
+
 /* ── Gear tab ── */
 
 #gear-toolbar {

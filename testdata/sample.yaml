@@ -48,6 +48,10 @@ money:
   ep: '0'
   sp: '14'
   cp: '6'
+stats:
+  proficiency_bonus: '3'
+  jack_of_all_trades: true
+  save_bonus: $stats.proficiency_bonus + 2
 feats_features:
 - description: |-
     **Second Wind** _(Fighter 1)_

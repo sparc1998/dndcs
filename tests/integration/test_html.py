@@ -223,6 +223,46 @@ def test_level_log_dialog_structure() -> None:
     assert details.get("data-field-key") == "details"
 
 
+# ── Stats fields ──────────────────────────────────────────────────────────
+
+_STATS_FORMULA_FIELDS: list[tuple[str, str, str | None]] = [
+    ("stats-proficiency-bonus", "proficiency_bonus", "std_num_sizing_text"),
+    ("stats-save-bonus",        "save_bonus",        "std_num_sizing_text"),
+]
+
+
+def test_stats_formula_fields_have_correct_attributes() -> None:
+    c = _parse()
+    for fid, key, sizing in _STATS_FORMULA_FIELDS:
+        el = c.by_id.get(fid)
+        assert el is not None, f"Missing element #{fid}"
+        assert el.get("data-field-key") == key, (
+            f"#{fid}: data-field-key should be {key!r}, got {el.get('data-field-key')!r}"
+        )
+        assert el.get("data-field-render") == "formula", (
+            f"#{fid}: data-field-render should be 'formula', got {el.get('data-field-render')!r}"
+        )
+        if sizing is not None:
+            assert el.get("data-sizing-key") == sizing, (
+                f"#{fid}: data-sizing-key should be {sizing!r}, got {el.get('data-sizing-key')!r}"
+            )
+
+
+def test_stats_formula_fields_have_display_spans() -> None:
+    c = _parse()
+    for fid, *_ in _STATS_FORMULA_FIELDS:
+        assert f"{fid}-display" in c.by_id, f"Missing display span #{fid}-display"
+
+
+def test_stats_jack_of_all_trades_is_checkbox() -> None:
+    c = _parse()
+    el = c.by_id.get("stats-jack-of-all-trades")
+    assert el is not None, "Missing element #stats-jack-of-all-trades"
+    assert el.get("_tag") == "input", "stats-jack-of-all-trades should be an input element"
+    assert el.get("type") == "checkbox", "stats-jack-of-all-trades should be type='checkbox'"
+    assert el.get("data-field-key") == "jack_of_all_trades"
+
+
 # ── Level log table header sizing ──────────────────────────────────────────
 
 def test_level_log_table_headers_have_sizing_keys() -> None:

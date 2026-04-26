@@ -80,9 +80,14 @@ When adding a new bio field, update all of the following:
 
 A formula field is any field with `data-field-render="formula"` in `index.html`. The JS side discovers formula nodes from the DOM automatically, but **`lib/formula.py` hardcodes the list** because it runs offline at startup with no DOM access. When adding a new formula field, update all of the following in addition to the normal bio-field steps above:
 
-1. **`lib/formula.py` `FORMULA_NODE_IDS`** — add `"section.fieldname"` to this frozenset.
-2. **`lib/formula.py` `validate_all_formulas()`** — add the field to the `node_candidates` list so it is validated at startup.
-3. **Tests** — add or update tests in `tests/integration/test_formula.py` to cover the new formula field.
+1. **`lib/formula.py` `FORMULA_NODE_IDS`** — add `"section.fieldname"` to this frozenset (or extend `_STATS_FORMULA_FIELDS` for stats fields).
+2. **`lib/formula.py` `ALL_FIELD_IDS`** — ensure the section's fields are included (stats fields are covered via `_STATS_FORMULA_FIELDS`).
+3. **`lib/formula.py` `validate_all_formulas()`** — add the field to the `node_candidates` list so it is validated at startup.
+4. **Tests** — add or update tests in `tests/integration/test_formula.py` to cover the new formula field.
+
+### Stats & Actions tab
+
+The Stats & Actions panel (`#panel-stats`) uses collapsible sections identical in structure to the gear panel sections (`.gear-section` / `.gear-section-toggle` / `.gear-section-body`). The toggle-all button is `#toggle-all-stats-btn`. Formula fields in stats use the `stats` section namespace (`$stats.<field>`) and are wired into the formula dependency graph alongside bio and money fields. Stats fields are collected/populated via `populateFields`/`collectFields` extended to handle checkboxes (`el.type === "checkbox"` uses `.checked` instead of `.value`).
 
 ### Data-attributes
 

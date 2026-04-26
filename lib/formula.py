@@ -36,16 +36,23 @@ _BIO_FIELDS: frozenset[str] = frozenset(
 # All money fields that can be referenced by a formula ($money.<field>).
 _MONEY_FIELDS: frozenset[str] = frozenset({"pp", "gp", "ep", "sp", "cp"})
 
+# Stats fields that are formula fields ($stats.<field>).
+_STATS_FORMULA_FIELDS: frozenset[str] = frozenset({"proficiency_bonus", "save_bonus"})
+
 # Full set of valid reference targets ("section.field").
 ALL_FIELD_IDS: frozenset[str] = frozenset(
-    {f"bio.{f}" for f in _BIO_FIELDS} | {f"money.{f}" for f in _MONEY_FIELDS}
+    {f"bio.{f}" for f in _BIO_FIELDS}
+    | {f"money.{f}" for f in _MONEY_FIELDS}
+    | {f"stats.{f}" for f in _STATS_FORMULA_FIELDS}
 )
 
 # Formula fields that participate in the dependency graph (can be referenced by other formulas).
 # KEEP IN SYNC: add any new field that has data-field-render="formula" in index.html here,
 # and also add it to the node_candidates list in validate_all_formulas() below.
 FORMULA_NODE_IDS: frozenset[str] = frozenset(
-    {"bio.experience", "bio.level"} | {f"money.{f}" for f in _MONEY_FIELDS}
+    {"bio.experience", "bio.level"}
+    | {f"money.{f}" for f in _MONEY_FIELDS}
+    | {f"stats.{f}" for f in _STATS_FORMULA_FIELDS}
 )
 
 _REF_RE = re.compile(r"\$([a-z_]+)\.([a-z_]+)")
@@ -117,12 +124,17 @@ def validate_all_formulas(character: dict[str, Any]) -> list[str]:
 
     bio = character.get("bio") or {}
     money = character.get("money") or {}
+    stats = character.get("stats") or {}
 
-    # Validate formula nodes (bio.level, bio.experience, and money.*)
-    node_candidates: list[tuple[str, str, str]] = [
-        ("bio", "level", bio.get("level", "")),
-        ("bio", "experience", bio.get("experience", "")),
-    ] + [("money", f, money.get(f, "")) for f in ("pp", "gp", "ep", "sp", "cp")]
+    # Validate formula nodes (bio.level, bio.experience, money.*, and stats formula fields)
+    node_candidates: list[tuple[str, str, str]] = (
+        [
+            ("bio", "level", bio.get("level", "")),
+            ("bio", "experience", bio.get("experience", "")),
+        ]
+        + [("money", f, money.get(f, "")) for f in ("pp", "gp", "ep", "sp", "cp")]
+        + [("stats", f, stats.get(f, "")) for f in sorted(_STATS_FORMULA_FIELDS)]
+    )
 
     for section, field, raw in node_candidates:
         if not raw:

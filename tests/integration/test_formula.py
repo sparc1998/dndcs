@@ -3,11 +3,12 @@
 from lib.formula import validate_all_formulas
 
 
-def _char(bio=None, money=None, gear=None):
+def _char(bio=None, money=None, gear=None, stats=None):
     return {
         "bio": bio or {},
         "money": money or {},
         "gear": gear or [],
+        "stats": stats or {},
     }
 
 
@@ -154,6 +155,40 @@ def test_indirect_cycle_three_nodes():
 def test_no_cycle_linear_chain():
     char = _char(money={"pp": "10", "gp": "$money.pp + 5", "ep": "$money.gp + 3"})
     assert validate_all_formulas(char) == []
+
+
+# ── Stats formula fields ───────────────────────────────────────────────────
+
+
+def test_valid_stats_plain_number():
+    assert validate_all_formulas(_char(stats={"proficiency_bonus": "3"})) == []
+
+
+def test_valid_stats_cross_reference():
+    assert validate_all_formulas(_char(stats={
+        "proficiency_bonus": "3",
+        "save_bonus": "$stats.proficiency_bonus + 2",
+    })) == []
+
+
+def test_invalid_stats_formula_syntax():
+    errors = validate_all_formulas(_char(stats={"proficiency_bonus": "abc"}))
+    assert any("syntax" in e for e in errors)
+
+
+def test_stats_formula_self_reference_cycle():
+    errors = validate_all_formulas(_char(stats={"proficiency_bonus": "$stats.proficiency_bonus + 1"}))
+    assert any("cycle" in e.lower() for e in errors)
+
+
+def test_stats_unknown_reference():
+    errors = validate_all_formulas(_char(stats={"proficiency_bonus": "$stats.nonexistent + 1"}))
+    assert any("nonexistent" in e for e in errors)
+
+
+def test_stats_non_formula_reference_rejected():
+    errors = validate_all_formulas(_char(stats={"proficiency_bonus": "$bio.race + 1"}))
+    assert any("formula fields" in e for e in errors)
 
 
 # ── Startup validation via server fixture ──────────────────────────────────

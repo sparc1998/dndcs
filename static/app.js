@@ -83,12 +83,13 @@ function updateDisplay(displayEl, rawText) {
 
 // ── Formula system helpers ─────────────────────────────────────────────────
 
-// Returns the section.field node ID for an input element, or null if not a bio/money field.
+// Returns the section.field node ID for an input element, or null if not a bio/money/stats field.
 function _getNodeId(inputEl) {
   const key = inputEl?.dataset?.fieldKey;
   if (!key) return null;
   if (document.getElementById("panel-bio").contains(inputEl)) return `bio.${key}`;
   if (document.getElementById("money-row").contains(inputEl)) return `money.${key}`;
+  if (document.getElementById("panel-stats").contains(inputEl)) return `stats.${key}`;
   return null;
 }
 
@@ -99,6 +100,9 @@ function _getRawFieldValue(section, field) {
   }
   if (section === "money") {
     return document.querySelector(`#money-row [data-field-key="${field}"]`)?.value ?? "";
+  }
+  if (section === "stats") {
+    return document.querySelector(`#panel-stats [data-field-key="${field}"]`)?.value ?? "";
   }
   return "";
 }
@@ -119,7 +123,7 @@ function _buildFieldValues() {
 // Returns the display element for a formula node, or null.
 function _getFormulaNodeDisplay(nodeId) {
   const [section, field] = nodeId.split(".");
-  const container = section === "bio" ? "#panel-bio" : "#money-row";
+  const container = section === "bio" ? "#panel-bio" : section === "stats" ? "#panel-stats" : "#money-row";
   const inputEl = document.querySelector(`${container} [data-field-key="${field}"]`);
   return inputEl ? document.getElementById(inputEl.id + "-display") : null;
 }
@@ -172,6 +176,11 @@ function _initFormulaSystem() {
     const id = `money.${el.dataset.fieldKey}`;
     _allFieldIds.add(id);
     if (el.dataset.fieldRender === "formula") _formulaNodeIds.add(id);
+  });
+  document.querySelectorAll("#panel-stats [data-field-render='formula'][data-field-key]").forEach(el => {
+    const id = `stats.${el.dataset.fieldKey}`;
+    _allFieldIds.add(id);
+    _formulaNodeIds.add(id);
   });
 
   // Build graph edges from current formula values.
@@ -436,9 +445,13 @@ async function load() {
 function populateFields(container, obj) {
   container.querySelectorAll("[data-field-key]").forEach(el => {
     const raw = obj?.[el.dataset.fieldKey] ?? "";
-    el.value = raw;
-    const display = document.getElementById(el.id + "-display");
-    if (display) updateDisplay(display, raw);
+    if (el.type === "checkbox") {
+      el.checked = raw === true || raw === "true";
+    } else {
+      el.value = raw;
+      const display = document.getElementById(el.id + "-display");
+      if (display) updateDisplay(display, raw);
+    }
   });
 }
 
@@ -446,7 +459,11 @@ function populateFields(container, obj) {
 function collectFields(container) {
   const obj = {};
   container.querySelectorAll("[data-field-key]").forEach(el => {
-    obj[el.dataset.fieldKey] = el.value;
+    if (el.type === "checkbox") {
+      obj[el.dataset.fieldKey] = el.checked;
+    } else {
+      obj[el.dataset.fieldKey] = el.value;
+    }
   });
   return obj;
 }
@@ -454,6 +471,7 @@ function collectFields(container) {
 function render() {
   populateFields(document.getElementById("panel-bio"), character.bio);
   populateFields(document.getElementById("money-row"), character.money);
+  populateFields(document.getElementById("panel-stats"), character.stats);
   _initFormulaSystem();
   renderFeats();
   renderGear();
@@ -906,11 +924,12 @@ function deleteGearItem() {
 }
 
 // Assembles the current character object from live DOM field values.
-// Array fields are carried over from character unchanged; only bio/money are re-collected from the DOM.
+// Array fields are carried over from character unchanged; bio/money/stats are re-collected from the DOM.
 function collectCharacter() {
   return {
     bio: collectFields(document.getElementById("panel-bio")),
     money: collectFields(document.getElementById("money-row")),
+    stats: collectFields(document.getElementById("panel-stats")),
     feats_features: character.feats_features ?? [],
     gear: character.gear ?? [],
     campaign_notes: character.campaign_notes ?? [],
@@ -1044,6 +1063,21 @@ document.querySelectorAll("#money-row [data-field-key]").forEach((input) => {
   });
 });
 
+// Open the edit dialog when clicking a stats formula field's paired display span.
+document.querySelectorAll("#panel-stats [data-field-render='formula'][data-field-key]").forEach((input) => {
+  const display = document.getElementById(input.id + "-display");
+  if (!display) return;
+  display.addEventListener("click", (e) => {
+    if (e.target.closest("a")) return;
+    openEditDialog(input, display);
+  });
+});
+
+// Autosave stats checkboxes on change.
+document.querySelectorAll("#panel-stats input[type='checkbox'][data-field-key]").forEach(cb => {
+  cb.addEventListener("change", autosave);
+});
+
 // Collapse/expand gear type sections.
 document.querySelectorAll(".gear-section-toggle").forEach(btn => {
   btn.addEventListener("click", () => {
@@ -1057,10 +1091,18 @@ document.getElementById("panel-feats").addEventListener("dragover", (e) => e.pre
 
 // Collapse/expand all gear sections at once.
 document.getElementById("toggle-all-gear-btn").addEventListener("click", () => {
-  const sections = document.querySelectorAll(".gear-section");
+  const sections = document.querySelectorAll("#panel-gear .gear-section");
   const anyExpanded = Array.from(sections).some(s => !s.classList.contains("collapsed"));
   sections.forEach(s => s.classList.toggle("collapsed", anyExpanded));
   document.getElementById("toggle-all-gear-btn").textContent = anyExpanded ? "Expand All" : "Collapse All";
+});
+
+// Collapse/expand all stats sections at once.
+document.getElementById("toggle-all-stats-btn").addEventListener("click", () => {
+  const sections = document.querySelectorAll("#panel-stats .gear-section");
+  const anyExpanded = Array.from(sections).some(s => !s.classList.contains("collapsed"));
+  sections.forEach(s => s.classList.toggle("collapsed", anyExpanded));
+  document.getElementById("toggle-all-stats-btn").textContent = anyExpanded ? "Expand All" : "Collapse All";
 });
 
 // Level log dialog: Done button, backdrop click, and keyboard shortcuts.
