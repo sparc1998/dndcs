@@ -148,7 +148,7 @@ function _recomputeAllFormulaNodes() {
   _recomputeCalcFields();
 }
 
-// ── Calculated attribute fields ────────────────────────────────────────────
+// ── Calculated ability fields ──────────────────────────────────────────────
 
 const _ATTR_KEYS = ["str", "dex", "con", "int", "wis", "cha"];
 
@@ -164,13 +164,13 @@ function D20Roll(extraDice, bonuses, advStatus) {
   return `/r ${parts.join(" ")}`;
 }
 
-// Recomputes the derived Mod, Ability Check, and Save display spans for each attribute.
+// Recomputes the derived Mod, Ability Check, and Save display spans for each ability.
 // Called after every formula recomputation and on save-prof checkbox change.
 function _recomputeCalcFields() {
   const profBonus = parseFloat(_computedValues["stats.proficiency_bonus"] ?? "") || 0;
 
   for (const attr of _ATTR_KEYS) {
-    const valStr = _computedValues[`stats.${attr}_val`] ?? "";
+    const valStr = _computedValues[`stats.${attr}`] ?? "";
     const modEl = document.getElementById(`stats-${attr}-mod`);
     const acEl = document.getElementById(`stats-${attr}-ability-check`);
     const saveEl = document.getElementById(`stats-${attr}-save`);

@@ -130,17 +130,17 @@ properties:
         type: boolean
       save_bonus:
         type: string
-      str_val:
+      str:
         type: string
-      dex_val:
+      dex:
         type: string
-      con_val:
+      con:
         type: string
-      int_val:
+      int:
         type: string
-      wis_val:
+      wis:
         type: string
-      cha_val:
+      cha:
         type: string
       str_save_prof:
         type: boolean

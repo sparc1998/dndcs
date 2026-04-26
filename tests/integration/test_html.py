@@ -276,7 +276,7 @@ def test_level_log_table_headers_have_sizing_keys() -> None:
     assert class_th.get("data-sizing-key") == "level_log_class_sizing_text"
 
 
-# ── Attribute table ────────────────────────────────────────────────────────
+# ── Ability table ─────────────────────────────────────────────────────────
 
 _ATTR_NAMES = ["str", "dex", "con", "int", "wis", "cha"]
 
@@ -288,7 +288,7 @@ def test_attrs_table_val_fields() -> None:
         el = c.by_id.get(fid)
         assert el is not None, f"Missing #{fid}"
         assert el.get("data-field-render") == "formula", f"#{fid} should have data-field-render='formula'"
-        assert el.get("data-field-key") == f"{attr}_val", f"#{fid} bad data-field-key"
+        assert el.get("data-field-key") == attr, f"#{fid} bad data-field-key"
         assert el.get("data-sizing-key") == "std_num_sizing_text", f"#{fid} bad data-sizing-key"
         assert f"{fid}-display" in c.by_id, f"Missing #{fid}-display"
 

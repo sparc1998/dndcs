@@ -191,34 +191,34 @@ def test_stats_non_formula_reference_rejected():
     assert any("formula fields" in e for e in errors)
 
 
-# ── Attribute val formula fields ──────────────────────────────────────────
+# ── Ability val formula fields ────────────────────────────────────────────
 
 
 def test_valid_attr_val_plain_numbers():
     assert validate_all_formulas(_char(stats={
-        "str_val": "16", "dex_val": "14", "con_val": "15",
-        "int_val": "10", "wis_val": "12", "cha_val": "8",
+        "str": "16", "dex": "14", "con": "15",
+        "int": "10", "wis": "12", "cha": "8",
     })) == []
 
 
 def test_valid_attr_val_formula():
-    assert validate_all_formulas(_char(stats={"str_val": "10 + 6"})) == []
+    assert validate_all_formulas(_char(stats={"str": "10 + 6"})) == []
 
 
 def test_invalid_attr_val_syntax():
-    errors = validate_all_formulas(_char(stats={"dex_val": "abc"}))
+    errors = validate_all_formulas(_char(stats={"dex": "abc"}))
     assert any("syntax" in e for e in errors)
 
 
 def test_attr_val_self_reference_cycle():
-    errors = validate_all_formulas(_char(stats={"con_val": "$stats.con_val + 1"}))
+    errors = validate_all_formulas(_char(stats={"con": "$stats.con + 1"}))
     assert any("cycle" in e.lower() for e in errors)
 
 
 def test_attr_val_cross_reference_to_proficiency():
     assert validate_all_formulas(_char(stats={
         "proficiency_bonus": "3",
-        "str_val": "$stats.proficiency_bonus * 2",
+        "str": "$stats.proficiency_bonus * 2",
     })) == []
 
 

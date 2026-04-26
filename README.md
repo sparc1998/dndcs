@@ -86,13 +86,11 @@ uv run check-jsonschema --schemafile schema/character.yaml <file.yaml>
 
 ## TODO
 
-* In the character schema, rename str_val -> str, etc.
 * Change checkbox true background color to button color.
-* Rename attribute to ability everywhere.
 * Add save bonus into saves.
 * The copied box should be the color of dialog boxes.
 * Make experience and money sizing text use the same sizing key: long_num_sizing_text.
-* Add temporary values for attributes.
+* Add temporary values for abilities.
 * Add potion use to bonus actions.
 * Temporaries section:
   - Table for user entered quantities.

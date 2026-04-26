@@ -68,5 +68,5 @@ money_sizing_text: "9999999"
 location_sizing_text: "backpack    "
 # Used for the gear dialog type selector. Should match the longest option.
 gear_type_sizing_text: "Campaign Specific"
-# Used for ability check and save roll formula columns in the attribute table.
+# Used for ability check and save roll formula columns in the ability table.
 roll_formula_sizing_text: "/r 2d20kh1 + 1d8 + 12"

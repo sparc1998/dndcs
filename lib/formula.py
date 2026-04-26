@@ -41,12 +41,12 @@ _STATS_FORMULA_FIELDS: frozenset[str] = frozenset(
     {
         "proficiency_bonus",
         "save_bonus",
-        "str_val",
-        "dex_val",
-        "con_val",
-        "int_val",
-        "wis_val",
-        "cha_val",
+        "str",
+        "dex",
+        "con",
+        "int",
+        "wis",
+        "cha",
     }
 )
 
